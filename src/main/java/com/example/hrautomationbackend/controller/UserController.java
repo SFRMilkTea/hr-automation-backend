@@ -25,18 +25,19 @@ public class UserController {
             return ResponseEntity.badRequest().body("Произошла ошибка");
         }
     }
-//
-//    @PostMapping
-//    public ResponseEntity registration(@RequestBody UserEntity user) {
-//        try {
-//            userService.registration(user);
-//            return ResponseEntity.ok("Пользователь " + user.getUsername() + " успешно добавлен");
-//        } catch (UserAlreadyExistException e) {
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().body("Произошла ошибка");
-//        }
-//    }
+
+    @PostMapping
+    public ResponseEntity registration(@RequestBody UserEntity user) {
+        try {
+            userService.registration(user);
+            return ResponseEntity.ok("Пользователь " + user.getUsername() + " успешно добавлен");
+        } catch (UserAlreadyExistException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Произошла ошибка");
+        }
+    }
+
 //
 //    @GetMapping
 //    public ResponseEntity getUser(@RequestParam Long id) {

@@ -25,14 +25,12 @@ public class UserService {
         }
         }
 
-//
-//
-//    public UserEntity registration(UserEntity user) throws UserAlreadyExistException {
-//        if (userRepository.findByUsername(user.getUsername()) == null) {
-//            return userRepository.save(user);
-//        } else
-//            throw new UserAlreadyExistException("Пользователь " + user.getUsername() + " уже существует");
-//    }
+    public UserEntity registration(UserEntity user) throws UserAlreadyExistException {
+        if (userRepository.findByUsername(user.getUsername()) == null) {
+            return userRepository.save(user);
+        } else
+            throw new UserAlreadyExistException("Пользователь " + user.getUsername() + " уже существует");
+    }
 //
 //    public User getUser(Long id) throws UserNotFoundException {
 //        try {
