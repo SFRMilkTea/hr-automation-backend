@@ -10,9 +10,9 @@ public class UserEntity {
     private Long id;
     private String email;
     private String username;
+    private int auth_code;
 
     public UserEntity() {
-
     }
 
     public Long getId() {
@@ -37,5 +37,13 @@ public class UserEntity {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public int getAuth_code() {
+        return auth_code;
+    }
+
+    public void setAuth_code(int auth_code) {
+        this.auth_code = auth_code;
     }
 }
