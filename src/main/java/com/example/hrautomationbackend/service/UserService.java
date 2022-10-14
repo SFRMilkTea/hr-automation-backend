@@ -43,10 +43,10 @@ public class UserService {
     }
 
     public UserEntity registration(UserEntity user) throws UserAlreadyExistException {
-        if (userRepository.findByUsername(user.getUsername()) == null) {
+        if (userRepository.findByEmail(user.getEmail()) == null) {
             return userRepository.save(user);
         } else
-            throw new UserAlreadyExistException("Пользователь " + user.getUsername() + " уже существует");
+            throw new UserAlreadyExistException("Пользователь с email " + user.getEmail() + " уже существует");
     }
 //
 //    public User getUser(Long id) throws UserNotFoundException {
