@@ -4,9 +4,14 @@ import com.example.hrautomationbackend.entity.UserEntity;
 import com.example.hrautomationbackend.exception.UserAlreadyExistException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.exception.WrongAuthorizationCodeException;
+import com.example.hrautomationbackend.jwt.JwtProvider;
+import com.example.hrautomationbackend.jwt.JwtResponse;
 import com.example.hrautomationbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -17,6 +22,9 @@ public class UserService {
     private EmailService emailService;
     @Autowired
     private CodeGenerationService codeService;
+    @Autowired
+    private JwtProvider jwtProvider;
+    private final Map<String, String> refreshStorage = new HashMap<>();
 
     public boolean authorization(String email) throws UserNotFoundException {
         UserEntity user = userRepository.findByEmail(email);
@@ -31,14 +39,17 @@ public class UserService {
         }
     }
 
-    public String code_check(String email, int code) throws WrongAuthorizationCodeException {
+    public JwtResponse code_check(String email, int code) throws WrongAuthorizationCodeException {
         UserEntity user = userRepository.findByEmail(email);
         if (user.getAuth_code() != code)
             throw new WrongAuthorizationCodeException("Неверный код авторизации");
         else {
             user.setAuth_code(0);
             userRepository.save(user);
-            return ("код совпал");
+            final String accessToken = jwtProvider.generateAccessToken(user);
+            final String refreshToken = jwtProvider.generateRefreshToken(user);
+            refreshStorage.put(user.getEmail(), refreshToken);
+            return new JwtResponse(accessToken, refreshToken);
         }
     }
 

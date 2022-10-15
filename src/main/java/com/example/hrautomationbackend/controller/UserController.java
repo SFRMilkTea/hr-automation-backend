@@ -4,6 +4,7 @@ import com.example.hrautomationbackend.entity.UserEntity;
 import com.example.hrautomationbackend.exception.UserAlreadyExistException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.exception.WrongAuthorizationCodeException;
+import com.example.hrautomationbackend.jwt.JwtResponse;
 import com.example.hrautomationbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,14 +29,10 @@ public class UserController {
     }
 
     @GetMapping(path = "/confirm")
-    public ResponseEntity code_check(@RequestParam String email, int code) {
-        try {
-            return ResponseEntity.ok(userService.code_check(email, code));
-        } catch (WrongAuthorizationCodeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Произошла ошибка");
-        }
+    public ResponseEntity<JwtResponse> code_check(@RequestParam String email, int code)
+            throws WrongAuthorizationCodeException {
+        final JwtResponse token = userService.code_check(email, code);
+        return ResponseEntity.ok(token);
     }
 
     @PostMapping
