@@ -20,7 +20,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity authorization(@RequestParam String email) {
         try {
-            return ResponseEntity.ok(userService.authorization(email));
+            return ResponseEntity.ok(userService.send_code(email));
         } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
@@ -29,9 +29,9 @@ public class UserController {
     }
 
     @GetMapping(path = "/confirm")
-    public ResponseEntity<JwtResponse> code_check(@RequestParam String email, int code)
+    public ResponseEntity<JwtResponse> authorization_confirm(@RequestParam String email, int code)
             throws WrongAuthorizationCodeException {
-        final JwtResponse token = userService.code_check(email, code);
+        final JwtResponse token = userService.get_tokens(email, code);
         return ResponseEntity.ok(token);
     }
 
@@ -46,16 +46,4 @@ public class UserController {
             return ResponseEntity.badRequest().body("Произошла ошибка");
         }
     }
-
-//
-//    @GetMapping
-//    public ResponseEntity getUser(@RequestParam Long id) {
-//        try {
-//            return ResponseEntity.ok(userService.getUser(id));
-//        } catch (UserNotFoundException e) {
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().body("Произошла ошибка");
-//        }
-//    }
 }

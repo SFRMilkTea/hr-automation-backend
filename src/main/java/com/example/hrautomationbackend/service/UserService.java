@@ -26,7 +26,7 @@ public class UserService {
     private JwtProvider jwtProvider;
     private final Map<String, String> refreshStorage = new HashMap<>();
 
-    public boolean authorization(String email) throws UserNotFoundException {
+    public boolean send_code(String email) throws UserNotFoundException {
         UserEntity user = userRepository.findByEmail(email);
         if (user == null) {
             throw new UserNotFoundException("Пользователь с данным email не существует");
@@ -38,8 +38,7 @@ public class UserService {
             return true;
         }
     }
-
-    public JwtResponse code_check(String email, int code) throws WrongAuthorizationCodeException {
+    public JwtResponse get_tokens(String email, int code) throws WrongAuthorizationCodeException {
         UserEntity user = userRepository.findByEmail(email);
         if (user.getAuth_code() != code)
             throw new WrongAuthorizationCodeException("Неверный код авторизации");
