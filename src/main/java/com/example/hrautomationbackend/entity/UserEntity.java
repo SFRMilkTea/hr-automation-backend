@@ -1,5 +1,7 @@
 package com.example.hrautomationbackend.entity;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,8 +14,10 @@ public class UserEntity {
     private String email;
     private String username;
     private int authCode;
-//    @Column(columnDefinition = "default = 'false'")
-    private boolean isAdmin;
+
+    @ManyToOne
+    @JoinColumn(name= "role_id")
+    private RoleEntity role;
 
     public UserEntity() {
     }
@@ -50,11 +54,11 @@ public class UserEntity {
         this.authCode = authCode;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public RoleEntity getRole() {
+        return role;
     }
 
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
+    public void setRole(RoleEntity role) {
+        this.role = role;
     }
 }
