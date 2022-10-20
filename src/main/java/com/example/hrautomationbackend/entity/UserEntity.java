@@ -8,9 +8,12 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    //    @Column(nullable = false, unique = true)
     private String email;
     private String username;
-    private int auth_code;
+    private int authCode;
+//    @Column(columnDefinition = "default = 'false'")
+    private boolean isAdmin;
 
     public UserEntity() {
     }
@@ -39,11 +42,19 @@ public class UserEntity {
         this.email = email;
     }
 
-    public int getAuth_code() {
-        return auth_code;
+    public int getAuthCode() {
+        return authCode;
     }
 
-    public void setAuth_code(int auth_code) {
-        this.auth_code = auth_code;
+    public void setAuthCode(int authCode) {
+        this.authCode = authCode;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 }
