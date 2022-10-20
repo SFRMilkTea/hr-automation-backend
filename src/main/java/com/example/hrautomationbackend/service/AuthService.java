@@ -1,5 +1,6 @@
 package com.example.hrautomationbackend.service;
 
+import com.example.hrautomationbackend.entity.RoleEntity;
 import com.example.hrautomationbackend.entity.UserEntity;
 import com.example.hrautomationbackend.exception.UserAlreadyExistException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
@@ -26,7 +27,9 @@ public class AuthService {
     private CodeGenerationService codeService;
     @Autowired
     private JwtProvider jwtProvider;
+
     private final Map<String, String> refreshStorage = new HashMap<>();
+    private final RoleEntity defaultRole = new RoleEntity();
 
     public boolean sendCode(String email) throws UserNotFoundException {
         UserEntity user = userRepository.findByEmail(email);
@@ -52,14 +55,17 @@ public class AuthService {
         }
     }
 
-    public UserEntity registration(UserEntity user) throws UserAlreadyExistException {
+    public void registration(UserEntity user) throws UserAlreadyExistException {
         if (userRepository.findByEmail(user.getEmail()) == null) {
-            return userRepository.save(user);
+            if(user.getRole() == null) {
+                defaultRole.setId(2L);
+                user.setRole(defaultRole);
+            }
+            userRepository.save(user);
         } else
             throw new UserAlreadyExistException("Пользователь с email " + user.getEmail() + " уже существует");
     }
 
-//
 //    public Long delete(Long id) {
 //        userRepository.deleteById(id);
 //        return id;
