@@ -1,20 +1,13 @@
 package com.example.hrautomationbackend.controller;
 
-import com.example.hrautomationbackend.entity.UserEntity;
+import com.example.hrautomationbackend.exception.AccessTokenIsNotValidException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.jwt.JwtProvider;
-import com.example.hrautomationbackend.jwt.JwtResponse;
+import com.example.hrautomationbackend.service.JwtService;
 import com.example.hrautomationbackend.service.UserService;
-import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
 
 @RestController
 @RequestMapping("/users")
@@ -24,31 +17,52 @@ public class UserController {
     private UserService userService;
     @Autowired
     private JwtProvider jwtProvider;
+    @Autowired
+    private JwtService jwtService;
 
-    @GetMapping
-    public ResponseEntity getOneUser(@RequestParam Long id, @RequestHeader String accessToken) {
-        if (jwtProvider.validateAccessToken(accessToken)) {
-            final Claims claims = jwtProvider.getAccessClaims(accessToken);
-            final Date expirationDate = claims.getExpiration();
 
-            // Получить идентификатор часового пояса
-            ZoneId zoneId = ZoneId.systemDefault();
-            // Конвертировать в местное время
-            ZonedDateTime zonedDateTime = LocalDateTime.now().atZone(zoneId);
-            // Изменить тип даты
-            Date now = Date.from(zonedDateTime.toInstant());
-
-            if (expirationDate.compareTo(now) > 0) {
+    @GetMapping("/{id}")
+    public ResponseEntity getOneUser(@PathVariable Long id, @RequestHeader String accessToken) {
+        try {
+            if (jwtService.checkAccessToken(accessToken)) {
                 try {
                     return ResponseEntity.ok(userService.getUser(id));
-                } catch (UserNotFoundException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
                 } catch (Exception e) {
                     return ResponseEntity.badRequest().body("Произошла ошибка");
                 }
             }
-
+        } catch (AccessTokenIsNotValidException e) {
+            return ResponseEntity.status(401).body(e.getMessage());
         }
-        return ResponseEntity.badRequest().body("Токен протух");
+        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
+
+
+    @GetMapping
+    public ResponseEntity getUsers(@RequestHeader String accessToken) {
+        try {
+            if (jwtService.checkAccessToken(accessToken)) {
+                try {
+                    return ResponseEntity.ok(userService.getUsers());
+                } catch (Exception e) {
+                    return ResponseEntity.badRequest().body("Произошла ошибка");
+                }
+            }
+        } catch (AccessTokenIsNotValidException e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+        return ResponseEntity.badRequest().body("Произошла ошибка");
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteUser(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(userService.delete(id));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Произошла ошибка");
+        }
+    }
+
 }
