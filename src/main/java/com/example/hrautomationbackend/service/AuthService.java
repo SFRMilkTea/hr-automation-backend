@@ -66,8 +66,4 @@ public class AuthService {
             throw new UserAlreadyExistException("Пользователь с email " + user.getEmail() + " уже существует");
     }
 
-//    public Long delete(Long id) {
-//        userRepository.deleteById(id);
-//        return id;
-//    }
 }
