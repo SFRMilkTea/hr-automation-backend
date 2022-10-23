@@ -13,6 +13,12 @@ public class JwtController {
     @Autowired
     private JwtService jwtService;
 
+    /** @api {get} /refresh Запрос на обновление токена
+     * @apiGroup JWT
+     * @apiName refresh
+     * @apiHeader {String} refreshToken Рефреш токен
+     **/
+
     @GetMapping
     public ResponseEntity refresh(@RequestHeader String refreshToken) {
         try {

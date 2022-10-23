@@ -22,6 +22,12 @@ public class UserController {
     @Autowired
     private JwtService jwtService;
 
+    /** @api {get} /users/[id] Получение пользователя по айди
+     * @apiName getOneUser
+     * @apiGroup СОТРУДНИКИ
+     * @apiParam {Number} id Уникальный идентефикатор пользователя
+     * @apiHeader {String} accessToken Аксес токен
+     **/
 
     @GetMapping("/{id}")
     public ResponseEntity getOneUser(@PathVariable Long id, @RequestHeader String accessToken) {
@@ -39,6 +45,11 @@ public class UserController {
         return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
+    /** @api {get} /users Получение списка пользователей
+     * @apiGroup СОТРУДНИКИ
+     * @apiName getUsers
+     * @apiHeader {String} accessToken Аксес токен
+     **/
 
     @GetMapping
     public ResponseEntity getUsers(@RequestHeader String accessToken) {
@@ -56,6 +67,13 @@ public class UserController {
         return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
+    /** @api {delete} /users/[id] Удаление пользователя по айди
+     * @apiGroup СОТРУДНИКИ
+     * @apiName deleteUser
+     * @apiParam {Number} id Уникальный идентефикатор пользователя
+     * @apiHeader {String} accessToken Аксес токен
+     **/
+
     @DeleteMapping("/{id}")
     public ResponseEntity deleteUser(@PathVariable Long id) {
         try {
@@ -67,7 +85,14 @@ public class UserController {
         }
     }
 
-
+    /** @api {post} /users Добавление пользователя
+     * @apiGroup СОТРУДНИКИ
+     * @apiName addUser
+     * @apiBody {String} email Корпоративная почта пользователя
+     * @apiBody {String} username Username пользователя
+     * @apiBody {Number} [role=2]  Роль пользователя
+     * @apiHeader {String} accessToken Аксес токен
+     **/
 
     @PostMapping
     public ResponseEntity addUser(@RequestBody UserEntity user) {
