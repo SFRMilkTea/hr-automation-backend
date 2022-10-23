@@ -1,6 +1,8 @@
 package com.example.hrautomationbackend.controller;
 
+import com.example.hrautomationbackend.entity.UserEntity;
 import com.example.hrautomationbackend.exception.AccessTokenIsNotValidException;
+import com.example.hrautomationbackend.exception.UserAlreadyExistException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.jwt.JwtProvider;
 import com.example.hrautomationbackend.service.JwtService;
@@ -59,6 +61,20 @@ public class UserController {
         try {
             return ResponseEntity.ok(userService.delete(id));
         } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Произошла ошибка");
+        }
+    }
+
+
+
+    @PostMapping
+    public ResponseEntity addUser(@RequestBody UserEntity user) {
+        try {
+            userService.registration(user);
+            return ResponseEntity.ok("Пользователь " + user.getUsername() + " успешно добавлен");
+        } catch (UserAlreadyExistException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Произошла ошибка");

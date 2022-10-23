@@ -29,7 +29,6 @@ public class AuthService {
     private JwtProvider jwtProvider;
 
     private final Map<String, String> refreshStorage = new HashMap<>();
-    private final RoleEntity defaultRole = new RoleEntity();
 
     public boolean sendCode(String email) throws UserNotFoundException {
         UserEntity user = userRepository.findByEmail(email);
@@ -54,16 +53,4 @@ public class AuthService {
             return (jwtService.getTokens(user));
         }
     }
-
-    public void registration(UserEntity user) throws UserAlreadyExistException {
-        if (userRepository.findByEmail(user.getEmail()) == null) {
-            if(user.getRole() == null) {
-                defaultRole.setId(2L);
-                user.setRole(defaultRole);
-            }
-            userRepository.save(user);
-        } else
-            throw new UserAlreadyExistException("Пользователь с email " + user.getEmail() + " уже существует");
-    }
-
 }
