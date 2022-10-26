@@ -1,0 +1,3 @@
+FROM postgres:12
+COPY init-scripts/hr-automation.sql /docker-entrypoint-initdb.d/hr-automation.sql
+EXPOSE 5444
