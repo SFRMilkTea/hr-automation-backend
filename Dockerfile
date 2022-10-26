@@ -1,9 +1,15 @@
-# syntax=docker/dockerfile:1
+FROM openjdk:17-jdk-alpine as extractor
+RUN mkdir -p /opt
+COPY build/libs/hr-automation-backend.jar /opt/app.jar
+WORKDIR /opt
+RUN java -Djarmode=layertools -jar app.jar extract
 
 FROM openjdk:17-jdk-alpine
-WORKDIR /app
-COPY build/libs/hr-automation-backend.jar /app.jar
-CMD ["./gradlew", "clean", "build"]
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+WORKDIR /opt
+COPY --from=extractor opt/dependencies/ ./
+COPY --from=extractor opt/spring-boot-loader/ ./
+COPY --from=extractor opt/snapshot-dependencies/ ./
+COPY --from=extractor opt/application/ ./
+
+ENTRYPOINT ["sh", "-c", "java -Djava.security.egd=file:/dev/./urandom org.springframework.boot.loader.JarLauncher"]
 
