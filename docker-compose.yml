@@ -2,6 +2,7 @@ version: '3.0'
 
 services:
   main:
+    image: 'hr-automation:latest'
     container_name: main
     build:
       context: .
@@ -9,9 +10,12 @@ services:
       - .:/app
     ports:
       - "8080:8080"
-    command: ./gradlew clean build
     depends_on:
       - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/hr_automation
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=12345
     restart: always
 
   postgres:
@@ -22,6 +26,4 @@ services:
       POSTGRES_PASSWORD: 12345
       POSTGRES_USER: root
       POSTGRES_DB: hr_automation
-    ports:
-      - "5432:5432"
     restart: always

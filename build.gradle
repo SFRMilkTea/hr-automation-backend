@@ -10,6 +10,7 @@ group = 'com.example'
 sourceCompatibility = '17'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
