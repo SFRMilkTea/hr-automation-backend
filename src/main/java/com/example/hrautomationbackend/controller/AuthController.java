@@ -1,7 +1,5 @@
 package com.example.hrautomationbackend.controller;
 
-import com.example.hrautomationbackend.entity.UserEntity;
-import com.example.hrautomationbackend.exception.UserAlreadyExistException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.exception.WrongAuthorizationCodeException;
 import com.example.hrautomationbackend.jwt.JwtResponse;
@@ -40,7 +38,7 @@ public class AuthController {
      * @apiName authorizationConfirm
      * @apiParam {String} email Корпоративная почта пользователя
      * @apiParam {Number} code Четырехзначный код, отправленный на почту
-     *
+     * @apiSuccess {Object} token Объект, содержащий три строки: type ("Bearer"), accessToken, refreshToken
      **/
 
     @GetMapping(path = "/confirm")

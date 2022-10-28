@@ -1,8 +1,6 @@
 package com.example.hrautomationbackend.service;
 
-import com.example.hrautomationbackend.entity.RoleEntity;
 import com.example.hrautomationbackend.entity.UserEntity;
-import com.example.hrautomationbackend.exception.UserAlreadyExistException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.exception.WrongAuthorizationCodeException;
 import com.example.hrautomationbackend.jwt.JwtProvider;

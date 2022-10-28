@@ -4,14 +4,12 @@ import com.example.hrautomationbackend.entity.UserEntity;
 import com.example.hrautomationbackend.exception.AccessTokenIsNotValidException;
 import com.example.hrautomationbackend.exception.RefreshTokenIsNotValidException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
-import com.example.hrautomationbackend.exception.WrongAuthorizationCodeException;
 import com.example.hrautomationbackend.jwt.JwtProvider;
 import com.example.hrautomationbackend.jwt.JwtResponse;
 import com.example.hrautomationbackend.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -42,7 +40,7 @@ public class JwtService {
         throw new AccessTokenIsNotValidException("Не валидный токен");
     }
 
-    public JwtResponse getTokens(UserEntity user) throws WrongAuthorizationCodeException {
+    public JwtResponse getTokens(UserEntity user) {
         final String accessToken = jwtProvider.generateAccessToken(user);
         final String refreshToken = jwtProvider.generateRefreshToken(user);
         refreshStorage.put(user.getEmail(), refreshToken);
