@@ -14,7 +14,7 @@ services:
       - postgres
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/hr_automation
-      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=12345
     restart: always
 
@@ -24,6 +24,6 @@ services:
     environment:
       PG_DATA: /var/lib/postgresql/data
       POSTGRES_PASSWORD: 12345
-      POSTGRES_USER: root
+      POSTGRES_USER: postgres
       POSTGRES_DB: hr_automation
     restart: always
