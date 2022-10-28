@@ -10,14 +10,13 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    //    @Column(nullable = false, unique = true)
     private String email;
     private String username;
+    private String about;
+    private String post;
+    private String project;
     private int authCode;
-
-    @ManyToOne
-    @JoinColumn(name= "role_id")
-    private RoleEntity role;
+    private boolean isAdmin;
 
     public UserEntity() {
     }
@@ -54,11 +53,35 @@ public class UserEntity {
         this.authCode = authCode;
     }
 
-    public RoleEntity getRole() {
-        return role;
+    public String getAbout() {
+        return about;
     }
 
-    public void setRole(RoleEntity role) {
-        this.role = role;
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
+    public String getPost() {
+        return post;
+    }
+
+    public void setPost(String post) {
+        this.post = post;
+    }
+
+    public String getProject() {
+        return project;
+    }
+
+    public void setProject(String project) {
+        this.project = project;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 }
