@@ -97,8 +97,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity addUser(@RequestBody UserEntity user) {
         try {
-            userService.registration(user);
-            return ResponseEntity.ok("Пользователь " + user.getUsername() + " успешно добавлен");
+            return ResponseEntity.ok( userService.registration(user));
         } catch (UserAlreadyExistException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
