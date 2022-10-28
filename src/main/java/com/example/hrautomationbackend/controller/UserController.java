@@ -30,7 +30,7 @@ public class UserController {
      **/
 
     @GetMapping("/{id}")
-    public ResponseEntity getOneUser(@PathVariable Long id, @RequestHeader String accessToken) {
+    public ResponseEntity getOneUser(@PathVariable Long id, @RequestHeader ("Authorization") String accessToken) {
         try {
             if (jwtService.checkAccessToken(accessToken)) {
                 try {
@@ -52,7 +52,7 @@ public class UserController {
      **/
 
     @GetMapping
-    public ResponseEntity getUsers(@RequestHeader String accessToken) {
+    public ResponseEntity getUsers(@RequestHeader ("Authorization") String accessToken) {
         try {
             if (jwtService.checkAccessToken(accessToken)) {
                 try {
