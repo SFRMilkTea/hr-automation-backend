@@ -58,7 +58,7 @@ public class FaqController {
      * @apiSuccess {Object} token Объект, содержащий три строки: type ("Bearer"), accessToken, refreshToken
      **/
 
-    @PostMapping
+    @PostMapping(path = "/categories")
     public ResponseEntity addCategory(@RequestHeader("Authorization") String accessToken, @RequestBody CategoryEntity category) {
         try {
             if (jwtService.checkAccessToken(accessToken)) {
