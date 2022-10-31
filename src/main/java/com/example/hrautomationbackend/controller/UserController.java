@@ -22,11 +22,13 @@ public class UserController {
     @Autowired
     private JwtService jwtService;
 
-    /** @api {get} /users/[id] Получение пользователя по айди
+    /**
+     * @api {get} /users/[id] Получение пользователя по айди
      * @apiName getOneUser
      * @apiGroup СОТРУДНИКИ
      * @apiParam {Number} id Уникальный идентефикатор пользователя
      * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {Object} user Пользователь
      **/
 
     @GetMapping("/{id}")
@@ -45,10 +47,12 @@ public class UserController {
         return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
-    /** @api {get} /users Получение списка пользователей
+    /**
+     * @api {get} /users Получение списка пользователей
      * @apiGroup СОТРУДНИКИ
      * @apiName getUsers
      * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {List[Object]} users Список всех пользователей
      **/
 
     @GetMapping
@@ -67,11 +71,13 @@ public class UserController {
         return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
-    /** @api {delete} /users/[id] Удаление пользователя по айди
+    /**
+     * @api {delete} /users/[id] Удаление пользователя по айди
      * @apiGroup СОТРУДНИКИ
      * @apiName deleteUser
      * @apiParam {Number} id Уникальный идентефикатор пользователя
      * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {Boolean} result True, если пользователь успешно удален
      **/
 
     @DeleteMapping("/{id}")
@@ -92,13 +98,15 @@ public class UserController {
         return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
-    /** @api {post} /users Добавление пользователя
+    /**
+     * @api {post} /users Добавление пользователя
      * @apiGroup СОТРУДНИКИ
      * @apiName addUser
      * @apiBody {String} email Корпоративная почта пользователя
      * @apiBody {String} username Username пользователя
-     * @apiBody {Number} [role=2]  Роль пользователя
+     * @apiBody {Boolean} [isAdmin=false]  Роль пользователя
      * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {Boolean} result True, если пользователь успешно добавлен
      **/
 
     @PostMapping

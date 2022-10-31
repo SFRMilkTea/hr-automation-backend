@@ -17,6 +17,7 @@ public class JwtController {
      * @apiGroup JWT
      * @apiName refresh
      * @apiHeader {String} refreshToken Рефреш токен
+     * @apiSuccess {Object} token Объект, содержащий три строки: type ("Bearer"), accessToken, refreshToken
      **/
 
     @PostMapping

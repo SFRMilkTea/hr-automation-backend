@@ -19,7 +19,8 @@ public class AuthController {
      * @apiGroup АВТОРИЗАЦИЯ
      * @apiName authorization
      * @apiParam {String} email Корпоративная почта пользователя
-     *
+     * @apiSuccess {boolean} result True
+     * @apiError (Error 400) UserNotFoundException Пользователь с такой почтой не зарегистрирован
      **/
 
     @GetMapping
