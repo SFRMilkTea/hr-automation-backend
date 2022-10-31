@@ -54,5 +54,12 @@ public class UserService {
             throw new UserAlreadyExistException("Пользователь с email " + user.getEmail() + " уже существует");
     }
 
+    public boolean update(UserEntity user) throws UserNotFoundException {
+        if (userRepository.findById(user.getId()).isPresent()) {
+            userRepository.save(user);
+            return true;
+        } else
+            throw new UserNotFoundException("Пользователь не существует");
+    }
 
 }

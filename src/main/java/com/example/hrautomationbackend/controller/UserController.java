@@ -119,4 +119,29 @@ public class UserController {
         return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
+    /**
+     * @api {put} /users Обновление пользователя
+     * @apiGroup СОТРУДНИКИ
+     * @apiName updateUser
+     * @apiBody {User} Пользователь Новые данные пользователя (+ старые, если не изменялись!)
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {Boolean} result True, если пользователь успешно обновлен
+     **/
+    @PutMapping
+    public ResponseEntity updateUser(@RequestHeader("Authorization") String accessToken, @RequestBody UserEntity user) {
+        try {
+            if (jwtService.checkAccessToken(accessToken)) {
+                try {
+                    return ResponseEntity.ok(userService.update(user));
+                } catch (UserNotFoundException e) {
+                    return ResponseEntity.badRequest().body(e.getMessage());
+                } catch (Exception e) {
+                    return ResponseEntity.badRequest().body("Произошла ошибка во время апдейта");
+                }
+            }
+        } catch (AccessTokenIsNotValidException e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+        return ResponseEntity.badRequest().body("Произошла ошибка");
+    }
 }
