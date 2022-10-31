@@ -72,7 +72,7 @@ public class JwtService {
                 final UserEntity user = userRepository.findByEmail(email);
                 if (user == null)
                     throw new UserNotFoundException("Пользователь с данным email не существует");
-                getTokens(user);
+                return getTokens(user);
             }
         }
         throw new RefreshTokenIsNotValidException("Не валидный токен");
