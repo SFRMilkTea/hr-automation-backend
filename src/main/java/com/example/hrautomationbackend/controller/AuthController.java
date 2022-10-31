@@ -20,7 +20,8 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    /** @api {get} /authorization?email=[email@example.ru] Авторизация
+    /**
+     * @api {get} /authorization?email=[email@example.ru] Авторизация
      * @apiName authorization
      * @apiGroup AUTHORIZATION
      * @apiParam {String} email Корпоративная почта пользователя
@@ -39,7 +40,8 @@ public class AuthController {
         }
     }
 
-    /** @api {get} /authorization/confirm?email=[email@example.ru]&code=[1234] Подтверждение авторизации
+    /**
+     * @api {get} /authorization/confirm?email=[email@example.ru]&code=[1234] Подтверждение авторизации
      * @apiName authorizationConfirm
      * @apiGroup AUTHORIZATION
      * @apiParam {String} email Корпоративная почта пользователя

@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/faq")
 public class FaqController {
 
+    /**
+     * @apiDefine FAQ
+     * FAQ
+     */
+
     @Autowired
     private FaqService faqService;
     @Autowired
@@ -51,11 +56,14 @@ public class FaqController {
     }
 
     /**
-     * @api {get} /refresh Запрос на обновление токена
-     * @apiGroup JWT
-     * @apiName refresh
-     * @apiHeader {String} refreshToken Рефреш токен
-     * @apiSuccess {Object} token Объект, содержащий три строки: type ("Bearer"), accessToken, refreshToken
+     * @api {post} /faq/categories Добавление новой категории вопросов
+     * @apiGroup FAQ
+     * @apiName addCategory
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiBody {Object} category Категория вопросов
+     * @apiSuccess {boolean} result True, если категория успешно добавлена
+     * @apiError (Error 400) CategoryAlreadyExistException Данная категория уже существует
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
     @PostMapping(path = "/categories")
