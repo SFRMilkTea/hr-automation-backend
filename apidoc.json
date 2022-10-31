@@ -1,12 +1,11 @@
 {
   "name": "HR-AUTOMATION",
-  "version": "0.0.0",
   "description": "Самый лучший проект",
   "title": "Самая лучшая документация",
   "url" : "https://localhost:8080",
-  "sampleUrl": "https://localhost:8080",
+  "sampleUrl": false,
   "template": {
-    "withCompare": true,
-    "withGenerator": true
+    "withCompare": false,
+    "withGenerator": false
   }
 }

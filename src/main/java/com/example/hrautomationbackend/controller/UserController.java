@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public class UserController {
 
+    /**
+     * @apiDefine USERS
+     * СОТРУДНИКИ
+     */
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -25,7 +30,7 @@ public class UserController {
     /**
      * @api {get} /users/[id] Получение пользователя по айди
      * @apiName getOneUser
-     * @apiGroup СОТРУДНИКИ
+     * @apiGroup USERS
      * @apiParam {Number} id Уникальный идентефикатор пользователя
      * @apiHeader {String} accessToken Аксес токен
      * @apiSuccess {Object} user Пользователь
@@ -49,8 +54,8 @@ public class UserController {
 
     /**
      * @api {get} /users Получение списка пользователей
-     * @apiGroup СОТРУДНИКИ
      * @apiName getUsers
+     * @apiGroup USERS
      * @apiHeader {String} accessToken Аксес токен
      * @apiSuccess {List[Object]} users Список всех пользователей
      **/
@@ -73,8 +78,8 @@ public class UserController {
 
     /**
      * @api {delete} /users/[id] Удаление пользователя по айди
-     * @apiGroup СОТРУДНИКИ
      * @apiName deleteUser
+     * @apiGroup USERS
      * @apiParam {Number} id Уникальный идентефикатор пользователя
      * @apiHeader {String} accessToken Аксес токен
      * @apiSuccess {Boolean} result True, если пользователь успешно удален
@@ -100,8 +105,8 @@ public class UserController {
 
     /**
      * @api {post} /users Добавление пользователя
-     * @apiGroup СОТРУДНИКИ
      * @apiName addUser
+     * @apiGroup USERS
      * @apiBody {String} email Корпоративная почта пользователя
      * @apiBody {String} username Username пользователя
      * @apiBody {Boolean} [isAdmin=false]  Роль пользователя
@@ -129,9 +134,9 @@ public class UserController {
 
     /**
      * @api {put} /users Обновление пользователя
-     * @apiGroup СОТРУДНИКИ
      * @apiName updateUser
-     * @apiBody {User} Пользователь Новые данные пользователя (+ старые, если не изменялись!)
+     * @apiGroup USERS
+     * @apiBody {Object} user Новые данные пользователя (+ старые, если не изменялись!)
      * @apiHeader {String} accessToken Аксес токен
      * @apiSuccess {Boolean} result True, если пользователь успешно обновлен
      **/
