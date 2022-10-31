@@ -75,14 +75,21 @@ public class UserController {
      **/
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteUser(@PathVariable Long id) {
+    public ResponseEntity deleteUser(@RequestHeader("Authorization") String accessToken, @PathVariable Long id) {
         try {
-            return ResponseEntity.ok(userService.delete(id));
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            if (jwtService.checkAccessToken(accessToken)) {
+                try {
+                    return ResponseEntity.ok(userService.delete(id));
+                } catch (UserNotFoundException e) {
+                    return ResponseEntity.badRequest().body(e.getMessage());
+                } catch (Exception e) {
+                    return ResponseEntity.badRequest().body("Произошла ошибка");
+                }
+            }
+        } catch (AccessTokenIsNotValidException e) {
+            return ResponseEntity.status(401).body(e.getMessage());
         }
+        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /** @api {post} /users Добавление пользователя
@@ -95,14 +102,21 @@ public class UserController {
      **/
 
     @PostMapping
-    public ResponseEntity addUser(@RequestBody UserEntity user) {
+    public ResponseEntity addUser(@RequestHeader("Authorization") String accessToken, @RequestBody UserEntity user) {
         try {
-            return ResponseEntity.ok( userService.registration(user));
-        } catch (UserAlreadyExistException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            if (jwtService.checkAccessToken(accessToken)) {
+                try {
+                    return ResponseEntity.ok(userService.registration(user));
+                } catch (UserAlreadyExistException e) {
+                    return ResponseEntity.badRequest().body(e.getMessage());
+                } catch (Exception e) {
+                    return ResponseEntity.badRequest().body("Произошла ошибка во время добавления");
+                }
+            }
+        } catch (AccessTokenIsNotValidException e) {
+            return ResponseEntity.status(401).body(e.getMessage());
         }
+        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
 }
