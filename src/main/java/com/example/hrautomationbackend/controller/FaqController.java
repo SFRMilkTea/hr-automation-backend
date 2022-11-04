@@ -1,10 +1,7 @@
 package com.example.hrautomationbackend.controller;
 
-import com.example.hrautomationbackend.entity.CategoryEntity;
 import com.example.hrautomationbackend.entity.QuestionEntity;
-import com.example.hrautomationbackend.exception.AccessTokenIsNotValidException;
-import com.example.hrautomationbackend.exception.CategoryAlreadyExistException;
-import com.example.hrautomationbackend.exception.QuestionAlreadyExistException;
+import com.example.hrautomationbackend.exception.*;
 import com.example.hrautomationbackend.service.FaqService;
 import com.example.hrautomationbackend.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,4 +101,33 @@ public class FaqController {
         }
         return ResponseEntity.badRequest().body("Произошла ошибка");
     }
+
+    /**
+     * @api {delete} /faq/[id] Удаление вопроса по айди
+     * @apiName deleteQuestion
+     * @apiGroup FAQ
+     * @apiParam {Number} id Уникальный идентефикатор вопроса
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {Boolean} result True, если вопрос успешно удален
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     **/
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteQuestion(@RequestHeader("Authorization") String accessToken, @PathVariable Long id) {
+        try {
+            if (jwtService.checkAccessToken(accessToken)) {
+                try {
+                    return ResponseEntity.ok(faqService.deleteQuestion(id));
+                } catch (QuestionNotFoundException e) {
+                    return ResponseEntity.badRequest().body(e.getMessage());
+                } catch (Exception e) {
+                    return ResponseEntity.badRequest().body("Произошла ошибка во время удаления вопроса");
+                }
+            }
+        } catch (AccessTokenIsNotValidException e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+        return ResponseEntity.badRequest().body("Произошла ошибка");
+    }
+
 }

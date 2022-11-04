@@ -4,12 +4,14 @@ import com.example.hrautomationbackend.entity.CategoryEntity;
 import com.example.hrautomationbackend.entity.QuestionEntity;
 import com.example.hrautomationbackend.exception.CategoryAlreadyExistException;
 import com.example.hrautomationbackend.exception.QuestionAlreadyExistException;
+import com.example.hrautomationbackend.exception.QuestionNotFoundException;
 import com.example.hrautomationbackend.repository.CategoryRepository;
 import com.example.hrautomationbackend.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class FaqService {
@@ -43,5 +45,14 @@ public class FaqService {
 
     public List<CategoryEntity> getCategories() {
         return (List<CategoryEntity>) categoryRepository.findAll();
+    }
+
+    public Boolean deleteQuestion(Long id) throws QuestionNotFoundException {
+        try {
+            questionRepository.deleteById(id);
+        } catch (NoSuchElementException e) {
+            throw new QuestionNotFoundException("Такой вопрос не найден");
+        }
+        return true;
     }
 }
