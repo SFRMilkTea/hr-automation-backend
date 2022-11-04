@@ -79,4 +79,29 @@ public class FaqController {
         }
         return ResponseEntity.badRequest().body("Произошла ошибка");
     }
+
+    /**
+     * @api {get} /faq/categories Получение списка категорий вопросов
+     * @apiName getCategories
+     * @apiGroup FAQ
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {List[Object]} categories Список всех категорий вопросов
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     **/
+
+    @GetMapping(path = "/categories")
+    public ResponseEntity getCategories(@RequestHeader("Authorization") String accessToken) {
+        try {
+            if (jwtService.checkAccessToken(accessToken)) {
+                try {
+                    return ResponseEntity.ok(faqService.getCategories());
+                } catch (Exception e) {
+                    return ResponseEntity.badRequest().body("Произошла ошибка");
+                }
+            }
+        } catch (AccessTokenIsNotValidException e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+        return ResponseEntity.badRequest().body("Произошла ошибка");
+    }
 }

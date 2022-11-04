@@ -9,7 +9,6 @@ import com.example.hrautomationbackend.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,8 +21,7 @@ public class FaqService {
 
     public boolean addQuestion(QuestionEntity question) throws QuestionAlreadyExistException, CategoryAlreadyExistException {
         if (questionRepository.findByTitle(question.getTitle()) == null) {
-            ArrayList categories = (ArrayList) categoryRepository.findAll();
-            if (!categories.contains(question.getCategory()))
+            if (!getCategories().contains(question.getCategory()))
                 addCategory(question.getCategory());
             questionRepository.save(question);
             return true;
@@ -41,5 +39,9 @@ public class FaqService {
 
     public List<QuestionEntity> getQuestions() {
         return (List<QuestionEntity>) questionRepository.findAll();
+    }
+
+    public List<CategoryEntity> getCategories() {
+        return (List<CategoryEntity>) categoryRepository.findAll();
     }
 }
