@@ -8,7 +8,9 @@ import com.example.hrautomationbackend.repository.CategoryRepository;
 import com.example.hrautomationbackend.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class FaqService {
@@ -37,4 +39,7 @@ public class FaqService {
             throw new CategoryAlreadyExistException("Категория " + category.getName() + " уже существует");
     }
 
+    public List<QuestionEntity> getQuestions() {
+        return (List<QuestionEntity>) questionRepository.findAll();
+    }
 }
