@@ -23,24 +23,26 @@ public class FaqController {
     private JwtService jwtService;
 
     /**
-     * @api {post} /faq/categories Добавление новой категории вопросов
+     * @api {post} /faq Добавление нового вопроса
      * @apiGroup FAQ
-     * @apiName addCategory
+     * @apiName addQuestion
      * @apiHeader {String} accessToken Аксес токен
-     * @apiBody {Object} category Категория вопросов
-     * @apiSuccess {boolean} result True, если категория успешно добавлена
+     * @apiBody {Object} question Вопрос
+     * @apiSuccess {boolean} result True, если вопрос успешно добавлен
+     * @apiError (Error 400) QuestionAlreadyExistException Данный вопрос уже существует
      * @apiError (Error 400) CategoryAlreadyExistException Данная категория уже существует
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
     @PostMapping()
-    public ResponseEntity addQuestion(@RequestHeader("Authorization") String accessToken, @RequestBody QuestionEntity
-            question) {
+    public ResponseEntity addQuestion(@RequestHeader("Authorization") String accessToken,
+                                      @RequestBody QuestionEntity
+                                              question) {
         try {
             if (jwtService.checkAccessToken(accessToken)) {
                 try {
                     return ResponseEntity.ok(faqService.addQuestion(question));
-                } catch (QuestionAlreadyExistException e) {
+                } catch (QuestionAlreadyExistException | CategoryAlreadyExistException e) {
                     return ResponseEntity.badRequest().body(e.getMessage());
                 } catch (Exception e) {
                     return ResponseEntity.badRequest().body("Произошла ошибка во время добавления вопрос");
@@ -53,7 +55,7 @@ public class FaqController {
     }
 
     /**
-     * @api {get} /faq Получение списка пользователей
+     * @api {get} /faq Получение списка вопросов
      * @apiName getQuestions
      * @apiGroup FAQ
      * @apiHeader {String} accessToken Аксес токен
@@ -62,7 +64,7 @@ public class FaqController {
      **/
 
     @GetMapping
-    public ResponseEntity getQuestions(@RequestHeader ("Authorization") String accessToken) {
+    public ResponseEntity getQuestions(@RequestHeader("Authorization") String accessToken) {
         try {
             if (jwtService.checkAccessToken(accessToken)) {
                 try {
@@ -113,7 +115,8 @@ public class FaqController {
      **/
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteQuestion(@RequestHeader("Authorization") String accessToken, @PathVariable Long id) {
+    public ResponseEntity deleteQuestion(@RequestHeader("Authorization") String accessToken,
+                                         @PathVariable Long id) {
         try {
             if (jwtService.checkAccessToken(accessToken)) {
                 try {
