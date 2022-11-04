@@ -47,22 +47,6 @@ public class JwtService {
         return new JwtResponse(accessToken, refreshToken, user.getId(), user.getUsername());
     }
 
-
-//    public JwtResponse getAccessToken(@NonNull String refreshToken) {
-//        if (jwtProvider.validateRefreshToken(refreshToken)) {
-//            final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
-//            final String login = claims.getSubject();
-//            final String saveRefreshToken = refreshStorage.get(login);
-//            if (saveRefreshToken != null && saveRefreshToken.equals(refreshToken)) {
-//                final User user = userService.getByLogin(login)
-//                        .orElseThrow(() -> new AuthException("Пользователь не найден"));
-//                final String accessToken = jwtProvider.generateAccessToken(user);
-//                return new JwtResponse(accessToken, null);
-//            }
-//        }
-//        return new JwtResponse(null, null);
-//    }
-
     public JwtResponse refresh(@NonNull String refreshToken) throws UserNotFoundException, RefreshTokenIsNotValidException {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);

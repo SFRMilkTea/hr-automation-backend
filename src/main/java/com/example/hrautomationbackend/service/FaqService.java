@@ -8,6 +8,7 @@ import com.example.hrautomationbackend.repository.CategoryRepository;
 import com.example.hrautomationbackend.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
 
 @Service
 public class FaqService {
@@ -17,8 +18,11 @@ public class FaqService {
     @Autowired
     private QuestionRepository questionRepository;
 
-    public boolean addQuestion(QuestionEntity question) throws QuestionAlreadyExistException {
+    public boolean addQuestion(QuestionEntity question) throws QuestionAlreadyExistException, CategoryAlreadyExistException {
         if (questionRepository.findByTitle(question.getTitle()) == null) {
+            ArrayList categories = (ArrayList) categoryRepository.findAll();
+            if (!categories.contains(question.getCategory()))
+                addCategory(question.getCategory());
             questionRepository.save(question);
             return true;
         } else
