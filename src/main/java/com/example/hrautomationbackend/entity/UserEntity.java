@@ -1,8 +1,7 @@
 package com.example.hrautomationbackend.entity;
 
-import org.hibernate.annotations.ColumnDefault;
-
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class UserEntity {
@@ -17,6 +16,7 @@ public class UserEntity {
     private String project;
     private int authCode;
     private boolean isAdmin;
+    private LocalDateTime codeExpTime;
 
     public UserEntity() {
     }
@@ -83,5 +83,13 @@ public class UserEntity {
 
     public void setAdmin(boolean admin) {
         isAdmin = admin;
+    }
+
+    public LocalDateTime getCodeExpTime() {
+        return codeExpTime;
+    }
+
+    public void setCodeExpTime(LocalDateTime codeExpTime) {
+        this.codeExpTime = codeExpTime;
     }
 }
