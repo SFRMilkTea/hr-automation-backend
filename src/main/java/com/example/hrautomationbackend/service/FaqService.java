@@ -55,4 +55,12 @@ public class FaqService {
         }
         return true;
     }
+
+    public boolean updateQuestion(QuestionEntity question) throws QuestionNotFoundException {
+        if (questionRepository.findById(question.getId()).isPresent()) {
+            questionRepository.save(question);
+            return true;
+        } else
+            throw new QuestionNotFoundException("Такой вопрос не найден");
+    }
 }

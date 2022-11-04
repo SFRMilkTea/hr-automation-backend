@@ -130,4 +130,31 @@ public class FaqController {
         return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
+    /**
+     * @api {put} /faq Обновление вопроса
+     * @apiName updateQuestion
+     * @apiGroup FAQ
+     * @apiBody {Object} question Новые данные вопроса (+ старые, если не изменялись!)
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {Boolean} result True, если вопрос успешно обновлен
+     **/
+    @PutMapping
+    public ResponseEntity updateQuestion(@RequestHeader("Authorization") String accessToken,
+                                         @RequestBody QuestionEntity question) {
+        try {
+            if (jwtService.checkAccessToken(accessToken)) {
+                try {
+                    return ResponseEntity.ok(faqService.updateQuestion(question));
+                } catch (QuestionNotFoundException e) {
+                    return ResponseEntity.badRequest().body(e.getMessage());
+                } catch (Exception e) {
+                    return ResponseEntity.badRequest().body("Произошла ошибка во время апдейта вопроса");
+                }
+            }
+        } catch (AccessTokenIsNotValidException e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+        return ResponseEntity.badRequest().body("Произошла ошибка");
+    }
+
 }
