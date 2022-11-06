@@ -6,6 +6,8 @@ import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.model.User;
 import com.example.hrautomationbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -26,8 +28,8 @@ public class UserService {
         return User.toModel(userRepository.findById(id).get());
     }
 
-    public List<User> getUsers() {
-        Iterable<UserEntity> users = userRepository.findAll();
+    public List<User> getUsers(Pageable pageable) {
+        Page<UserEntity> users = userRepository.findAll(pageable);
         ArrayList<User> usersModel = new ArrayList<>();
         for (UserEntity user : users) {
             usersModel.add(User.toModel(user));

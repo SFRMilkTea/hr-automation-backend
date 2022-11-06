@@ -8,6 +8,9 @@ import com.example.hrautomationbackend.jwt.JwtProvider;
 import com.example.hrautomationbackend.service.JwtService;
 import com.example.hrautomationbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,15 +60,22 @@ public class UserController {
      * @apiName getUsers
      * @apiGroup USERS
      * @apiHeader {String} accessToken Аксес токен
+     * @apiParam {Number} pageNumber Номер страницы
+     * @apiParam {Number} size Количество элементов на странице
+     * @apiParam {String} sortBy Фильтр сортировки
      * @apiSuccess {List[Object]} users Список всех пользователей
      **/
 
-    @GetMapping
-    public ResponseEntity getUsers(@RequestHeader ("Authorization") String accessToken) {
+    @GetMapping()
+    public ResponseEntity getUsers(@RequestHeader("Authorization") String accessToken,
+                                   @RequestParam int pageNumber,
+                                   @RequestParam int size,
+                                   @RequestParam String sortBy) {
         try {
             if (jwtService.checkAccessToken(accessToken)) {
                 try {
-                    return ResponseEntity.ok(userService.getUsers());
+                    Pageable pageable = PageRequest.of(pageNumber,size, Sort.by(sortBy));
+                    return ResponseEntity.ok(userService.getUsers(pageable));
                 } catch (Exception e) {
                     return ResponseEntity.badRequest().body("Произошла ошибка");
                 }
