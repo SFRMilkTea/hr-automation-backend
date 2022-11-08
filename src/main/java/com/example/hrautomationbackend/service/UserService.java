@@ -4,6 +4,7 @@ import com.example.hrautomationbackend.entity.UserEntity;
 import com.example.hrautomationbackend.exception.UserAlreadyExistException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.model.User;
+import com.example.hrautomationbackend.model.UserForAll;
 import com.example.hrautomationbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,7 +33,7 @@ public class UserService {
         Page<UserEntity> users = userRepository.findAll(pageable);
         ArrayList<User> usersModel = new ArrayList<>();
         for (UserEntity user : users) {
-            usersModel.add(User.toModel(user));
+            usersModel.add(UserForAll.toModel(user));
         }
         return usersModel;
 
