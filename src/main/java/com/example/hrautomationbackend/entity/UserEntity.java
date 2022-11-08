@@ -2,6 +2,7 @@ package com.example.hrautomationbackend.entity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 public class UserEntity {
@@ -17,6 +18,7 @@ public class UserEntity {
     private int authCode;
     private boolean isAdmin;
     private LocalDateTime codeExpTime;
+    private Date birthDate;
 
     public UserEntity() {
     }
@@ -91,5 +93,13 @@ public class UserEntity {
 
     public void setCodeExpTime(LocalDateTime codeExpTime) {
         this.codeExpTime = codeExpTime;
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 }

@@ -2,15 +2,18 @@ package com.example.hrautomationbackend.model;
 
 import com.example.hrautomationbackend.entity.UserEntity;
 
+import java.util.Date;
+
 public class User {
 
     private Long id;
-    private String username;
     private String email;
-    private String project;
-    private String post;
+    private String username;
     private String about;
+    private String post;
+    private String project;
     private boolean isAdmin;
+    private Date birthDate;
 
     public static User toModel(UserEntity entity) {
         User model = new User();
@@ -21,6 +24,7 @@ public class User {
         model.setPost(entity.getPost());
         model.setProject(entity.getProject());
         model.setAdmin(entity.isAdmin());
+        model.setBirthDate(entity.getBirthDate());
         return model;
     }
 
@@ -81,5 +85,13 @@ public class User {
 
     public void setAdmin(boolean admin) {
         isAdmin = admin;
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 }
