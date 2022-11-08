@@ -29,9 +29,9 @@ public class UserService {
         return User.toModel(userRepository.findById(id).get());
     }
 
-    public List<User> getUsers(Pageable pageable) {
+    public List<UserForAll> getUsers(Pageable pageable) {
         Page<UserEntity> users = userRepository.findAll(pageable);
-        ArrayList<User> usersModel = new ArrayList<>();
+        ArrayList<UserForAll> usersModel = new ArrayList<>();
         for (UserEntity user : users) {
             usersModel.add(UserForAll.toModel(user));
         }

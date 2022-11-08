@@ -7,8 +7,8 @@ public class UserForAll {
     private String username;
     private String post;
 
-    public static User toModel(UserEntity entity) {
-        User model = new User();
+    public static UserForAll toModel(UserEntity entity) {
+        UserForAll model = new UserForAll();
         model.setId(entity.getId());
         model.setUsername(entity.getUsername());
         model.setPost(entity.getPost());
