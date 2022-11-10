@@ -37,10 +37,12 @@ public class UserController {
      * @apiParam {Number} id Уникальный идентефикатор пользователя
      * @apiHeader {String} accessToken Аксес токен
      * @apiSuccess {Object} user Пользователь
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
     @GetMapping("/{id}")
-    public ResponseEntity getOneUser(@PathVariable Long id, @RequestHeader ("Authorization") String accessToken) {
+    public ResponseEntity getOneUser(@PathVariable Long id,
+                                     @RequestHeader("Authorization") String accessToken) {
         try {
             if (jwtService.checkAccessToken(accessToken)) {
                 try {
@@ -56,7 +58,7 @@ public class UserController {
     }
 
     /**
-     * @api {get} /users Получение списка пользователей
+     * @api {get} /users?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение списка пользователей
      * @apiName getUsers
      * @apiGroup USERS
      * @apiHeader {String} accessToken Аксес токен
@@ -64,6 +66,7 @@ public class UserController {
      * @apiParam {Number} size Количество элементов на странице
      * @apiParam {String} sortBy Фильтр сортировки
      * @apiSuccess {List[Object]} users Список всех пользователей
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
     @GetMapping()
@@ -74,7 +77,7 @@ public class UserController {
         try {
             if (jwtService.checkAccessToken(accessToken)) {
                 try {
-                    Pageable pageable = PageRequest.of(pageNumber,size, Sort.by(sortBy));
+                    Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
                     return ResponseEntity.ok(userService.getUsers(pageable));
                 } catch (Exception e) {
                     return ResponseEntity.badRequest().body("Произошла ошибка");
@@ -93,10 +96,13 @@ public class UserController {
      * @apiParam {Number} id Уникальный идентефикатор пользователя
      * @apiHeader {String} accessToken Аксес токен
      * @apiSuccess {Boolean} result True, если пользователь успешно удален
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) UserNotFoundException Пользователь с таким id не существует
      **/
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteUser(@RequestHeader("Authorization") String accessToken, @PathVariable Long id) {
+    public ResponseEntity deleteUser(@RequestHeader("Authorization") String accessToken,
+                                     @PathVariable Long id) {
         try {
             if (jwtService.checkAccessToken(accessToken)) {
                 try {
@@ -119,13 +125,16 @@ public class UserController {
      * @apiGroup USERS
      * @apiBody {String} email Корпоративная почта пользователя
      * @apiBody {String} username Username пользователя
-     * @apiBody {Boolean} [isAdmin=false]  Роль пользователя
+     * @apiBody {Boolean} [admin=false]  Роль пользователя
      * @apiHeader {String} accessToken Аксес токен
      * @apiSuccess {Boolean} result True, если пользователь успешно добавлен
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) UserAlreadyExistException Пользователь уже существует
      **/
 
     @PostMapping
-    public ResponseEntity addUser(@RequestHeader("Authorization") String accessToken, @RequestBody UserEntity user) {
+    public ResponseEntity addUser(@RequestHeader("Authorization") String accessToken,
+                                  @RequestBody UserEntity user) {
         try {
             if (jwtService.checkAccessToken(accessToken)) {
                 try {
@@ -149,9 +158,13 @@ public class UserController {
      * @apiBody {Object} user Новые данные пользователя (+ старые, если не изменялись!)
      * @apiHeader {String} accessToken Аксес токен
      * @apiSuccess {Boolean} result True, если пользователь успешно обновлен
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) UserNotFoundException Пользователь не существует
      **/
+
     @PutMapping
-    public ResponseEntity updateUser(@RequestHeader("Authorization") String accessToken, @RequestBody UserEntity user) {
+    public ResponseEntity updateUser(@RequestHeader("Authorization") String accessToken,
+                                     @RequestBody UserEntity user) {
         try {
             if (jwtService.checkAccessToken(accessToken)) {
                 try {

@@ -36,8 +36,7 @@ public class FaqController {
 
     @PostMapping()
     public ResponseEntity addQuestion(@RequestHeader("Authorization") String accessToken,
-                                      @RequestBody QuestionEntity
-                                              question) {
+                                      @RequestBody QuestionEntity question) {
         try {
             if (jwtService.checkAccessToken(accessToken)) {
                 try {
