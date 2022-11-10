@@ -152,4 +152,35 @@ public class ProductController {
         }
         return ResponseEntity.badRequest().body("Произошла ошибка");
     }
+
+    /**
+     * @api {get} /products/order/[id] Заказать продукт
+     * @apiName orderProduct
+     * @apiGroup PRODUCTS
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiParam {Number} id Уникальный идентификатор продукта
+     * @apiSuccess {Boolean} result True, если продукт успешно заказан
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) ProductNotFoundException Продукт не существует
+     * @apiError (Error 400) ProductAlreadyOrderedException Продукт уже заказан
+     **/
+
+    @GetMapping("/order/{id}")
+    public ResponseEntity orderProduct(@RequestHeader("Authorization") String accessToken,
+                                       @PathVariable Long id) {
+        try {
+            if (jwtService.checkAccessToken(accessToken)) {
+                try {
+                    return ResponseEntity.ok(productService.orderProduct(id));
+                } catch (ProductAlreadyOrderedException | ProductNotFoundException e) {
+                    return ResponseEntity.badRequest().body(e.getMessage());
+                } catch (Exception e) {
+                    return ResponseEntity.badRequest().body("Произошла ошибка");
+                }
+            }
+        } catch (AccessTokenIsNotValidException e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+        return ResponseEntity.badRequest().body("Произошла ошибка");
+    }
 }
