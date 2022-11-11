@@ -5,6 +5,9 @@ import com.example.hrautomationbackend.exception.*;
 import com.example.hrautomationbackend.service.FaqService;
 import com.example.hrautomationbackend.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,20 +60,27 @@ public class FaqController {
     }
 
     /**
-     * @api {get} /faq Получение списка вопросов
+     * @api {get} /faq?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение списка вопросов
      * @apiName getQuestions
      * @apiGroup FAQ
      * @apiHeader {String} accessToken Аксес токен
+     * @apiParam {Number} pageNumber Номер страницы
+     * @apiParam {Number} size Количество элементов на странице
+     * @apiParam {String} sortBy Фильтр сортировки
      * @apiSuccess {List[Object]} questions Список всех вопросов
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
     @GetMapping
-    public ResponseEntity getQuestions(@RequestHeader("Authorization") String accessToken) {
+    public ResponseEntity getQuestions(@RequestHeader("Authorization") String accessToken,
+                                       @RequestParam int pageNumber,
+                                       @RequestParam int size,
+                                       @RequestParam String sortBy) {
         try {
             if (jwtService.checkAccessToken(accessToken)) {
                 try {
-                    return ResponseEntity.ok(faqService.getQuestions());
+                    Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
+                    return ResponseEntity.ok(faqService.getQuestions(pageable));
                 } catch (Exception e) {
                     return ResponseEntity.badRequest().body("Произошла ошибка");
                 }
