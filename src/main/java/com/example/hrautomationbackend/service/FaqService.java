@@ -55,15 +55,6 @@ public class FaqService {
         return (List<CategoryEntity>) categoryRepository.findAll();
     }
 
-    public List<Long> getCategoriesIds() {
-        List<CategoryEntity> categories = getCategories();
-        List<Long> ids = null;
-        for (CategoryEntity category : categories) {
-            ids.add(category.getId());
-        }
-        return ids;
-    }
-
     public Boolean deleteQuestion(Long id) throws QuestionNotFoundException {
         try {
             questionRepository.deleteById(id);
@@ -73,10 +64,16 @@ public class FaqService {
         return true;
     }
 
-    public boolean updateQuestion(QuestionEntity question) throws QuestionNotFoundException {
+    public boolean updateQuestion(QuestionEntity question, Long categoryId) throws QuestionNotFoundException,
+            CategoryNotFoundException {
         if (questionRepository.findById(question.getId()).isPresent()) {
-            questionRepository.save(question);
-            return true;
+            Optional<CategoryEntity> categoryOptional = categoryRepository.findById(categoryId);
+            if (categoryOptional.isPresent()) {
+                question.setCategory(categoryOptional.get());
+                questionRepository.save(question);
+                return true;
+            } else
+                throw new CategoryNotFoundException("Такая категория не найдена");
         } else
             throw new QuestionNotFoundException("Такой вопрос не найден");
     }

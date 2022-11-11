@@ -146,20 +146,25 @@ public class FaqController {
     }
 
     /**
-     * @api {put} /faq Обновление вопроса
+     * @api {put} /faq/category/[categoryId] Обновление вопроса
      * @apiName updateQuestion
      * @apiGroup FAQ
-     * @apiBody {Object} question Новые данные вопроса (+ старые, если не изменялись!)
+     * @apiParam {Long} categoryId Айди категории вопроса
+     * @apiBody {Long} id Айди вопроса
+     * @apiBody {String} title Заголовок вопроса
+     * @apiBody {String} description Описание вопроса
      * @apiHeader {String} accessToken Аксес токен
      * @apiSuccess {Boolean} result True, если вопрос успешно обновлен
      **/
-    @PutMapping
+
+    @PutMapping("/category/{categoryId}")
     public ResponseEntity updateQuestion(@RequestHeader("Authorization") String accessToken,
+                                         @PathVariable(value = "categoryId") Long categoryId,
                                          @RequestBody QuestionEntity question) {
         try {
             if (jwtService.checkAccessToken(accessToken)) {
                 try {
-                    return ResponseEntity.ok(faqService.updateQuestion(question));
+                    return ResponseEntity.ok(faqService.updateQuestion(question, categoryId));
                 } catch (QuestionNotFoundException e) {
                     return ResponseEntity.badRequest().body(e.getMessage());
                 } catch (Exception e) {
