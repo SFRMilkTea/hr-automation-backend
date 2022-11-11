@@ -50,7 +50,7 @@ public class FaqController {
                 } catch (QuestionAlreadyExistException | CategoryNotFoundException e) {
                     return ResponseEntity.badRequest().body(e.getMessage());
                 } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка во время добавления вопрос");
+                    return ResponseEntity.badRequest().body("Произошла ошибка во время добавления вопроса");
                 }
             }
         } catch (AccessTokenIsNotValidException e) {
@@ -124,6 +124,7 @@ public class FaqController {
      * @apiHeader {String} accessToken Аксес токен
      * @apiSuccess {Boolean} result True, если вопрос успешно удален
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) QuestionNotFoundException Вопрос не найден
      **/
 
     @DeleteMapping("/{id}")
@@ -155,6 +156,9 @@ public class FaqController {
      * @apiBody {String} description Описание вопроса
      * @apiHeader {String} accessToken Аксес токен
      * @apiSuccess {Boolean} result True, если вопрос успешно обновлен
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) QuestionNotFoundException Вопрос не найден
+     * @apiError (Error 400) CategoryNotFoundException Категория не найдена
      **/
 
     @PutMapping("/category/{categoryId}")
@@ -165,7 +169,7 @@ public class FaqController {
             if (jwtService.checkAccessToken(accessToken)) {
                 try {
                     return ResponseEntity.ok(faqService.updateQuestion(question, categoryId));
-                } catch (QuestionNotFoundException e) {
+                } catch (QuestionNotFoundException | CategoryNotFoundException e) {
                     return ResponseEntity.badRequest().body(e.getMessage());
                 } catch (Exception e) {
                     return ResponseEntity.badRequest().body("Произошла ошибка во время апдейта вопроса");

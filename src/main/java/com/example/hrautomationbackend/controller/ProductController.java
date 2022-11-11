@@ -29,7 +29,7 @@ public class ProductController {
     private JwtService jwtService;
 
     /**
-     * @api {get} /products Получение списка продуктов
+     * @api {get} /products?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение списка продуктов
      * @apiName getProducts
      * @apiGroup PRODUCTS
      * @apiHeader {String} accessToken Аксес токен
@@ -96,7 +96,7 @@ public class ProductController {
      * @apiGroup PRODUCTS
      * @apiBody {String} name Название продукта
      * @apiBody {String} code Артикул продукта
-     * @apiBody {String} code Артикул продукта
+     * @apiBody {String} pictureUrl Фото продукта
      * @apiBody {Boolean} [ordered=false] Заказан ли продукт
      * @apiHeader {String} accessToken Аксес токен
      * @apiSuccess {Boolean} result True, если продукт успешно добавлен
