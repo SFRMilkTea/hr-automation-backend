@@ -1,6 +1,7 @@
 package com.example.hrautomationbackend.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -11,8 +12,9 @@ public class CategoryEntity {
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "category")
-    private List<QuestionEntity> questions;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "category_id")
+    private List<QuestionEntity> questions =new ArrayList<>();
 
     public CategoryEntity() {
     }

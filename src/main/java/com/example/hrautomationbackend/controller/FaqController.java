@@ -23,25 +23,28 @@ public class FaqController {
     private JwtService jwtService;
 
     /**
-     * @api {post} /faq Добавление нового вопроса
+     * @api {post} /faq/category/[categoryId] Добавление нового вопроса
      * @apiGroup FAQ
      * @apiName addQuestion
      * @apiHeader {String} accessToken Аксес токен
-     * @apiBody {Object} question Вопрос
+     * @apiParam {Long} categoryId Айди категории, к которой относится добавляемый вопрос
+     * @apiBody {String} title Заголовок вопроса
+     * @apiBody {String} description Описание вопроса
      * @apiSuccess {boolean} result True, если вопрос успешно добавлен
      * @apiError (Error 400) QuestionAlreadyExistException Данный вопрос уже существует
-     * @apiError (Error 400) CategoryAlreadyExistException Данная категория уже существует
+     * @apiError (Error 400) CategoryNotFoundException Данная категория не существует
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
-    @PostMapping()
+    @PostMapping("/category/{categoryId}")
     public ResponseEntity addQuestion(@RequestHeader("Authorization") String accessToken,
+                                      @PathVariable(value = "categoryId") Long categoryId,
                                       @RequestBody QuestionEntity question) {
         try {
             if (jwtService.checkAccessToken(accessToken)) {
                 try {
-                    return ResponseEntity.ok(faqService.addQuestion(question));
-                } catch (QuestionAlreadyExistException | CategoryAlreadyExistException e) {
+                    return ResponseEntity.ok(faqService.addQuestion(question, categoryId));
+                } catch (QuestionAlreadyExistException | CategoryNotFoundException e) {
                     return ResponseEntity.badRequest().body(e.getMessage());
                 } catch (Exception e) {
                     return ResponseEntity.badRequest().body("Произошла ошибка во время добавления вопрос");
