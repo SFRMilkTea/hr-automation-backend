@@ -181,4 +181,33 @@ public class FaqController {
         return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
+    /**
+     * @api {get} /faq//categories/[categoryId] Вывод всех вопросов, принадлежащих категории
+     * @apiName getQuestionsByCategory
+     * @apiGroup FAQ
+     * @apiParam {Long} categoryId Айди категории вопроса
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {List[Questions]} questions
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) CategoryNotFoundException Категория не найдена
+     **/
+
+    @GetMapping("/categories/{categoryId}")
+    public ResponseEntity getQuestionsByCategory(@RequestHeader("Authorization") String accessToken,
+                                                 @PathVariable(value = "categoryId") Long categoryId) {
+        try {
+            if (jwtService.checkAccessToken(accessToken)) {
+                try {
+                    return ResponseEntity.ok(faqService.getQuestionsByCategory(categoryId));
+                } catch (CategoryNotFoundException e) {
+                    return ResponseEntity.badRequest().body(e.getMessage());
+                } catch (Exception e) {
+                    return ResponseEntity.badRequest().body("Произошла ошибка");
+                }
+            }
+        } catch (AccessTokenIsNotValidException e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+        return ResponseEntity.badRequest().body("Произошла ошибка");
+    }
 }

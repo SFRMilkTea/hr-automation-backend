@@ -77,4 +77,12 @@ public class FaqService {
         } else
             throw new QuestionNotFoundException("Такой вопрос не найден");
     }
+
+    public List<QuestionEntity> getQuestionsByCategory(Long categoryId) throws CategoryNotFoundException {
+        Optional<CategoryEntity> categoryOptional = categoryRepository.findById(categoryId);
+        if (categoryOptional.isPresent()) {
+            return categoryOptional.get().getQuestions();
+        }
+        throw new CategoryNotFoundException("Такая категория не найдена");
+    }
 }
