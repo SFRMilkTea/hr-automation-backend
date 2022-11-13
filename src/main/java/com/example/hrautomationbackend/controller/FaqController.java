@@ -1,5 +1,6 @@
 package com.example.hrautomationbackend.controller;
 
+import com.example.hrautomationbackend.entity.CategoryEntity;
 import com.example.hrautomationbackend.entity.QuestionEntity;
 import com.example.hrautomationbackend.exception.*;
 import com.example.hrautomationbackend.service.FaqService;
@@ -58,6 +59,37 @@ public class FaqController {
         }
         return ResponseEntity.badRequest().body("Произошла ошибка");
     }
+
+    /**
+     * @api {post} /faq/category Добавление новой категории
+     * @apiGroup FAQ
+     * @apiName addCategory
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiBody {String} name Название категории
+     * @apiSuccess {boolean} result True, если категория успешно добавлена
+     * @apiError (Error 400) CategoryAlreadyExistException Данная категория уже существует
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     **/
+
+    @PostMapping("/category")
+    public ResponseEntity addCategory(@RequestHeader("Authorization") String accessToken,
+                                      @RequestBody CategoryEntity category) {
+        try {
+            if (jwtService.checkAccessToken(accessToken)) {
+                try {
+                    return ResponseEntity.ok(faqService.addCategory(category));
+                } catch (CategoryAlreadyExistException e) {
+                    return ResponseEntity.badRequest().body(e.getMessage());
+                } catch (Exception e) {
+                    return ResponseEntity.badRequest().body("Произошла ошибка во время добавления вопроса");
+                }
+            }
+        } catch (AccessTokenIsNotValidException e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+        return ResponseEntity.badRequest().body("Произошла ошибка");
+    }
+
 
     /**
      * @api {get} /faq?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение списка вопросов
