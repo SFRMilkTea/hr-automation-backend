@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.NoSuchElementException;
 
 @Service
@@ -31,6 +32,7 @@ public class ProductService {
         return true;
     }
 
+    @Transactional
     public boolean addProduct(ProductEntity product) throws ProductAlreadyExistException {
         if (productRepository.findByCode(product.getCode()) == null) {
             productRepository.save(product);
@@ -48,15 +50,15 @@ public class ProductService {
     }
 
     public boolean orderProduct(Long id) throws ProductNotFoundException, ProductAlreadyOrderedException {
-        ProductEntity product = productRepository.findById(id).get();
-        if (product != null) {
-            if (!product.isOrdered()) {
-                product.setOrdered(true);
-                productRepository.save(product);
-                return true;
-            } else
-                throw new ProductAlreadyOrderedException("Продукт с id " + product.getId() + " уже заказан");
-        } else
-            throw new ProductNotFoundException("Продукт с id " + product.getId() + " не существует");
+        ProductEntity product = productRepository
+                .findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Продукт с id " + id + " не существует"));
+        if (!product.isOrdered()) {
+            product.setOrdered(true);
+            productRepository.save(product);
+            return true;
+        } else {
+            throw new ProductAlreadyOrderedException("Продукт с id " + product.getId() + " уже заказан");
+        }
     }
 }

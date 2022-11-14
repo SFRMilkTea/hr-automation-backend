@@ -200,7 +200,8 @@ public class FaqController {
         try {
             if (jwtService.checkAccessToken(accessToken)) {
                 try {
-                    return ResponseEntity.ok(faqService.updateQuestion(question, categoryId));
+                    faqService.updateQuestion(question, categoryId);
+                    return ResponseEntity.ok().build();
                 } catch (QuestionNotFoundException | CategoryNotFoundException e) {
                     return ResponseEntity.badRequest().body(e.getMessage());
                 } catch (Exception e) {

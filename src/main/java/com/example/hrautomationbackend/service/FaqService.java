@@ -20,10 +20,13 @@ import java.util.Optional;
 @Service
 public class FaqService {
 
-    @Autowired
     private CategoryRepository categoryRepository;
-    @Autowired
     private QuestionRepository questionRepository;
+
+    public FaqService(CategoryRepository categoryRepository, QuestionRepository questionRepository) {
+        this.categoryRepository = categoryRepository;
+        this.questionRepository = questionRepository;
+    }
 
     public boolean addQuestion(QuestionEntity question, Long categoryId)
             throws QuestionAlreadyExistException, CategoryNotFoundException {
@@ -59,19 +62,18 @@ public class FaqService {
         try {
             questionRepository.deleteById(id);
         } catch (NoSuchElementException e) {
-            throw new QuestionNotFoundException("Такой вопрос не найден");
+            throw new QuestionNotFoundException("Такой вопрос не найден", e);
         }
         return true;
     }
 
-    public boolean updateQuestion(QuestionEntity question, Long categoryId) throws QuestionNotFoundException,
+    public void updateQuestion(QuestionEntity question, Long categoryId) throws QuestionNotFoundException,
             CategoryNotFoundException {
         if (questionRepository.findById(question.getId()).isPresent()) {
             Optional<CategoryEntity> categoryOptional = categoryRepository.findById(categoryId);
             if (categoryOptional.isPresent()) {
                 question.setCategory(categoryOptional.get());
                 questionRepository.save(question);
-                return true;
             } else
                 throw new CategoryNotFoundException("Такая категория не найдена");
         } else
