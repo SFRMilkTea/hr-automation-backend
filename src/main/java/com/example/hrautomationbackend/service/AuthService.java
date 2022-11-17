@@ -1,8 +1,6 @@
 package com.example.hrautomationbackend.service;
 
-import com.example.hrautomationbackend.entity.RoleEntity;
 import com.example.hrautomationbackend.entity.UserEntity;
-import com.example.hrautomationbackend.exception.UserAlreadyExistException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.exception.WrongAuthorizationCodeException;
 import com.example.hrautomationbackend.jwt.JwtProvider;
@@ -11,8 +9,7 @@ import com.example.hrautomationbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDateTime;
 
 @Service
 public class AuthService {
@@ -24,11 +21,9 @@ public class AuthService {
     @Autowired
     private JwtService jwtService;
     @Autowired
-    private CodeGenerationService codeService;
+    private CodeService codeService;
     @Autowired
     private JwtProvider jwtProvider;
-
-    private final Map<String, String> refreshStorage = new HashMap<>();
 
     public boolean sendCode(String email) throws UserNotFoundException {
         UserEntity user = userRepository.findByEmail(email);
@@ -38,6 +33,8 @@ public class AuthService {
             int authCode = codeService.generateCode();
             emailService.sendEmail(user, authCode);
             user.setAuthCode(authCode);
+            final LocalDateTime expTime = LocalDateTime.now().plusMinutes(5);
+            user.setCodeExpTime(expTime);
             userRepository.save(user);
             return true;
         }

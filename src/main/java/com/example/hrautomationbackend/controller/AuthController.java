@@ -1,7 +1,5 @@
 package com.example.hrautomationbackend.controller;
 
-import com.example.hrautomationbackend.entity.UserEntity;
-import com.example.hrautomationbackend.exception.UserAlreadyExistException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.exception.WrongAuthorizationCodeException;
 import com.example.hrautomationbackend.jwt.JwtResponse;
@@ -14,14 +12,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/authorization")
 public class AuthController {
 
+    /**
+     * @apiDefine AUTHORIZATION
+     * АВТОРИЗАЦИЯ
+     */
+
     @Autowired
     private AuthService authService;
 
-    /** @api {get} /authorization?email=[email@example.ru] Авторизация
-     * @apiGroup АВТОРИЗАЦИЯ
+    /**
+     * @api {get} /authorization?email=[email@example.ru] Авторизация
      * @apiName authorization
+     * @apiGroup AUTHORIZATION
      * @apiParam {String} email Корпоративная почта пользователя
-     *
+     * @apiSuccess {boolean} result True
+     * @apiError (Error 400) UserNotFoundException Пользователь с такой почтой не зарегистрирован
      **/
 
     @GetMapping
@@ -35,12 +40,13 @@ public class AuthController {
         }
     }
 
-    /** @api {get} /authorization/confirm?email=[email@example.ru]&code=[1234] Подтверждение авторизации
-     * @apiGroup АВТОРИЗАЦИЯ
+    /**
+     * @api {get} /authorization/confirm?email=[email@example.ru]&code=[1234] Подтверждение авторизации
      * @apiName authorizationConfirm
+     * @apiGroup AUTHORIZATION
      * @apiParam {String} email Корпоративная почта пользователя
      * @apiParam {Number} code Четырехзначный код, отправленный на почту
-     *
+     * @apiSuccess {Object} token Объект, содержащий три строки: type ("Bearer"), accessToken, refreshToken
      **/
 
     @GetMapping(path = "/confirm")

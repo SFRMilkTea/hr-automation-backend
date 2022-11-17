@@ -67,6 +67,7 @@ public class JwtProvider {
     }
 
     private boolean validateToken(@NonNull String token, @NonNull Key secret) {
+        token = deleteBearer(token);
         try {
             Jwts.parserBuilder()
                     .setSigningKey(secret)
@@ -96,11 +97,19 @@ public class JwtProvider {
     }
 
     private Claims getClaims(@NonNull String token, @NonNull Key secret) {
+        token = deleteBearer(token);
         return Jwts.parserBuilder()
                 .setSigningKey(secret)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    private String deleteBearer(String token) {
+        String bearer = "Bearer ";
+        if (token.contains(bearer))
+            token = token.replace(bearer, "");
+        return token;
     }
 
 }

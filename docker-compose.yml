@@ -1,0 +1,29 @@
+version: '3.0'
+
+services:
+  main:
+    image: 'hr-automation:latest'
+    container_name: main
+    build:
+      context: .
+    volumes:
+      - .:/app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/hr_automation
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=12345
+    restart: always
+
+  postgres:
+    container_name: postgres
+    image: postgres:12
+    environment:
+      PG_DATA: /var/lib/postgresql/data
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_USER: postgres
+      POSTGRES_DB: hr_automation
+    restart: always

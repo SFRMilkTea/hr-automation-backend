@@ -16,17 +16,18 @@ public class JwtController {
     /** @api {get} /refresh Запрос на обновление токена
      * @apiGroup JWT
      * @apiName refresh
-     * @apiHeader {String} refreshToken Рефреш токен
+     * @apiBody {String} refreshToken Рефреш токен
+     * @apiSuccess {Object} token Объект, содержащий три строки: type ("Bearer"), accessToken, refreshToken
      **/
 
-    @GetMapping
-    public ResponseEntity refresh(@RequestHeader String refreshToken) {
+    @PostMapping
+    public ResponseEntity refresh(@RequestBody String refreshToken) {
         try {
             return ResponseEntity.ok(jwtService.refresh(refreshToken));
         } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.badRequest().body(e);
         }
     }
 }

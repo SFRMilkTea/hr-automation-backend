@@ -1,12 +1,14 @@
 package com.example.hrautomationbackend.service;
 
-import com.example.hrautomationbackend.entity.RoleEntity;
 import com.example.hrautomationbackend.entity.UserEntity;
 import com.example.hrautomationbackend.exception.UserAlreadyExistException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.model.User;
+import com.example.hrautomationbackend.model.UserForAll;
 import com.example.hrautomationbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -17,7 +19,6 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    private final RoleEntity defaultRole = new RoleEntity();
 
     public User getUser(Long id) throws UserNotFoundException {
         try {
@@ -28,11 +29,11 @@ public class UserService {
         return User.toModel(userRepository.findById(id).get());
     }
 
-    public List<User> getUsers() {
-        Iterable<UserEntity> users = userRepository.findAll();
-        ArrayList<User> usersModel = new ArrayList<>();
+    public List<UserForAll> getUsers(Pageable pageable) {
+        Page<UserEntity> users = userRepository.findAll(pageable);
+        ArrayList<UserForAll> usersModel = new ArrayList<>();
         for (UserEntity user : users) {
-            usersModel.add(User.toModel(user));
+            usersModel.add(UserForAll.toModel(user));
         }
         return usersModel;
 
@@ -47,16 +48,21 @@ public class UserService {
         return true;
     }
 
-    public void registration(UserEntity user) throws UserAlreadyExistException {
+    public boolean registration(UserEntity user) throws UserAlreadyExistException {
         if (userRepository.findByEmail(user.getEmail()) == null) {
-            if(user.getRole() == null) {
-                defaultRole.setId(2L);
-                user.setRole(defaultRole);
-            }
+            user.setAuthCode(-1);
             userRepository.save(user);
+            return true;
         } else
             throw new UserAlreadyExistException("Пользователь с email " + user.getEmail() + " уже существует");
     }
 
+    public boolean update(UserEntity user) throws UserNotFoundException {
+        if (userRepository.findById(user.getId()).isPresent()) {
+            userRepository.save(user);
+            return true;
+        } else
+            throw new UserNotFoundException("Пользователь не существует");
+    }
 
 }
