@@ -1,16 +1,13 @@
 package com.example.hrautomationbackend.controller;
 
 import com.example.hrautomationbackend.entity.UserEntity;
-import com.example.hrautomationbackend.exception.AccessTokenIsNotValidException;
-import com.example.hrautomationbackend.exception.UserAlreadyExistException;
-import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.jwt.JwtProvider;
 import com.example.hrautomationbackend.service.JwtService;
 import com.example.hrautomationbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,17 +41,11 @@ public class UserController {
     public ResponseEntity getOneUser(@PathVariable Long id,
                                      @RequestHeader("Authorization") String accessToken) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(userService.getUser(id));
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            return ResponseEntity.ok(userService.getUser(id));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -75,18 +66,12 @@ public class UserController {
                                    @RequestParam int size,
                                    @RequestParam String sortBy) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
-                    return ResponseEntity.ok(userService.getUsers(pageable));
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
+            return ResponseEntity.ok(userService.getUsers(pageable));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -104,19 +89,12 @@ public class UserController {
     public ResponseEntity deleteUser(@RequestHeader("Authorization") String accessToken,
                                      @PathVariable Long id) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(userService.delete(id));
-                } catch (UserNotFoundException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            userService.delete(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -136,19 +114,12 @@ public class UserController {
     public ResponseEntity addUser(@RequestHeader("Authorization") String accessToken,
                                   @RequestBody UserEntity user) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(userService.registration(user));
-                } catch (UserAlreadyExistException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка во время добавления");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            userService.registration(user);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -166,18 +137,11 @@ public class UserController {
     public ResponseEntity updateUser(@RequestHeader("Authorization") String accessToken,
                                      @RequestBody UserEntity user) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(userService.update(user));
-                } catch (UserNotFoundException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка во время апдейта");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            userService.update(user);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 }

@@ -28,24 +28,22 @@ public class FaqService {
         this.questionRepository = questionRepository;
     }
 
-    public boolean addQuestion(QuestionEntity question, Long categoryId)
+    public void addQuestion(QuestionEntity question, Long categoryId)
             throws QuestionAlreadyExistException, CategoryNotFoundException {
         if (questionRepository.findByTitle(question.getTitle()) == null) {
             Optional<CategoryEntity> categoryOptional = categoryRepository.findById(categoryId);
             if (categoryRepository.findById(categoryId).isPresent()) {
                 question.setCategory(categoryOptional.get());
                 questionRepository.save(question);
-                return true;
             } else
                 throw new CategoryNotFoundException("Указанная категория не существует");
         } else
             throw new QuestionAlreadyExistException("Вопрос '" + question.getTitle() + "' уже существует");
     }
 
-    public boolean addCategory(CategoryEntity category) throws CategoryAlreadyExistException {
+    public void addCategory(CategoryEntity category) throws CategoryAlreadyExistException {
         if (categoryRepository.findByName(category.getName()) == null) {
             categoryRepository.save(category);
-            return true;
         } else
             throw new CategoryAlreadyExistException("Категория " + category.getName() + " уже существует");
     }
@@ -58,13 +56,12 @@ public class FaqService {
         return (List<CategoryEntity>) categoryRepository.findAll();
     }
 
-    public Boolean deleteQuestion(Long id) throws QuestionNotFoundException {
+    public void deleteQuestion(Long id) throws QuestionNotFoundException {
         try {
             questionRepository.deleteById(id);
         } catch (NoSuchElementException e) {
             throw new QuestionNotFoundException("Такой вопрос не найден", e);
         }
-        return true;
     }
 
     public void updateQuestion(QuestionEntity question, Long categoryId) throws QuestionNotFoundException,

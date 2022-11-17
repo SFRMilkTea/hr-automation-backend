@@ -23,40 +23,36 @@ public class ProductService {
         return products;
     }
 
-    public Boolean delete(Long id) throws ProductNotFoundException {
+    public void delete(Long id) throws ProductNotFoundException {
         try {
             productRepository.deleteById(id);
         } catch (NoSuchElementException e) {
             throw new ProductNotFoundException("Продукт не найден");
         }
-        return true;
     }
 
     @Transactional
-    public boolean addProduct(ProductEntity product) throws ProductAlreadyExistException {
+    public void addProduct(ProductEntity product) throws ProductAlreadyExistException {
         if (productRepository.findByCode(product.getCode()) == null) {
             productRepository.save(product);
-            return true;
         } else
             throw new ProductAlreadyExistException("Продукт с артикулом " + product.getCode() + " уже существует");
     }
 
-    public boolean update(ProductEntity product) throws ProductNotFoundException {
+    public void update(ProductEntity product) throws ProductNotFoundException {
         if (productRepository.findById(product.getId()).isPresent()) {
             productRepository.save(product);
-            return true;
         } else
             throw new ProductNotFoundException("Продукт с id " + product.getId() + " не существует");
     }
 
-    public boolean orderProduct(Long id) throws ProductNotFoundException, ProductAlreadyOrderedException {
+    public void orderProduct(Long id) throws ProductNotFoundException, ProductAlreadyOrderedException {
         ProductEntity product = productRepository
                 .findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Продукт с id " + id + " не существует"));
         if (!product.isOrdered()) {
             product.setOrdered(true);
             productRepository.save(product);
-            return true;
         } else {
             throw new ProductAlreadyOrderedException("Продукт с id " + product.getId() + " уже заказан");
         }

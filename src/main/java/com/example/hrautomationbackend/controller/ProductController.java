@@ -1,7 +1,6 @@
 package com.example.hrautomationbackend.controller;
 
 import com.example.hrautomationbackend.entity.ProductEntity;
-import com.example.hrautomationbackend.exception.*;
 import com.example.hrautomationbackend.jwt.JwtProvider;
 import com.example.hrautomationbackend.service.JwtService;
 import com.example.hrautomationbackend.service.ProductService;
@@ -46,18 +45,12 @@ public class ProductController {
                                       @RequestParam int size,
                                       @RequestParam String sortBy) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
-                    return ResponseEntity.ok(productService.getProducts(pageable));
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
+            return ResponseEntity.ok(productService.getProducts(pageable));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -75,19 +68,12 @@ public class ProductController {
     public ResponseEntity deleteProduct(@RequestHeader("Authorization") String accessToken,
                                         @PathVariable Long id) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(productService.delete(id));
-                } catch (ProductNotFoundException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            productService.delete(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -108,19 +94,12 @@ public class ProductController {
     public ResponseEntity addProduct(@RequestHeader("Authorization") String accessToken,
                                      @RequestBody ProductEntity product) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(productService.addProduct(product));
-                } catch (ProductAlreadyExistException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка во время добавления");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            productService.addProduct(product);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -138,19 +117,12 @@ public class ProductController {
     public ResponseEntity updateProduct(@RequestHeader("Authorization") String accessToken,
                                         @RequestBody ProductEntity product) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(productService.update(product));
-                } catch (ProductNotFoundException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка во время апдейта");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            productService.update(product);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -169,18 +141,11 @@ public class ProductController {
     public ResponseEntity orderProduct(@RequestHeader("Authorization") String accessToken,
                                        @PathVariable Long id) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(productService.orderProduct(id));
-                } catch (ProductAlreadyOrderedException | ProductNotFoundException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            productService.orderProduct(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 }

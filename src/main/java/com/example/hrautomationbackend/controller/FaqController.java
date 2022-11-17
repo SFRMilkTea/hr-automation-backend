@@ -2,7 +2,6 @@ package com.example.hrautomationbackend.controller;
 
 import com.example.hrautomationbackend.entity.CategoryEntity;
 import com.example.hrautomationbackend.entity.QuestionEntity;
-import com.example.hrautomationbackend.exception.*;
 import com.example.hrautomationbackend.service.FaqService;
 import com.example.hrautomationbackend.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,19 +44,12 @@ public class FaqController {
                                       @PathVariable(value = "categoryId") Long categoryId,
                                       @RequestBody QuestionEntity question) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(faqService.addQuestion(question, categoryId));
-                } catch (QuestionAlreadyExistException | CategoryNotFoundException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка во время добавления вопроса");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            faqService.addQuestion(question, categoryId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -75,21 +67,13 @@ public class FaqController {
     public ResponseEntity addCategory(@RequestHeader("Authorization") String accessToken,
                                       @RequestBody CategoryEntity category) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(faqService.addCategory(category));
-                } catch (CategoryAlreadyExistException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка во время добавления вопроса");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            faqService.addCategory(category);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
-
 
     /**
      * @api {get} /faq?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение списка вопросов
@@ -109,18 +93,12 @@ public class FaqController {
                                        @RequestParam int size,
                                        @RequestParam String sortBy) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
-                    return ResponseEntity.ok(faqService.getQuestions(pageable));
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
+            return ResponseEntity.ok(faqService.getQuestions(pageable));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -135,17 +113,11 @@ public class FaqController {
     @GetMapping(path = "/categories")
     public ResponseEntity getCategories(@RequestHeader("Authorization") String accessToken) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(faqService.getCategories());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            return ResponseEntity.ok(faqService.getCategories());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -163,19 +135,12 @@ public class FaqController {
     public ResponseEntity deleteQuestion(@RequestHeader("Authorization") String accessToken,
                                          @PathVariable Long id) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(faqService.deleteQuestion(id));
-                } catch (QuestionNotFoundException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка во время удаления вопроса");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            faqService.deleteQuestion(id);
+            return ResponseEntity.ok().build();
+        }catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -198,20 +163,12 @@ public class FaqController {
                                          @PathVariable(value = "categoryId") Long categoryId,
                                          @RequestBody QuestionEntity question) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    faqService.updateQuestion(question, categoryId);
-                    return ResponseEntity.ok().build();
-                } catch (QuestionNotFoundException | CategoryNotFoundException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка во время апдейта вопроса");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            faqService.updateQuestion(question, categoryId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -229,18 +186,10 @@ public class FaqController {
     public ResponseEntity getQuestionsByCategory(@RequestHeader("Authorization") String accessToken,
                                                  @PathVariable(value = "categoryId") Long categoryId) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(faqService.getQuestionsByCategory(categoryId));
-                } catch (CategoryNotFoundException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            return ResponseEntity.ok(faqService.getQuestionsByCategory(categoryId));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 }
