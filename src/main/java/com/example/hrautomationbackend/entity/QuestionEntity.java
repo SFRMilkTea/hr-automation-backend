@@ -16,10 +16,10 @@ public class QuestionEntity {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "questionCategory_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
-    private CategoryEntity category;
+    private QuestionCategoryEntity questionCategory;
 
     public QuestionEntity() {
     }
@@ -48,11 +48,11 @@ public class QuestionEntity {
         this.description = description;
     }
 
-    public CategoryEntity getCategory() {
-        return category;
+    public QuestionCategoryEntity getQuestionCategory() {
+        return questionCategory;
     }
 
-    public void setCategory(CategoryEntity category) {
-        this.category = category;
+    public void setQuestionCategory(QuestionCategoryEntity questionCategory) {
+        this.questionCategory = questionCategory;
     }
 }

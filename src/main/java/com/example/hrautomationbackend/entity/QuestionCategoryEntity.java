@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class CategoryEntity {
+public class QuestionCategoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,10 +13,10 @@ public class CategoryEntity {
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "questionCategory_id")
     private List<QuestionEntity> questions =new ArrayList<>();
 
-    public CategoryEntity() {
+    public QuestionCategoryEntity() {
     }
 
     public Long getId() {

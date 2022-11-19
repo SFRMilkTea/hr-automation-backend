@@ -1,6 +1,6 @@
 package com.example.hrautomationbackend.controller;
 
-import com.example.hrautomationbackend.entity.CategoryEntity;
+import com.example.hrautomationbackend.entity.QuestionCategotyEntity;
 import com.example.hrautomationbackend.entity.QuestionEntity;
 import com.example.hrautomationbackend.service.FaqService;
 import com.example.hrautomationbackend.service.JwtService;
@@ -36,7 +36,7 @@ public class FaqController {
      * @apiBody {String} title Заголовок вопроса
      * @apiBody {String} description Описание вопроса
      * @apiError (Error 400) QuestionAlreadyExistException Данный вопрос уже существует
-     * @apiError (Error 400) CategoryNotFoundException Данная категория не существует
+     * @apiError (Error 400) QuestionCategotyNotFoundException Данная категория не существует
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
@@ -56,19 +56,19 @@ public class FaqController {
     /**
      * @api {post} /faq/category Добавление новой категории
      * @apiGroup FAQ
-     * @apiName addCategory
+     * @apiName addQuestionCategoty
      * @apiHeader {String} accessToken Аксес токен
      * @apiBody {String} name Название категории
-     * @apiError (Error 400) CategoryAlreadyExistException Данная категория уже существует
+     * @apiError (Error 400) QuestionCategotyAlreadyExistException Данная категория уже существует
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
     @PostMapping("/category")
-    public ResponseEntity addCategory(@RequestHeader("Authorization") String accessToken,
-                                      @RequestBody CategoryEntity category) {
+    public ResponseEntity addQuestionCategoty(@RequestHeader("Authorization") String accessToken,
+                                      @RequestBody QuestionCategotyEntity category) {
         try {
             jwtService.checkAccessToken(accessToken);
-            faqService.addCategory(category);
+            faqService.addQuestionCategoty(category);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -153,7 +153,7 @@ public class FaqController {
      * @apiHeader {String} accessToken Аксес токен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) QuestionNotFoundException Вопрос не найден
-     * @apiError (Error 400) CategoryNotFoundException Категория не найдена
+     * @apiError (Error 400) QuestionCategotyNotFoundException Категория не найдена
      **/
 
     @PutMapping("/category/{categoryId}")
@@ -171,21 +171,21 @@ public class FaqController {
 
     /**
      * @api {get} /faq//categories/[categoryId] Вывод всех вопросов, принадлежащих категории
-     * @apiName getQuestionsByCategory
+     * @apiName getQuestionsByQuestionCategoty
      * @apiGroup FAQ
      * @apiParam {Long} categoryId Айди категории вопроса
      * @apiHeader {String} accessToken Аксес токен
      * @apiSuccess {List[Questions]} questions Список вопросов, принадлежащих заданной категории
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
-     * @apiError (Error 400) CategoryNotFoundException Категория не найдена
+     * @apiError (Error 400) QuestionCategotyNotFoundException Категория не найдена
      **/
 
     @GetMapping("/categories/{categoryId}")
-    public ResponseEntity getQuestionsByCategory(@RequestHeader("Authorization") String accessToken,
+    public ResponseEntity getQuestionsByQuestionCategoty(@RequestHeader("Authorization") String accessToken,
                                                  @PathVariable(value = "categoryId") Long categoryId) {
         try {
             jwtService.checkAccessToken(accessToken);
-            return ResponseEntity.ok(faqService.getQuestionsByCategory(categoryId));
+            return ResponseEntity.ok(faqService.getQuestionsByQuestionCategoty(categoryId));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
