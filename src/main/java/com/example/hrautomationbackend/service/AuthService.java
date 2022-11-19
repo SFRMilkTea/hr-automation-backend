@@ -3,29 +3,31 @@ package com.example.hrautomationbackend.service;
 import com.example.hrautomationbackend.entity.UserEntity;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.exception.WrongAuthorizationCodeException;
-import com.example.hrautomationbackend.jwt.JwtProvider;
 import com.example.hrautomationbackend.jwt.JwtResponse;
 import com.example.hrautomationbackend.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
 @Service
 public class AuthService {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private EmailService emailService;
-    @Autowired
-    private JwtService jwtService;
-    @Autowired
-    private CodeService codeService;
-    @Autowired
-    private JwtProvider jwtProvider;
+    private final UserRepository userRepository;
+    private final EmailService emailService;
+    private final JwtService jwtService;
+    private final CodeService codeService;
 
-    public boolean sendCode(String email) throws UserNotFoundException {
+    public AuthService(UserRepository userRepository, EmailService emailService, JwtService jwtService,
+                       CodeService codeService) {
+        this.userRepository = userRepository;
+        this.emailService = emailService;
+        this.jwtService = jwtService;
+        this.codeService = codeService;
+    }
+
+    @Transactional
+    public void sendCode(String email) throws UserNotFoundException {
         UserEntity user = userRepository.findByEmail(email);
         if (user == null) {
             throw new UserNotFoundException("Пользователь с данным email не существует");
@@ -36,12 +38,15 @@ public class AuthService {
             final LocalDateTime expTime = LocalDateTime.now().plusMinutes(5);
             user.setCodeExpTime(expTime);
             userRepository.save(user);
-            return true;
         }
     }
 
-    public JwtResponse checkCode(String email, int code) throws WrongAuthorizationCodeException {
+    @Transactional
+    public JwtResponse checkCode(String email, int code) throws WrongAuthorizationCodeException, UserNotFoundException {
         UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException("Пользователь с почтой " + email + " не найден");
+        }
         if (user.getAuthCode() != code)
             throw new WrongAuthorizationCodeException("Неверный код авторизации");
         else {

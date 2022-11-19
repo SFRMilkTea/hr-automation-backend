@@ -1,10 +1,8 @@
 package com.example.hrautomationbackend.controller;
 
 import com.example.hrautomationbackend.entity.ProductEntity;
-import com.example.hrautomationbackend.jwt.JwtProvider;
 import com.example.hrautomationbackend.service.JwtService;
 import com.example.hrautomationbackend.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,12 +18,13 @@ public class ProductController {
      * ПРОДУКТЫ
      */
 
-    @Autowired
-    private ProductService productService;
-    @Autowired
-    private JwtProvider jwtProvider;
-    @Autowired
-    private JwtService jwtService;
+    private final ProductService productService;
+    private final JwtService jwtService;
+
+    public ProductController(ProductService productService, JwtService jwtService) {
+        this.productService = productService;
+        this.jwtService = jwtService;
+    }
 
     /**
      * @api {get} /products?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение списка продуктов
@@ -59,7 +58,6 @@ public class ProductController {
      * @apiGroup PRODUCTS
      * @apiParam {Number} id Уникальный идентификатор продукта
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {Boolean} result True, если продукт успешно удален
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) ProductNotFoundException Продукт с таким id не существует
      **/
@@ -85,7 +83,6 @@ public class ProductController {
      * @apiBody {String} pictureUrl Фото продукта
      * @apiBody {Boolean} [ordered=false] Заказан ли продукт
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {Boolean} result True, если продукт успешно добавлен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) ProductAlreadyExistException Продукт уже существует
      **/
@@ -103,12 +100,11 @@ public class ProductController {
     }
 
     /**
-     * @api {put} /products Обновление продукта
+     * @api {put} /products Обновление продукта ВНИМАНИЕ Я ЭТО СКОРО (ВОЗМОЖНО) ОБЪЕДИНЮ С ДОБАВЛЕНИЕМ
      * @apiName updateProduct
      * @apiGroup PRODUCTS
      * @apiBody {Object} product Новые данные о продукте (+ старые, если не изменялись!)
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {Boolean} result True, если продукт успешно обновлен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) ProductNotFoundException Продукт не существует
      **/
@@ -131,7 +127,6 @@ public class ProductController {
      * @apiGroup PRODUCTS
      * @apiHeader {String} accessToken Аксес токен
      * @apiParam {Number} id Уникальный идентификатор продукта
-     * @apiSuccess {Boolean} result True, если продукт успешно заказан
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) ProductNotFoundException Продукт не существует
      * @apiError (Error 400) ProductAlreadyOrderedException Продукт уже заказан

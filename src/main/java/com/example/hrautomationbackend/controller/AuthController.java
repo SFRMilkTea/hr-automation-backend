@@ -1,9 +1,9 @@
 package com.example.hrautomationbackend.controller;
 
+import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.exception.WrongAuthorizationCodeException;
 import com.example.hrautomationbackend.jwt.JwtResponse;
 import com.example.hrautomationbackend.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,22 +19,25 @@ public class AuthController {
      * АВТОРИЗАЦИЯ
      */
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     /**
      * @api {get} /authorization?email=[email@example.ru] Авторизация
      * @apiName authorization
      * @apiGroup AUTHORIZATION
      * @apiParam {String} email Корпоративная почта пользователя
-     * @apiSuccess {boolean} result True
      * @apiError (Error 400) UserNotFoundException Пользователь с такой почтой не зарегистрирован
      **/
 
     @GetMapping
     public ResponseEntity authorization(@RequestParam String email) {
         try {
-            return ResponseEntity.ok(authService.sendCode(email));
+            authService.sendCode(email);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -46,12 +49,14 @@ public class AuthController {
      * @apiGroup AUTHORIZATION
      * @apiParam {String} email Корпоративная почта пользователя
      * @apiParam {Number} code Четырехзначный код, отправленный на почту
-     * @apiSuccess {Object} token Объект, содержащий три строки: type ("Bearer"), accessToken, refreshToken
+     * @apiSuccess {Object} token Объект, содержащий type ("Bearer"), accessToken, refreshToken, userId, username
+     * @apiError (Error 400) UserNotFoundException Пользователь с такой почтой не зарегистрирован
+     * @apiError (Error 400) WrongAuthorizationCodeException Неверный код авторизации
      **/
 
     @GetMapping(path = "/confirm")
     public ResponseEntity<JwtResponse> authorizationConfirm(@RequestParam String email, int code)
-            throws WrongAuthorizationCodeException {
+            throws WrongAuthorizationCodeException, UserNotFoundException {
         final JwtResponse token = authService.checkCode(email, code);
         return ResponseEntity.ok(token);
     }

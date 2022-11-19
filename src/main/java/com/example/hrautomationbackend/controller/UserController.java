@@ -1,10 +1,8 @@
 package com.example.hrautomationbackend.controller;
 
 import com.example.hrautomationbackend.entity.UserEntity;
-import com.example.hrautomationbackend.jwt.JwtProvider;
 import com.example.hrautomationbackend.service.JwtService;
 import com.example.hrautomationbackend.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,12 +18,13 @@ public class UserController {
      * СОТРУДНИКИ
      */
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private JwtProvider jwtProvider;
-    @Autowired
-    private JwtService jwtService;
+    private final UserService userService;
+    private final JwtService jwtService;
+
+    public UserController(UserService userService, JwtService jwtService) {
+        this.userService = userService;
+        this.jwtService = jwtService;
+    }
 
     /**
      * @api {get} /users/[id] Получение пользователя по айди
@@ -80,7 +79,6 @@ public class UserController {
      * @apiGroup USERS
      * @apiParam {Number} id Уникальный идентефикатор пользователя
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {Boolean} result True, если пользователь успешно удален
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) UserNotFoundException Пользователь с таким id не существует
      **/
@@ -105,7 +103,6 @@ public class UserController {
      * @apiBody {String} username Username пользователя
      * @apiBody {Boolean} [admin=false]  Роль пользователя
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {Boolean} result True, если пользователь успешно добавлен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) UserAlreadyExistException Пользователь уже существует
      **/
@@ -123,12 +120,11 @@ public class UserController {
     }
 
     /**
-     * @api {put} /users Обновление пользователя
+     * @api {put} /users Обновление пользователя ВНИМАНИЕ Я ЭТО СКОРО (ВОЗМОЖНО) ОБЪЕДИНЮ С ДОБАВЛЕНИЕМ
      * @apiName updateUser
      * @apiGroup USERS
      * @apiBody {Object} user Новые данные пользователя (+ старые, если не изменялись!)
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {Boolean} result True, если пользователь успешно обновлен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) UserNotFoundException Пользователь не существует
      **/

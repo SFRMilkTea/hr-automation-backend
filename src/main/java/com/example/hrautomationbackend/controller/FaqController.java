@@ -4,7 +4,6 @@ import com.example.hrautomationbackend.entity.CategoryEntity;
 import com.example.hrautomationbackend.entity.QuestionEntity;
 import com.example.hrautomationbackend.service.FaqService;
 import com.example.hrautomationbackend.service.JwtService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,10 +19,13 @@ public class FaqController {
      * FAQ
      */
 
-    @Autowired
-    private FaqService faqService;
-    @Autowired
-    private JwtService jwtService;
+    private final FaqService faqService;
+    private final JwtService jwtService;
+
+    public FaqController(FaqService faqService, JwtService jwtService) {
+        this.faqService = faqService;
+        this.jwtService = jwtService;
+    }
 
     /**
      * @api {post} /faq/category/[categoryId] Добавление нового вопроса
@@ -33,7 +35,6 @@ public class FaqController {
      * @apiParam {Long} categoryId Айди категории, к которой относится добавляемый вопрос
      * @apiBody {String} title Заголовок вопроса
      * @apiBody {String} description Описание вопроса
-     * @apiSuccess {boolean} result True, если вопрос успешно добавлен
      * @apiError (Error 400) QuestionAlreadyExistException Данный вопрос уже существует
      * @apiError (Error 400) CategoryNotFoundException Данная категория не существует
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
@@ -58,7 +59,6 @@ public class FaqController {
      * @apiName addCategory
      * @apiHeader {String} accessToken Аксес токен
      * @apiBody {String} name Название категории
-     * @apiSuccess {boolean} result True, если категория успешно добавлена
      * @apiError (Error 400) CategoryAlreadyExistException Данная категория уже существует
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
@@ -126,7 +126,6 @@ public class FaqController {
      * @apiGroup FAQ
      * @apiParam {Number} id Уникальный идентефикатор вопроса
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {Boolean} result True, если вопрос успешно удален
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) QuestionNotFoundException Вопрос не найден
      **/
@@ -144,7 +143,7 @@ public class FaqController {
     }
 
     /**
-     * @api {put} /faq/category/[categoryId] Обновление вопроса
+     * @api {put} /faq/category/[categoryId] Обновление вопроса ВНИМАНИЕ Я ЭТО СКОРО (ВОЗМОЖНО) ОБЪЕДИНЮ С ДОБАВЛЕНИЕМ
      * @apiName updateQuestion
      * @apiGroup FAQ
      * @apiParam {Long} categoryId Айди категории вопроса
@@ -152,7 +151,6 @@ public class FaqController {
      * @apiBody {String} title Заголовок вопроса
      * @apiBody {String} description Описание вопроса
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {Boolean} result True, если вопрос успешно обновлен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) QuestionNotFoundException Вопрос не найден
      * @apiError (Error 400) CategoryNotFoundException Категория не найдена
@@ -177,7 +175,7 @@ public class FaqController {
      * @apiGroup FAQ
      * @apiParam {Long} categoryId Айди категории вопроса
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {List[Questions]} questions
+     * @apiSuccess {List[Questions]} questions Список вопросов, принадлежащих заданной категории
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) CategoryNotFoundException Категория не найдена
      **/

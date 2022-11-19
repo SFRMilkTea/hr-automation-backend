@@ -27,6 +27,9 @@ public class CodeService {
     void deleteCode() {
         Iterable<UserEntity> users = userRepository.findAll();
         for (UserEntity user : users) {
+            if (user.getCodeExpTime()==null) {
+                user.setCodeExpTime(LocalDateTime.now().minusMinutes(30));
+            }
             if (user.getCodeExpTime().compareTo(LocalDateTime.now()) < 0) {
                 user.setAuthCode(-1);
                 userRepository.save(user);
