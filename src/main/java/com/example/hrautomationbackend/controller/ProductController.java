@@ -278,4 +278,23 @@ public class ProductController {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * @api {get} /products/ordered Вывод всех продуктов, запрошенных на заказ
+     * @apiName getOrderedProducts
+     * @apiGroup PRODUCTS
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {List[Products]} products Список продуктов, запрошенных на заказ
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     **/
+
+    @GetMapping("/ordered")
+    public ResponseEntity getOrderedProducts(@RequestHeader("Authorization") String accessToken) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            return ResponseEntity.ok(productService.getOrderedProducts());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

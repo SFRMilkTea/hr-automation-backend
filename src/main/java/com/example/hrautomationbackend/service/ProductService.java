@@ -1,9 +1,6 @@
 package com.example.hrautomationbackend.service;
 
-import com.example.hrautomationbackend.entity.ProductCategoryEntity;
-import com.example.hrautomationbackend.entity.ProductEntity;
-import com.example.hrautomationbackend.entity.QuestionCategoryEntity;
-import com.example.hrautomationbackend.entity.QuestionEntity;
+import com.example.hrautomationbackend.entity.*;
 import com.example.hrautomationbackend.exception.*;
 import com.example.hrautomationbackend.repository.ProductCategoryRepository;
 import com.example.hrautomationbackend.repository.ProductRepository;
@@ -13,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -128,4 +127,14 @@ public class ProductService {
             throw new ProductCategoryNotFoundException("Категория с id " + category.getId() + " не существует");
     }
 
+    public ArrayList<ProductEntity> getOrderedProducts() {
+        Iterable<ProductEntity> products = productRepository.findAll();
+        ArrayList<ProductEntity> orderedProducts = new ArrayList<>();
+        for (ProductEntity product : products) {
+            if (product.isOrdered()) {
+                orderedProducts.add(product);
+            }
+        }
+        return orderedProducts;
+    }
 }
