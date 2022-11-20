@@ -15,12 +15,12 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity handleValidationError(final QuestionCategotyAlreadyExistException e) {
+    public ResponseEntity handleValidationError(final QuestionCategoryAlreadyExistException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler
-    public ResponseEntity handleValidationError(final QuestionCategotyNotFoundException e) {
+    public ResponseEntity handleValidationError(final QuestionCategoryNotFoundException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 

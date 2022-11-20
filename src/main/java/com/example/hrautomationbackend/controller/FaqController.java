@@ -1,6 +1,6 @@
 package com.example.hrautomationbackend.controller;
 
-import com.example.hrautomationbackend.entity.QuestionCategotyEntity;
+import com.example.hrautomationbackend.entity.QuestionCategoryEntity;
 import com.example.hrautomationbackend.entity.QuestionEntity;
 import com.example.hrautomationbackend.service.FaqService;
 import com.example.hrautomationbackend.service.JwtService;
@@ -36,7 +36,7 @@ public class FaqController {
      * @apiBody {String} title Заголовок вопроса
      * @apiBody {String} description Описание вопроса
      * @apiError (Error 400) QuestionAlreadyExistException Данный вопрос уже существует
-     * @apiError (Error 400) QuestionCategotyNotFoundException Данная категория не существует
+     * @apiError (Error 400) QuestionCategoryNotFoundException Данная категория не существует
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
@@ -56,19 +56,19 @@ public class FaqController {
     /**
      * @api {post} /faq/category Добавление новой категории
      * @apiGroup FAQ
-     * @apiName addQuestionCategoty
+     * @apiName addQuestionCategory
      * @apiHeader {String} accessToken Аксес токен
      * @apiBody {String} name Название категории
-     * @apiError (Error 400) QuestionCategotyAlreadyExistException Данная категория уже существует
+     * @apiError (Error 400) QuestionCategoryAlreadyExistException Данная категория уже существует
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
     @PostMapping("/category")
-    public ResponseEntity addQuestionCategoty(@RequestHeader("Authorization") String accessToken,
-                                      @RequestBody QuestionCategotyEntity category) {
+    public ResponseEntity addQuestionCategory(@RequestHeader("Authorization") String accessToken,
+                                      @RequestBody QuestionCategoryEntity category) {
         try {
             jwtService.checkAccessToken(accessToken);
-            faqService.addQuestionCategoty(category);
+            faqService.addQuestionCategory(category);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -153,7 +153,7 @@ public class FaqController {
      * @apiHeader {String} accessToken Аксес токен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) QuestionNotFoundException Вопрос не найден
-     * @apiError (Error 400) QuestionCategotyNotFoundException Категория не найдена
+     * @apiError (Error 400) QuestionCategoryNotFoundException Категория не найдена
      **/
 
     @PutMapping("/category/{categoryId}")
@@ -171,21 +171,21 @@ public class FaqController {
 
     /**
      * @api {get} /faq//categories/[categoryId] Вывод всех вопросов, принадлежащих категории
-     * @apiName getQuestionsByQuestionCategoty
+     * @apiName getQuestionsByQuestionCategory
      * @apiGroup FAQ
      * @apiParam {Long} categoryId Айди категории вопроса
      * @apiHeader {String} accessToken Аксес токен
      * @apiSuccess {List[Questions]} questions Список вопросов, принадлежащих заданной категории
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
-     * @apiError (Error 400) QuestionCategotyNotFoundException Категория не найдена
+     * @apiError (Error 400) QuestionCategoryNotFoundException Категория не найдена
      **/
 
     @GetMapping("/categories/{categoryId}")
-    public ResponseEntity getQuestionsByQuestionCategoty(@RequestHeader("Authorization") String accessToken,
+    public ResponseEntity getQuestionsByQuestionCategory(@RequestHeader("Authorization") String accessToken,
                                                  @PathVariable(value = "categoryId") Long categoryId) {
         try {
             jwtService.checkAccessToken(accessToken);
-            return ResponseEntity.ok(faqService.getQuestionsByQuestionCategoty(categoryId));
+            return ResponseEntity.ok(faqService.getQuestionsByQuestionCategory(categoryId));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
