@@ -76,9 +76,10 @@ public class ProductController {
     }
 
     /**
-     * @api {post} /products Добавление продукта
+     * @api {post} /products/category/[categoryId] Добавление продукта
      * @apiName addProduct
      * @apiGroup PRODUCTS
+     * @apiParam {Long} categoryId Айди категории, к которой относится добавляемый продукт
      * @apiBody {String} name Название продукта
      * @apiBody {String} code Артикул продукта
      * @apiBody {String} pictureUrl Фото продукта
@@ -88,12 +89,13 @@ public class ProductController {
      * @apiError (Error 400) ProductAlreadyExistException Продукт уже существует
      **/
 
-    @PostMapping
+    @PostMapping("/category/{categoryId}")
     public ResponseEntity addProduct(@RequestHeader("Authorization") String accessToken,
+                                     @PathVariable(value = "categoryId") Long categoryId,
                                      @RequestBody ProductEntity product) {
         try {
             jwtService.checkAccessToken(accessToken);
-            productService.addProduct(product);
+            productService.addProduct(product, categoryId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -110,7 +112,7 @@ public class ProductController {
      * @apiError (Error 400) ProductNotFoundException Продукт не существует
      **/
 
-    @PutMapping
+    @PutMapping()
     public ResponseEntity updateProduct(@RequestHeader("Authorization") String accessToken,
                                         @RequestBody ProductEntity product) {
         try {

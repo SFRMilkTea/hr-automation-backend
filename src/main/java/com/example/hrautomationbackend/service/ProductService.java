@@ -37,14 +37,20 @@ public class ProductService {
         try {
             productRepository.deleteById(id);
         } catch (NoSuchElementException e) {
-            throw new ProductNotFoundException("Продукт с id " + id +" не найден");
+            throw new ProductNotFoundException("Продукт с id " + id + " не найден");
         }
     }
 
     @Transactional
-    public void addProduct(ProductEntity product) throws ProductAlreadyExistException {
+    public void addProduct(ProductEntity product, Long categoryId) throws ProductAlreadyExistException,
+            ProductCategoryNotFoundException {
         if (productRepository.findByCode(product.getCode()) == null) {
-            productRepository.save(product);
+            Optional<ProductCategoryEntity> categoryOptional = productCategoryRepository.findById(categoryId);
+            if (productCategoryRepository.findById(categoryId).isPresent()) {
+                product.setProductCategory(categoryOptional.get());
+                productRepository.save(product);
+            } else
+                throw new ProductCategoryNotFoundException("Указанная категория не существует");
         } else
             throw new ProductAlreadyExistException("Продукт с артикулом " + product.getCode() + " уже существует");
     }
@@ -92,7 +98,7 @@ public class ProductService {
         try {
             productCategoryRepository.deleteById(id);
         } catch (NoSuchElementException e) {
-            throw new ProductCategoryNotFoundException("Категория с id " + id +" не найдена");
+            throw new ProductCategoryNotFoundException("Категория с id " + id + " не найдена");
         }
     }
 
