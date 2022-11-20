@@ -56,9 +56,15 @@ public class ProductService {
     }
 
     @Transactional
-    public void update(ProductEntity product) throws ProductNotFoundException {
+    public void update(ProductEntity product, Long categoryId) throws ProductNotFoundException,
+            ProductCategoryNotFoundException {
         if (productRepository.findById(product.getId()).isPresent()) {
-            productRepository.save(product);
+            Optional<ProductCategoryEntity> categoryOptional = productCategoryRepository.findById(categoryId);
+            if (categoryOptional.isPresent()) {
+                product.setProductCategory(categoryOptional.get());
+                productRepository.save(product);
+            } else
+                throw new ProductCategoryNotFoundException("Такая категория не найдена");
         } else
             throw new ProductNotFoundException("Продукт с id " + product.getId() + " не существует");
     }

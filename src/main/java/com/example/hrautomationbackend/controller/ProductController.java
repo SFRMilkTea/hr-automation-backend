@@ -106,18 +106,20 @@ public class ProductController {
      * @api {put} /products Обновление продукта
      * @apiName updateProduct
      * @apiGroup PRODUCTS
+     * @apiParam {Long} categoryId Айди категории продукта
      * @apiBody {Object} product Новые данные о продукте (+ старые, если не изменялись!)
      * @apiHeader {String} accessToken Аксес токен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) ProductNotFoundException Продукт не существует
      **/
 
-    @PutMapping()
+    @PutMapping("/category/{categoryId}")
     public ResponseEntity updateProduct(@RequestHeader("Authorization") String accessToken,
+                                        @PathVariable(value = "categoryId") Long categoryId,
                                         @RequestBody ProductEntity product) {
         try {
             jwtService.checkAccessToken(accessToken);
-            productService.update(product);
+            productService.update(product, categoryId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             throw new RuntimeException(e);
