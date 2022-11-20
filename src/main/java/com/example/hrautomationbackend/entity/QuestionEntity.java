@@ -16,7 +16,7 @@ public class QuestionEntity {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "questionCategory_id", nullable = false)
+    @JoinColumn(name = "question_category_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private QuestionCategoryEntity questionCategory;

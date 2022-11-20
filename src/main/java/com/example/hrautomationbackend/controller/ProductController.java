@@ -35,7 +35,7 @@ public class ProductController {
      * @apiParam {Number} pageNumber Номер страницы
      * @apiParam {Number} size Количество элементов на странице
      * @apiParam {String} sortBy Фильтр сортировки
-     * @apiSuccess {List[Object]} products Список всех продуктов
+     * @apiSuccess {List[Products]} products Список всех продуктов
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
@@ -107,7 +107,7 @@ public class ProductController {
      * @apiName updateProduct
      * @apiGroup PRODUCTS
      * @apiParam {Long} categoryId Айди категории продукта
-     * @apiBody {Object} product Новые данные о продукте (+ старые, если не изменялись!)
+     * @apiBody {Product} product Новые данные о продукте (+ старые, если не изменялись!)
      * @apiHeader {String} accessToken Аксес токен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) ProductNotFoundException Продукт не существует
@@ -199,7 +199,7 @@ public class ProductController {
      * @apiName getCategories
      * @apiGroup PRODUCTS
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {List[Object]} categories Список всех категорий продуктов
+     * @apiSuccess {List[Category]} categories Список всех категорий продуктов
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
@@ -219,7 +219,7 @@ public class ProductController {
      * @apiGroup PRODUCTS
      * @apiParam {Long} categoryId Айди категории продуктов
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {List[Questions]} questions Список продуктов, принадлежащих заданной категории
+     * @apiSuccess {List[Products]} products Список продуктов, принадлежащих заданной категории
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) ProductCategoryNotFoundException Категория не найдена
      **/

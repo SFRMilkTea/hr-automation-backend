@@ -170,7 +170,7 @@ public class FaqController {
     }
 
     /**
-     * @api {get} /faq//categories/[categoryId] Вывод всех вопросов, принадлежащих категории
+     * @api {get} /faq/categories/[categoryId] Вывод всех вопросов, принадлежащих категории
      * @apiName getQuestionsByQuestionCategory
      * @apiGroup FAQ
      * @apiParam {Long} categoryId Айди категории вопроса

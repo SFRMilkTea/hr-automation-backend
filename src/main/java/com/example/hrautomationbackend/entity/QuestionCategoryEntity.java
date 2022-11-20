@@ -13,7 +13,7 @@ public class QuestionCategoryEntity {
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "questionCategory_id")
+    @JoinColumn(name = "question_category_id")
     private List<QuestionEntity> questions =new ArrayList<>();
 
     public QuestionCategoryEntity() {
