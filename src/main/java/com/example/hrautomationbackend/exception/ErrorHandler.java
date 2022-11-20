@@ -15,16 +15,6 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity handleValidationError(final QuestionCategoryAlreadyExistException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    @ExceptionHandler
-    public ResponseEntity handleValidationError(final QuestionCategoryNotFoundException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    @ExceptionHandler
     public ResponseEntity handleValidationError(final ProductAlreadyExistException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
@@ -35,12 +25,37 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity handleValidationError(final ProductCategoryAlreadyExistException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleValidationError(final ProductCategoryNotFoundException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
     public ResponseEntity handleValidationError(final ProductNotFoundException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler
+    public ResponseEntity handleValidationError(final ProductNotOrderedException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
     public ResponseEntity handleValidationError(final QuestionAlreadyExistException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleValidationError(final QuestionCategoryAlreadyExistException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleValidationError(final QuestionCategoryNotFoundException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
