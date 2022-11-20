@@ -21,6 +21,11 @@ services:
   postgres:
     container_name: postgres
     image: postgres:12
+    build:
+      context: ./
+      dockerfile: Dockerfile.postgres
+    ports:
+      - "5432:5432"
     environment:
       PG_DATA: /var/lib/postgresql/data
       POSTGRES_PASSWORD: 12345
