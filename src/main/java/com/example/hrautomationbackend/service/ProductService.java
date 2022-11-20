@@ -81,6 +81,18 @@ public class ProductService {
         }
     }
 
+    public void unorderProduct(Long id) throws ProductNotFoundException, ProductNotOrderedException {
+        ProductEntity product = productRepository
+                .findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Продукт с id " + id + " не существует"));
+        if (product.isOrdered()) {
+            product.setOrdered(false);
+            productRepository.save(product);
+        } else {
+            throw new ProductNotOrderedException("Продукт с id " + product.getId() + " не заказан");
+        }
+    }
+
     public void addProductCategory(ProductCategoryEntity category) throws ProductCategoryAlreadyExistException {
         if (productCategoryRepository.findByName(category.getName()) == null) {
             productCategoryRepository.save(category);

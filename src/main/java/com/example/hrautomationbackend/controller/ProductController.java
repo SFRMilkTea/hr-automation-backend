@@ -127,7 +127,7 @@ public class ProductController {
     }
 
     /**
-     * @api {get} /products/order/[id] Заказать продукт
+     * @api {get} /products/order/[id] Запросить заказ продукта
      * @apiName orderProduct
      * @apiGroup PRODUCTS
      * @apiHeader {String} accessToken Аксес токен
@@ -143,6 +143,29 @@ public class ProductController {
         try {
             jwtService.checkAccessToken(accessToken);
             productService.orderProduct(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * @api {get} /products/unorder/[id] Убрать продукт из запросов на заказ
+     * @apiName unorderProduct
+     * @apiGroup PRODUCTS
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiParam {Number} id Уникальный идентификатор продукта
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) ProductNotFoundException Продукт не существует
+     * @apiError (Error 400) ProductNotOrderedException Продукт уже заказан
+     **/
+
+    @GetMapping("/unorder/{id}")
+    public ResponseEntity unorderProduct(@RequestHeader("Authorization") String accessToken,
+                                         @PathVariable Long id) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            productService.unorderProduct(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             throw new RuntimeException(e);
