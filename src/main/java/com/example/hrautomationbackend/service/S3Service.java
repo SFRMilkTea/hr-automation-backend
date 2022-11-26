@@ -166,38 +166,30 @@ public class S3Service {
         }
     }
 
-    /**
-     * Creates a temporary file with text data to demonstrate uploading a file
-     * to Amazon S3
-     *
-     * @return A newly created temporary file with text data.
-     *
-     * @throws IOException
-     */
     public static File createSampleFile(MultipartFile multipartFile) throws IOException {
-        String prefix = multipartFile.getOriginalFilename() + "temp-pic-";
+        String prefix = multipartFile.getOriginalFilename() + "-temp-pic-";
         File file = File.createTempFile(prefix, ".jpg");
         file.deleteOnExit();
         return file;
     }
 
-    /**
-     * Displays the contents of the specified input stream as text.
-     *
-     * @param input
-     *            The input stream to display as text.
-     *
-     * @throws IOException
-     */
-    private static void displayTextInputStream(InputStream input) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-        while (true) {
-            String line = reader.readLine();
-            if (line == null) break;
-
-            System.out.println("    " + line);
-        }
-        System.out.println();
-    }
+//    /**
+//     * Displays the contents of the specified input stream as text.
+//     *
+//     * @param input
+//     *            The input stream to display as text.
+//     *
+//     * @throws IOException
+//     */
+//    private static void displayTextInputStream(InputStream input) throws IOException {
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+//        while (true) {
+//            String line = reader.readLine();
+//            if (line == null) break;
+//
+//            System.out.println("    " + line);
+//        }
+//        System.out.println();
+//    }
 
 }
