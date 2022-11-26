@@ -9,6 +9,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 
@@ -38,7 +39,7 @@ public class S3Service {
                 .build();
 
         String bucketName = "hr-automation";
-        String key = "MyObjectKey123";
+        String key = file.getName();
 
         System.out.println("===========================================");
         System.out.println("Getting Started with Amazon S3");
@@ -173,18 +174,10 @@ public class S3Service {
      *
      * @throws IOException
      */
-    private static File createSampleFile() throws IOException {
-        File file = File.createTempFile("aws-java-sdk-", ".txt");
+    public static File createSampleFile(MultipartFile multipartFile) throws IOException {
+        String prefix = multipartFile.getOriginalFilename() + "temp-pic-";
+        File file = File.createTempFile(prefix, ".jpg");
         file.deleteOnExit();
-
-        Writer writer = new OutputStreamWriter(new FileOutputStream(file));
-        writer.write("abcdefghijklmnopqrstuvwxyz\n");
-        writer.write("01234567890112345678901234\n");
-        writer.write("!@#$%^&*()-=[]{};':',.<>/?\n");
-        writer.write("01234567890112345678901234\n");
-        writer.write("abcdefghijklmnopqrstuvwxyz\n");
-        writer.close();
-
         return file;
     }
 
