@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 
 @RestController
@@ -16,7 +16,7 @@ public class testcon {
     @Autowired
     S3Service s3;
     @PostMapping()
-    public void test(@RequestBody MultipartFile file) throws IOException {
+    public void test(@RequestBody File file) throws IOException {
         s3.qwerty(file);
     }
 }

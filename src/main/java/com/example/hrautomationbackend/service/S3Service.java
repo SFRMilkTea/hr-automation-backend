@@ -7,17 +7,15 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.InitiateMultipartUploadRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 
 @Service
 public class S3Service {
 
-    public static void qwerty(MultipartFile file) throws IOException {
+    public static void qwerty(File file) throws IOException {
 
         AWSCredentials credentials = null;
         try {
@@ -99,7 +97,7 @@ public class S3Service {
 //             */
 
             System.out.println("Uploading a new object to S3 from a file\n");
-            s3.putObject(new PutObjectRequest(bucketName, key, (File) file));
+            s3.putObject(new PutObjectRequest(bucketName, key, file));
 
             /*
              * Download an object - When you download an object, you get all of
