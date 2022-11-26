@@ -2,9 +2,12 @@ package com.example.hrautomationbackend.controller;
 
 import com.example.hrautomationbackend.service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 
 @RestController
@@ -12,8 +15,8 @@ import java.io.IOException;
 public class testcon {
     @Autowired
     S3Service s3;
-    @GetMapping()
-    public void test(@RequestPart File file) throws IOException {
+    @PostMapping()
+    public void test(@RequestBody MultipartFile file) throws IOException {
         s3.qwerty(file);
     }
 }

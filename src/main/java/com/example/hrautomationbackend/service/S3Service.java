@@ -7,15 +7,17 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.*;
+import com.amazonaws.services.s3.model.InitiateMultipartUploadRequest;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 
 @Service
 public class S3Service {
 
-    public static void qwerty(File file) throws IOException {
+    public static void qwerty(MultipartFile file) throws IOException {
 
         AWSCredentials credentials = null;
         try {
@@ -45,37 +47,59 @@ public class S3Service {
         System.out.println("===========================================\n");
 
         try {
-            /*
-             * Create a new S3 bucket - Amazon S3 bucket names are globally unique,
-             * so once a bucket name has been taken by any user, you can't create
-             * another bucket with that same name.
-             *
-             * You can optionally specify a location for your bucket if you want to
-             * keep your data closer to your applications or users.
-             */
-//            System.out.println("Creating bucket " + bucketName + "\n");
-//            s3.createBucket(bucketName);
-
-            /*
-             * List the buckets in your account
-             */
-//            System.out.println("Listing buckets");
-//            for (Bucket bucket : s3.listBuckets()) {
-//                System.out.println(" - " + bucket.getName());
+            // Create a list of ETag objects. You retrieve ETags for each object part uploaded,
+            // then, after each individual part has been uploaded, pass the list of ETags to
+            // the request to complete the upload.
+//            List<PartETag> partETags = new ArrayList<PartETag>();
+//
+//            // Initiate the multipart upload.
+//            InitiateMultipartUploadRequest initRequest = new InitiateMultipartUploadRequest(bucketName, key);
+//            InitiateMultipartUploadResult initResponse = s3.initiateMultipartUpload(initRequest);
+//
+//            // Upload the file parts.
+//            long filePosition = 0;
+//            long contentLength = file.getSize();
+//
+//            long partSize = 5 * 1024 * 1024; // Set part size to 5 MB.
+//            for (int i = 1; filePosition < contentLength; i++) {
+//                // Because the last part could be less than 5 MB, adjust the part size as needed.
+//                partSize = Math.min(partSize, (contentLength - filePosition));
+//
+//                File file1 = createSampleFile();
+//                file.transferTo(file1);
+//                // Create the request to upload a part.
+//                UploadPartRequest uploadRequest = new UploadPartRequest()
+//                        .withBucketName(bucketName)
+//                        .withKey(key)
+//                        .withUploadId(initResponse.getUploadId())
+//                        .withPartNumber(i)
+//                        .withFileOffset(filePosition)
+//                        .withFile(file1)
+//                        .withPartSize(partSize);
+//
+//                // Upload the part and add the response's ETag to our list.
+//                UploadPartResult uploadResult = s3.uploadPart(uploadRequest);
+//                partETags.add(uploadResult.getPartETag());
+//
+//                filePosition += partSize;
 //            }
-//            System.out.println();
-
-            /*
-             * Upload an object to your bucket - You can easily upload a file to
-             * S3, or upload directly an InputStream if you know the length of
-             * the data in the stream. You can also specify your own metadata
-             * when uploading to S3, which allows you set a variety of options
-             * like content-type and content-encoding, plus additional metadata
-             * specific to your applications.
-             */
+//
+//            // Complete the multipart upload.
+//            CompleteMultipartUploadRequest compRequest = new CompleteMultipartUploadRequest(bucketName, keyName,
+//                    initResponse.getUploadId(), partETags);
+//            s3Client.completeMultipartUpload(compRequest);
+//
+//            /*
+//             * Upload an object to your bucket - You can easily upload a file to
+//             * S3, or upload directly an InputStream if you know the length of
+//             * the data in the stream. You can also specify your own metadata
+//             * when uploading to S3, which allows you set a variety of options
+//             * like content-type and content-encoding, plus additional metadata
+//             * specific to your applications.
+//             */
 
             System.out.println("Uploading a new object to S3 from a file\n");
-            s3.putObject(new PutObjectRequest(bucketName, key, file));
+            s3.putObject(new PutObjectRequest(bucketName, key, (File) file));
 
             /*
              * Download an object - When you download an object, you get all of
