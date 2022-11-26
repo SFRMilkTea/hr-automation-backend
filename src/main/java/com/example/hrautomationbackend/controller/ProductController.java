@@ -258,7 +258,7 @@ public class ProductController {
     }
 
     /**
-     * @api {put} /products/category Обновление продукта
+     * @api {put} /products/category Обновление категории продукта
      * @apiName updateProductCategory
      * @apiGroup PRODUCTS
      * @apiBody {Object} productCategory Новые данные категории

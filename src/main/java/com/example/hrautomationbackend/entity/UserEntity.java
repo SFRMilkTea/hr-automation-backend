@@ -19,6 +19,7 @@ public class UserEntity {
     private boolean isAdmin;
     private LocalDateTime codeExpTime;
     private Date birthDate;
+    private String pictureUrl;
 
     public UserEntity() {
     }
@@ -101,5 +102,13 @@ public class UserEntity {
 
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public String getPictureUrl() {
+        return pictureUrl;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
     }
 }
