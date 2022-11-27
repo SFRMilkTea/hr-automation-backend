@@ -18,7 +18,7 @@ public class ProductEntity {
     private String code;
     private String pictureUrl;
     private boolean isOrdered;
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private int quantity;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
