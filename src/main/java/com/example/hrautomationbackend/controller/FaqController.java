@@ -143,7 +143,7 @@ public class FaqController {
     }
 
     /**
-     * @api {put} /faq/category/[categoryId] Обновление вопроса ВНИМАНИЕ Я ЭТО СКОРО (ВОЗМОЖНО) ОБЪЕДИНЮ С ДОБАВЛЕНИЕМ
+     * @api {put} /faq/category/[categoryId] Обновление вопроса
      * @apiName updateQuestion
      * @apiGroup FAQ
      * @apiParam {Long} categoryId Айди категории вопроса

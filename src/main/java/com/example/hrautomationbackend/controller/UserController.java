@@ -32,7 +32,14 @@ public class UserController {
      * @apiGroup USERS
      * @apiParam {Number} id Уникальный идентефикатор пользователя
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {Object} user Пользователь
+     * @apiSuccess {Long} id id пользователя
+     * @apiSuccess {String} email email пользователя
+     * @apiSuccess {String} username имя пользователя
+     * @apiSuccess {String} about информация о пользователе
+     * @apiSuccess {String} post должность пользователя
+     * @apiSuccess {String} project проект пользователя
+     * @apiSuccess {boolean} admin является ли пользователь админом
+     * @apiSuccess {Date} birthDate дата рождения пользователя
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
@@ -55,7 +62,7 @@ public class UserController {
      * @apiParam {Number} pageNumber Номер страницы
      * @apiParam {Number} size Количество элементов на странице
      * @apiParam {String} sortBy Фильтр сортировки
-     * @apiSuccess {List[Object]} users Список всех пользователей
+     * @apiSuccess {List[User]} users Список всех пользователей (поля id, username, post)
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
@@ -101,7 +108,11 @@ public class UserController {
      * @apiGroup USERS
      * @apiBody {String} email Корпоративная почта пользователя
      * @apiBody {String} username Username пользователя
-     * @apiBody {Boolean} [admin=false]  Роль пользователя
+     * @apiBody {String} [about] информация о пользователе
+     * @apiBody {String} [post] должность пользователя
+     * @apiBody {String} [project] проект пользователя
+     * @apiBody {boolean} [admin=false] является ли пользователь админом
+     * @apiBody {Date} [birthDate] дата рождения пользователя
      * @apiHeader {String} accessToken Аксес токен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) UserAlreadyExistException Пользователь уже существует
@@ -120,10 +131,16 @@ public class UserController {
     }
 
     /**
-     * @api {put} /users Обновление пользователя ВНИМАНИЕ Я ЭТО СКОРО (ВОЗМОЖНО) ОБЪЕДИНЮ С ДОБАВЛЕНИЕМ
+     * @api {put} /users Обновление пользователя
      * @apiName updateUser
      * @apiGroup USERS
-     * @apiBody {Object} user Новые данные пользователя (+ старые, если не изменялись!)
+     * @apiBody {String} email Корпоративная почта пользователя
+     * @apiBody {String} username Username пользователя
+     * @apiBody {String} about информация о пользователе
+     * @apiBody {String} post должность пользователя
+     * @apiBody {String} project проект пользователя
+     * @apiBody {boolean} admin=false является ли пользователь админом
+     * @apiBody {Date} birthDate дата рождения пользователя
      * @apiHeader {String} accessToken Аксес токен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) UserNotFoundException Пользователь не существует

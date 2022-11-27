@@ -82,8 +82,6 @@ public class ProductController {
      * @apiParam {Long} categoryId Айди категории, к которой относится добавляемый продукт
      * @apiBody {String} name Название продукта
      * @apiBody {String} code Артикул продукта
-     * @apiBody {String} pictureUrl Фото продукта
-     * @apiBody {Boolean} [ordered=false] Заказан ли продукт
      * @apiHeader {String} accessToken Аксес токен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) ProductAlreadyExistException Продукт уже существует
@@ -107,7 +105,9 @@ public class ProductController {
      * @apiName updateProduct
      * @apiGroup PRODUCTS
      * @apiParam {Long} categoryId Айди категории продукта
-     * @apiBody {Product} product Новые данные о продукте (+ старые, если не изменялись!)
+     * @apiBody {String} name Название продукта
+     * @apiBody {String} code Артикул продукта
+     * @apiBody {boolean} ordered Заказан ли продукт
      * @apiHeader {String} accessToken Аксес токен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) ProductNotFoundException Продукт не существует
@@ -261,7 +261,7 @@ public class ProductController {
      * @api {put} /products/category Обновление категории продукта
      * @apiName updateProductCategory
      * @apiGroup PRODUCTS
-     * @apiBody {Object} productCategory Новые данные категории
+     * @apiBody {String} name Название категории
      * @apiHeader {String} accessToken Аксес токен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) ProductCategoryNotFoundException Категория продукта не существует
