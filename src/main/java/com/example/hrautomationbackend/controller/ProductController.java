@@ -300,4 +300,31 @@ public class ProductController {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * @api {get} /products/[id] Получение продукта по айди
+     * @apiName getOneProduct
+     * @apiGroup PRODUCTS
+     * @apiParam {Number} id Уникальный идентефикатор продукта
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {Long} id id продукта
+     * @apiSuccess {String} name название продукта
+     * @apiSuccess {String} code артикул
+     * @apiSuccess {boolean} ordered заказан ли продукт
+     * @apiSuccess {int} quantity количество продуктов на заказ
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) ProductNotFoundException Продукт не существует
+     **/
+
+    @GetMapping("/{id}")
+    public ResponseEntity getOneProduct(@PathVariable Long id,
+                                        @RequestHeader("Authorization") String accessToken) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            return ResponseEntity.ok(productService.getProduct(id));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

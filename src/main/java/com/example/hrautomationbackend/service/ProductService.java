@@ -142,4 +142,14 @@ public class ProductService {
         }
         return orderedProducts;
     }
+
+    public ProductEntity getProduct(Long id) throws ProductNotFoundException {
+        try {
+            productRepository.findById(id).get();
+        } catch (NoSuchElementException e) {
+            throw new ProductNotFoundException("Продукт с id " + id + " не найден");
+        }
+        return productRepository.findById(id).get();
+    }
+
 }
