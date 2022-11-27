@@ -3,7 +3,7 @@ package com.example.hrautomationbackend.service;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
+import com.amazonaws.auth.SystemPropertiesCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -21,7 +21,7 @@ public class S3Service {
 
         AWSCredentials credentials = null;
         try {
-            credentials = new EnvironmentVariableCredentialsProvider().getCredentials();
+            credentials = new SystemPropertiesCredentialsProvider().getCredentials();
         } catch (Exception e) {
             throw new AmazonClientException(
                     "Cannot load the credentials from the credential profiles file. " +
@@ -29,7 +29,7 @@ public class S3Service {
                             "location (~/.aws/credentials), and is in valid format.", e);
         }
         (Logger.getLogger(ProductService.class.getName())).info(
-                "! Creds: " + credentials);
+                "! Creds: id : " + credentials.getAWSAccessKeyId() +  " key : "+ credentials.getAWSSecretKey());
         AmazonS3 s3 = null;
         try{
         s3 = AmazonS3ClientBuilder.standard()
