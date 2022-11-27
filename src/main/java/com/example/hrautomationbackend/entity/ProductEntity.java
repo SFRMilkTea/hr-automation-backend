@@ -18,6 +18,8 @@ public class ProductEntity {
     private String code;
     private String pictureUrl;
     private boolean isOrdered;
+    @Column(nullable = false)
+    private int quantity;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_category_id", nullable = false)
@@ -75,5 +77,13 @@ public class ProductEntity {
 
     public void setProductCategory(ProductCategoryEntity productCategory) {
         this.productCategory = productCategory;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

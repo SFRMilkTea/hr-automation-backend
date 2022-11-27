@@ -82,6 +82,8 @@ public class ProductController {
      * @apiParam {Long} categoryId Айди категории, к которой относится добавляемый продукт
      * @apiBody {String} name Название продукта
      * @apiBody {String} code Артикул продукта
+     * @apiBody {boolean} [ordered=false] Заказан ли продукт
+     * @apiBody {int} quantity Количество продуктов для заказа
      * @apiHeader {String} accessToken Аксес токен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) ProductAlreadyExistException Продукт уже существует
@@ -108,6 +110,7 @@ public class ProductController {
      * @apiBody {String} name Название продукта
      * @apiBody {String} code Артикул продукта
      * @apiBody {boolean} ordered Заказан ли продукт
+     * @apiBody {int} quantity Количество продуктов для заказа
      * @apiHeader {String} accessToken Аксес токен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) ProductNotFoundException Продукт не существует

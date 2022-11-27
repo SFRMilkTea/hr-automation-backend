@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 public class ProductService {
@@ -45,6 +46,11 @@ public class ProductService {
         if (productRepository.findByCode(product.getCode()) == null) {
             Optional<ProductCategoryEntity> categoryOptional = productCategoryRepository.findById(categoryId);
             if (productCategoryRepository.findById(categoryId).isPresent()) {
+                if (product.getQuantity() == 0){
+                    product.setQuantity(1);
+                    (Logger.getLogger(ProductService.class.getName())).info(
+                            "! Products quantity to order cannot be 0. Automatically changes to 1 !");
+                }
                 product.setProductCategory(categoryOptional.get());
                 productRepository.save(product);
             } else
