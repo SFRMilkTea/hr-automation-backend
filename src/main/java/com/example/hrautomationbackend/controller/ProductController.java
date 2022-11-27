@@ -103,10 +103,11 @@ public class ProductController {
     }
 
     /**
-     * @api {put} /products Обновление продукта
+     * @api {put} /products/category/{categoryId} Обновление продукта
      * @apiName updateProduct
      * @apiGroup PRODUCTS
      * @apiParam {Long} categoryId Айди категории продукта
+     * @apiBody {Long} id Айди продукта
      * @apiBody {String} name Название продукта
      * @apiBody {String} code Артикул продукта
      * @apiBody {boolean} ordered Заказан ли продукт
