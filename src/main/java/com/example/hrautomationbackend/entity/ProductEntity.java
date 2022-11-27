@@ -22,7 +22,7 @@ public class ProductEntity {
     private int quantity;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "product_category_id", nullable = false)
+    @JoinColumn(name = "product_category_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private ProductCategoryEntity productCategory;
