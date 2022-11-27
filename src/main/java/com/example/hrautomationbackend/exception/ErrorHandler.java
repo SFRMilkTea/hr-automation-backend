@@ -89,4 +89,9 @@ public class ErrorHandler {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
+    @ExceptionHandler
+    public ResponseEntity AmazonClientException(final WrongAuthorizationCodeException e) {
+        return ResponseEntity.status(500).body(e.getMessage());
+    }
+
 }

@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 @Service
 public class S3Service {
@@ -25,9 +26,10 @@ public class S3Service {
             throw new AmazonClientException(
                     "Cannot load the credentials from the credential profiles file. " +
                             "Please make sure that your credentials file is at the correct " +
-                            "location (~/.aws/credentials), and is in valid format.",
-                    e);
+                            "location (~/.aws/credentials), and is in valid format.", e);
         }
+        (Logger.getLogger(ProductService.class.getName())).info(
+                "! Creds: " + credentials);
         AmazonS3 s3 = null;
         try{
         s3 = AmazonS3ClientBuilder.standard()
