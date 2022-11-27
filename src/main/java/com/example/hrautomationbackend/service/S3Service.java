@@ -28,13 +28,18 @@ public class S3Service {
                             "location (~/.aws/credentials), and is in valid format.",
                     e);
         }
-
-        AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+        AmazonS3 s3 = null;
+        try{
+        s3 = AmazonS3ClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .withEndpointConfiguration(
                         new AmazonS3ClientBuilder.EndpointConfiguration(
                                 "storage.yandexcloud.net", "ru-central1"))
-                .build();
+                .build();}
+        catch (Exception e) {
+            throw new AmazonClientException(
+                    "Cannot build s3 creds: " + credentials, e);
+        }
 
         String bucketName = "hr-automation";
         String key = file.getName();
