@@ -75,6 +75,11 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity handleValidationError(final UserNotAdminException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
     public ResponseEntity handleValidationError(final UserNotFoundException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }

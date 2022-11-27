@@ -36,7 +36,25 @@ public class AuthController {
     @GetMapping
     public ResponseEntity authorization(@RequestParam String email) {
         try {
-            authService.sendCode(email);
+            authService.checkEmail(email);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * @api {get} /authorization/admin?email=[email@example.ru] Авторизация для администраторов
+     * @apiName authorizationForAdmin
+     * @apiGroup AUTHORIZATION
+     * @apiParam {String} email Корпоративная почта пользователя
+     * @apiError (Error 400) UserNotFoundException Пользователь с такой почтой не зарегистрирован
+     **/
+
+    @GetMapping("/admin")
+    public ResponseEntity authorizationForAdmin(@RequestParam String email) {
+        try {
+            authService.checkAdminEmail(email);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             throw new RuntimeException(e);

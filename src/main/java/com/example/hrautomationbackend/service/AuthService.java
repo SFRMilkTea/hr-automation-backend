@@ -1,6 +1,7 @@
 package com.example.hrautomationbackend.service;
 
 import com.example.hrautomationbackend.entity.UserEntity;
+import com.example.hrautomationbackend.exception.UserNotAdminException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.exception.WrongAuthorizationCodeException;
 import com.example.hrautomationbackend.jwt.JwtResponse;
@@ -26,19 +27,33 @@ public class AuthService {
         this.codeService = codeService;
     }
 
-    @Transactional
-    public void sendCode(String email) throws UserNotFoundException {
+    public void checkAdminEmail(String email) throws UserNotFoundException, UserNotAdminException {
         UserEntity user = userRepository.findByEmail(email);
         if (user == null) {
             throw new UserNotFoundException("Пользователь с данным email не существует");
-        } else {
-            int authCode = codeService.generateCode();
-            emailService.sendEmail(user, authCode);
-            user.setAuthCode(authCode);
-            final LocalDateTime expTime = LocalDateTime.now().plusMinutes(5);
-            user.setCodeExpTime(expTime);
-            userRepository.save(user);
         }
+        if (!user.isAdmin()) {
+            throw new UserNotAdminException("Недостаточно прав доступа");
+        }
+        sendCode(user);
+    }
+
+    public void checkEmail(String email) throws UserNotFoundException {
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException("Пользователь с данным email не существует");
+        }
+        sendCode(user);
+    }
+
+    @Transactional
+    public void sendCode(UserEntity user) {
+        int authCode = codeService.generateCode();
+        emailService.sendEmail(user, authCode);
+        user.setAuthCode(authCode);
+        final LocalDateTime expTime = LocalDateTime.now().plusMinutes(5);
+        user.setCodeExpTime(expTime);
+        userRepository.save(user);
     }
 
     @Transactional
