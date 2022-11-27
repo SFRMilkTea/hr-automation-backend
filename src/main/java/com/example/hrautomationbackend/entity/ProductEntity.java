@@ -18,11 +18,11 @@ public class ProductEntity {
     private String code;
     private String pictureUrl;
     private boolean isOrdered;
-    @Column(columnDefinition = "int default 100")
+    @Column(columnDefinition = "int default 1")
     private int quantity;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "product_category_id")
+    @JoinColumn(name = "product_category_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private ProductCategoryEntity productCategory;
