@@ -10,6 +10,7 @@ public class ProductCategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
