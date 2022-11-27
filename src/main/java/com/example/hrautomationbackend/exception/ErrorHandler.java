@@ -1,5 +1,6 @@
 package com.example.hrautomationbackend.exception;
 
+import com.amazonaws.AmazonClientException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -90,7 +91,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity AmazonClientException(final WrongAuthorizationCodeException e) {
+    public ResponseEntity handleValidationError(final AmazonClientException e) {
         return ResponseEntity.status(500).body(e.getMessage());
     }
 
