@@ -9,7 +9,6 @@ RUN mkdir -p /opt
 COPY --from=build /home/gradle/project/build/libs/hr-automation-backend.jar /opt/app.jar
 WORKDIR /opt
 RUN java -Djarmode=layertools -jar app.jar extract
-RUN ./gradlew -q dependencies
 
 FROM openjdk:17-jdk-alpine
 WORKDIR /opt
