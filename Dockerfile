@@ -17,5 +17,4 @@ COPY --from=extractor opt/spring-boot-loader/ ./
 COPY --from=extractor opt/snapshot-dependencies/ ./
 COPY --from=extractor opt/application/ ./
 
-ENTRYPOINT ["sh", "-c", "java -Djava.security.egd=file:/dev/./urandom org.springframework.boot.loader.JarLauncher"]
-
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom org.springframework.boot.loader.JarLauncher"]

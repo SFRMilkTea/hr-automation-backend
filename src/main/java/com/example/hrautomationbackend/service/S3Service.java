@@ -20,26 +20,20 @@ public class S3Service {
     public static void qwerty(File file) throws IOException {
 
         AWSCredentials credentials = null;
-        try {
-            credentials = new EnvironmentVariableCredentialsProvider().getCredentials();
-        } catch (Exception e) {
-            throw new IOException(e);
-        }
+        credentials = new EnvironmentVariableCredentialsProvider().getCredentials();
+
         (Logger.getLogger(ProductService.class.getName())).info(
-                "! Creds: id : " + credentials.getAWSAccessKeyId() +  " key : "+ credentials.getAWSSecretKey());
-        AmazonS3 s3 = null;
-        try{
-        s3 = AmazonS3ClientBuilder.standard()
+                "! Creds: id : " + credentials.getAWSAccessKeyId() + " key : " + credentials.getAWSSecretKey());
+        AmazonS3 s3 = AmazonS3ClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .withEndpointConfiguration(
                         new AmazonS3ClientBuilder.EndpointConfiguration(
-                                "storage.yandexcloud.net", "ru-central1"))
-                .build();}
-        catch (Exception e) {
-            throw new AmazonClientException(
-                    "Cannot build s3 creds: " + credentials, e);
-        }
+                                "storage.yandexcloud.net", "ru-central1"
+                        )
+                )
+                .build();
 
+        (Logger.getLogger(ProductService.class.getName())).info("! Region: " + s3.getRegionName());
         String bucketName = "hr-automation";
         String key = file.getName();
 
