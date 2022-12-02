@@ -190,4 +190,29 @@ public class FaqController {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * @api {get} /faq/[id] Получение вопроса по айди
+     * @apiName getQuestion
+     * @apiGroup FAQ
+     * @apiParam {Long} id Уникальный идентификатор вопроса
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {Long} id id вопроса
+     * @apiSuccess {String} title заголовок вопроса
+     * @apiSuccess {String} description ответ на вопрос
+     * @apiSuccess {Long} question_category id категории вопроса
+     * @apiError (Error 400) QuestionNotFoundException Вопрос не найден
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     **/
+
+    @GetMapping("/{id}")
+    public ResponseEntity getQuestion(@PathVariable Long id,
+                                      @RequestHeader("Authorization") String accessToken) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            return ResponseEntity.ok(faqService.getQuestion(id));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
