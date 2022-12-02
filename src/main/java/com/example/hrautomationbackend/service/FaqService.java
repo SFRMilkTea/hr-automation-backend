@@ -6,6 +6,7 @@ import com.example.hrautomationbackend.exception.QuestionAlreadyExistException;
 import com.example.hrautomationbackend.exception.QuestionCategoryAlreadyExistException;
 import com.example.hrautomationbackend.exception.QuestionCategoryNotFoundException;
 import com.example.hrautomationbackend.exception.QuestionNotFoundException;
+import com.example.hrautomationbackend.model.Question;
 import com.example.hrautomationbackend.repository.QuestionCategoryRepository;
 import com.example.hrautomationbackend.repository.QuestionRepository;
 import org.springframework.data.domain.Page;
@@ -84,20 +85,12 @@ public class FaqService {
         throw new QuestionCategoryNotFoundException("Такая категория не найдена");
     }
 
-    public QuestionEntity getQuestion(Long id) throws QuestionNotFoundException {
+    public Question getQuestion(Long id) throws QuestionNotFoundException {
 
         QuestionEntity question = questionRepository
                 .findById(id)
                 .orElseThrow(() -> new QuestionNotFoundException("Вопрос с id " + id + " не существует"));
-//        return question.getQuestionCategory();
-        return question;
-    }
-
-    public QuestionCategoryEntity getQuestionCategory(Long id) throws QuestionNotFoundException {
-        QuestionEntity question = questionRepository
-                .findById(id)
-                .orElseThrow(() -> new QuestionNotFoundException("Вопрос с id " + id + " не существует"));
-        return question.getQuestionCategory();
+        return Question.toModel(question);
     }
 
 }

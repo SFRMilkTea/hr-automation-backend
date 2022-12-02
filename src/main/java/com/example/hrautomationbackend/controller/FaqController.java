@@ -200,7 +200,7 @@ public class FaqController {
      * @apiSuccess {Long} id id вопроса
      * @apiSuccess {String} title заголовок вопроса
      * @apiSuccess {String} description ответ на вопрос
-     * @apiSuccess {Long} question_category id категории вопроса
+     * @apiSuccess {Long} category_id id категории вопроса
      * @apiError (Error 400) QuestionNotFoundException Вопрос не найден
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
