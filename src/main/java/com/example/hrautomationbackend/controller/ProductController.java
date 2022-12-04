@@ -2,13 +2,19 @@ package com.example.hrautomationbackend.controller;
 
 import com.example.hrautomationbackend.entity.ProductCategoryEntity;
 import com.example.hrautomationbackend.entity.ProductEntity;
+import com.example.hrautomationbackend.service.ExcelService;
 import com.example.hrautomationbackend.service.JwtService;
 import com.example.hrautomationbackend.service.ProductService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/products")
@@ -20,10 +26,12 @@ public class ProductController {
      */
 
     private final ProductService productService;
+    private final ExcelService excelService;
     private final JwtService jwtService;
 
-    public ProductController(ProductService productService, JwtService jwtService) {
+    public ProductController(ProductService productService, ExcelService excelService, JwtService jwtService) {
         this.productService = productService;
+        this.excelService = excelService;
         this.jwtService = jwtService;
     }
 
@@ -326,6 +334,28 @@ public class ProductController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * @api {get} /products/excel Получение файла с заказанными продуктами
+     * @apiName getExcel
+     * @apiGroup PRODUCTS
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {byte[]} bytes если честно вообще хз что придет
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     **/
+
+    @GetMapping("/excel")
+    public ResponseEntity<byte[]> getExcel(@RequestHeader("Authorization") String accessToken) throws IOException {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_XML);
+            return new ResponseEntity<>(excelService.createExcel(), headers, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 }
