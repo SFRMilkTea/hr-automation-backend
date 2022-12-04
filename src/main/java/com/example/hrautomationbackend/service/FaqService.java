@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -48,8 +49,13 @@ public class FaqService {
             throw new QuestionCategoryAlreadyExistException("Категория " + category.getName() + " уже существует");
     }
 
-    public Page<QuestionEntity> getQuestions(Pageable pageable) {
-        return questionRepository.findAll(pageable);
+    public List<Question> getQuestions(Pageable pageable) {
+        Page<QuestionEntity> questions = questionRepository.findAll(pageable);
+        ArrayList<Question> questionsModel = new ArrayList<>();
+        for (QuestionEntity question : questions) {
+            questionsModel.add(Question.toModel(question));
+        }
+        return questionsModel;
     }
 
     public List<QuestionCategoryEntity> getCategories() {

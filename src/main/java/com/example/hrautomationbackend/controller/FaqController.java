@@ -83,7 +83,7 @@ public class FaqController {
      * @apiParam {Number} pageNumber Номер страницы
      * @apiParam {Number} size Количество элементов на странице
      * @apiParam {String} sortBy Фильтр сортировки
-     * @apiSuccess {List[Object]} questions Список всех вопросов
+     * @apiSuccess {List[Question]} questions Список всех вопросов
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 

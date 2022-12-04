@@ -3,6 +3,7 @@ package com.example.hrautomationbackend.service;
 import com.example.hrautomationbackend.entity.ProductCategoryEntity;
 import com.example.hrautomationbackend.entity.ProductEntity;
 import com.example.hrautomationbackend.exception.*;
+import com.example.hrautomationbackend.model.Product;
 import com.example.hrautomationbackend.repository.ProductCategoryRepository;
 import com.example.hrautomationbackend.repository.ProductRepository;
 import org.springframework.data.domain.Page;
@@ -27,9 +28,13 @@ public class ProductService {
         this.productCategoryRepository = productCategoryRepository;
     }
 
-    public Page<ProductEntity> getProducts(Pageable pageable) {
+    public List<Product> getProducts(Pageable pageable) {
         Page<ProductEntity> products = productRepository.findAll(pageable);
-        return products;
+        ArrayList<Product> productsModel = new ArrayList<>();
+        for (ProductEntity product : products) {
+            productsModel.add(Product.toModel(product));
+        }
+        return productsModel;
     }
 
     public void delete(Long id) throws ProductNotFoundException {
