@@ -4,9 +4,11 @@ import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.exception.WrongAuthorizationCodeException;
 import com.example.hrautomationbackend.jwt.JwtResponse;
 import com.example.hrautomationbackend.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/authorization")
@@ -17,26 +19,45 @@ public class AuthController {
      * АВТОРИЗАЦИЯ
      */
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     /**
      * @api {get} /authorization?email=[email@example.ru] Авторизация
      * @apiName authorization
      * @apiGroup AUTHORIZATION
      * @apiParam {String} email Корпоративная почта пользователя
-     * @apiSuccess {boolean} result True
      * @apiError (Error 400) UserNotFoundException Пользователь с такой почтой не зарегистрирован
      **/
 
     @GetMapping
     public ResponseEntity authorization(@RequestParam String email) {
         try {
-            return ResponseEntity.ok(authService.sendCode(email));
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            authService.checkEmail(email);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * @api {get} /authorization/admin?email=[email@example.ru] Авторизация для администраторов
+     * @apiName authorizationForAdmin
+     * @apiGroup AUTHORIZATION
+     * @apiParam {String} email Корпоративная почта пользователя
+     * @apiError (Error 400) UserNotFoundException Пользователь с такой почтой не зарегистрирован
+     **/
+
+    @GetMapping("/admin")
+    public ResponseEntity authorizationForAdmin(@RequestParam String email) {
+        try {
+            authService.checkAdminEmail(email);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -46,14 +67,15 @@ public class AuthController {
      * @apiGroup AUTHORIZATION
      * @apiParam {String} email Корпоративная почта пользователя
      * @apiParam {Number} code Четырехзначный код, отправленный на почту
-     * @apiSuccess {Object} token Объект, содержащий три строки: type ("Bearer"), accessToken, refreshToken
+     * @apiSuccess {Object} token Объект, содержащий type ("Bearer"), accessToken, refreshToken, userId, username
+     * @apiError (Error 400) UserNotFoundException Пользователь с такой почтой не зарегистрирован
+     * @apiError (Error 400) WrongAuthorizationCodeException Неверный код авторизации
      **/
 
     @GetMapping(path = "/confirm")
     public ResponseEntity<JwtResponse> authorizationConfirm(@RequestParam String email, int code)
-            throws WrongAuthorizationCodeException {
+            throws WrongAuthorizationCodeException, UserNotFoundException {
         final JwtResponse token = authService.checkCode(email, code);
         return ResponseEntity.ok(token);
     }
-
 }

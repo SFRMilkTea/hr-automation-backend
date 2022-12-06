@@ -8,7 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.List;
 
 public interface QuestionRepository extends PagingAndSortingRepository<QuestionEntity, Long> {
-        List<QuestionEntity> findByCategoryId(Long id);
+        List<QuestionEntity> findByQuestionCategoryId(Long id);
         Page<QuestionEntity> findAll(Pageable pageable);
         QuestionEntity findByTitle (String username);
 }

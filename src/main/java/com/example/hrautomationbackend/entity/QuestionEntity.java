@@ -12,14 +12,16 @@ public class QuestionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String title;
+    @Column(nullable = false)
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "question_category_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
-    private CategoryEntity category;
+    private QuestionCategoryEntity questionCategory;
 
     public QuestionEntity() {
     }
@@ -48,11 +50,11 @@ public class QuestionEntity {
         this.description = description;
     }
 
-    public CategoryEntity getCategory() {
-        return category;
+    public QuestionCategoryEntity getQuestionCategory() {
+        return questionCategory;
     }
 
-    public void setCategory(CategoryEntity category) {
-        this.category = category;
+    public void setQuestionCategory(QuestionCategoryEntity questionCategory) {
+        this.questionCategory = questionCategory;
     }
 }

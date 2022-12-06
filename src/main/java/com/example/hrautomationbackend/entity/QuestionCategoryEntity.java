@@ -5,18 +5,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class CategoryEntity {
+public class QuestionCategoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "question_category_id")
     private List<QuestionEntity> questions =new ArrayList<>();
 
-    public CategoryEntity() {
+    public QuestionCategoryEntity() {
     }
 
     public Long getId() {

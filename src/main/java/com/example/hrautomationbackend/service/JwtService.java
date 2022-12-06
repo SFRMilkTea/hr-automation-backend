@@ -28,15 +28,16 @@ public class JwtService {
     @Autowired
     private UserRepository userRepository;
 
-    public boolean checkAccessToken(String accessToken) throws AccessTokenIsNotValidException {
-        return true;
+    public void checkAccessToken(String accessToken) throws AccessTokenIsNotValidException {
 //        if (jwtProvider.validateAccessToken(accessToken)) {
 //            final Claims claims = jwtProvider.getAccessClaims(accessToken);
 //            final Date expirationDate = claims.getExpiration();
 //            ZoneId zoneId = ZoneId.systemDefault();
 //            ZonedDateTime zonedDateTime = LocalDateTime.now().atZone(zoneId);
 //            Date now = Date.from(zonedDateTime.toInstant());
-//            return expirationDate.compareTo(now) > 0;
+//            if (!(expirationDate.compareTo(now) > 0)) {
+//                throw new AccessTokenIsNotValidException("Токен протух");
+//            }
 //        }
 //        throw new AccessTokenIsNotValidException("Не валидный токен");
     }

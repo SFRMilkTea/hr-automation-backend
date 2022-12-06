@@ -1,11 +1,9 @@
 package com.example.hrautomationbackend.controller;
 
-import com.example.hrautomationbackend.entity.CategoryEntity;
+import com.example.hrautomationbackend.entity.QuestionCategoryEntity;
 import com.example.hrautomationbackend.entity.QuestionEntity;
-import com.example.hrautomationbackend.exception.*;
 import com.example.hrautomationbackend.service.FaqService;
 import com.example.hrautomationbackend.service.JwtService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,10 +19,13 @@ public class FaqController {
      * FAQ
      */
 
-    @Autowired
-    private FaqService faqService;
-    @Autowired
-    private JwtService jwtService;
+    private final FaqService faqService;
+    private final JwtService jwtService;
+
+    public FaqController(FaqService faqService, JwtService jwtService) {
+        this.faqService = faqService;
+        this.jwtService = jwtService;
+    }
 
     /**
      * @api {post} /faq/category/[categoryId] Добавление нового вопроса
@@ -34,9 +35,8 @@ public class FaqController {
      * @apiParam {Long} categoryId Айди категории, к которой относится добавляемый вопрос
      * @apiBody {String} title Заголовок вопроса
      * @apiBody {String} description Описание вопроса
-     * @apiSuccess {boolean} result True, если вопрос успешно добавлен
      * @apiError (Error 400) QuestionAlreadyExistException Данный вопрос уже существует
-     * @apiError (Error 400) CategoryNotFoundException Данная категория не существует
+     * @apiError (Error 400) QuestionCategoryNotFoundException Данная категория не существует
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
@@ -45,51 +45,35 @@ public class FaqController {
                                       @PathVariable(value = "categoryId") Long categoryId,
                                       @RequestBody QuestionEntity question) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(faqService.addQuestion(question, categoryId));
-                } catch (QuestionAlreadyExistException | CategoryNotFoundException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка во время добавления вопроса");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            faqService.addQuestion(question, categoryId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
      * @api {post} /faq/category Добавление новой категории
      * @apiGroup FAQ
-     * @apiName addCategory
+     * @apiName addQuestionCategory
      * @apiHeader {String} accessToken Аксес токен
      * @apiBody {String} name Название категории
-     * @apiSuccess {boolean} result True, если категория успешно добавлена
-     * @apiError (Error 400) CategoryAlreadyExistException Данная категория уже существует
+     * @apiError (Error 400) QuestionCategoryAlreadyExistException Данная категория уже существует
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
     @PostMapping("/category")
-    public ResponseEntity addCategory(@RequestHeader("Authorization") String accessToken,
-                                      @RequestBody CategoryEntity category) {
+    public ResponseEntity addQuestionCategory(@RequestHeader("Authorization") String accessToken,
+                                      @RequestBody QuestionCategoryEntity category) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(faqService.addCategory(category));
-                } catch (CategoryAlreadyExistException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка во время добавления вопроса");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            faqService.addQuestionCategory(category);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
-
 
     /**
      * @api {get} /faq?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение списка вопросов
@@ -99,7 +83,7 @@ public class FaqController {
      * @apiParam {Number} pageNumber Номер страницы
      * @apiParam {Number} size Количество элементов на странице
      * @apiParam {String} sortBy Фильтр сортировки
-     * @apiSuccess {List[Object]} questions Список всех вопросов
+     * @apiSuccess {List[Question]} questions Список всех вопросов
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
@@ -109,18 +93,12 @@ public class FaqController {
                                        @RequestParam int size,
                                        @RequestParam String sortBy) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
-                    return ResponseEntity.ok(faqService.getQuestions(pageable));
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
+            return ResponseEntity.ok(faqService.getQuestions(pageable));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -135,17 +113,11 @@ public class FaqController {
     @GetMapping(path = "/categories")
     public ResponseEntity getCategories(@RequestHeader("Authorization") String accessToken) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(faqService.getCategories());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            return ResponseEntity.ok(faqService.getCategories());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -154,7 +126,6 @@ public class FaqController {
      * @apiGroup FAQ
      * @apiParam {Number} id Уникальный идентефикатор вопроса
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {Boolean} result True, если вопрос успешно удален
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) QuestionNotFoundException Вопрос не найден
      **/
@@ -163,19 +134,12 @@ public class FaqController {
     public ResponseEntity deleteQuestion(@RequestHeader("Authorization") String accessToken,
                                          @PathVariable Long id) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(faqService.deleteQuestion(id));
-                } catch (QuestionNotFoundException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка во время удаления вопроса");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            faqService.deleteQuestion(id);
+            return ResponseEntity.ok().build();
+        }catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -187,10 +151,9 @@ public class FaqController {
      * @apiBody {String} title Заголовок вопроса
      * @apiBody {String} description Описание вопроса
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {Boolean} result True, если вопрос успешно обновлен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) QuestionNotFoundException Вопрос не найден
-     * @apiError (Error 400) CategoryNotFoundException Категория не найдена
+     * @apiError (Error 400) QuestionCategoryNotFoundException Категория не найдена
      **/
 
     @PutMapping("/category/{categoryId}")
@@ -198,48 +161,58 @@ public class FaqController {
                                          @PathVariable(value = "categoryId") Long categoryId,
                                          @RequestBody QuestionEntity question) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(faqService.updateQuestion(question, categoryId));
-                } catch (QuestionNotFoundException | CategoryNotFoundException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка во время апдейта вопроса");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            faqService.updateQuestion(question, categoryId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
-     * @api {get} /faq//categories/[categoryId] Вывод всех вопросов, принадлежащих категории
-     * @apiName getQuestionsByCategory
+     * @api {get} /faq/categories/[categoryId] Вывод всех вопросов, принадлежащих категории
+     * @apiName getQuestionsByQuestionCategory
      * @apiGroup FAQ
      * @apiParam {Long} categoryId Айди категории вопроса
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {List[Questions]} questions
+     * @apiSuccess {List[Questions]} questions Список вопросов, принадлежащих заданной категории
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
-     * @apiError (Error 400) CategoryNotFoundException Категория не найдена
+     * @apiError (Error 400) QuestionCategoryNotFoundException Категория не найдена
      **/
 
     @GetMapping("/categories/{categoryId}")
-    public ResponseEntity getQuestionsByCategory(@RequestHeader("Authorization") String accessToken,
+    public ResponseEntity getQuestionsByQuestionCategory(@RequestHeader("Authorization") String accessToken,
                                                  @PathVariable(value = "categoryId") Long categoryId) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(faqService.getQuestionsByCategory(categoryId));
-                } catch (CategoryNotFoundException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            return ResponseEntity.ok(faqService.getQuestionsByQuestionCategory(categoryId));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
+    }
+
+    /**
+     * @api {get} /faq/[id] Получение вопроса по айди
+     * @apiName getQuestion
+     * @apiGroup FAQ
+     * @apiParam {Long} id Уникальный идентификатор вопроса
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {Long} id id вопроса
+     * @apiSuccess {String} title заголовок вопроса
+     * @apiSuccess {String} description ответ на вопрос
+     * @apiSuccess {Long} category_id id категории вопроса
+     * @apiError (Error 400) QuestionNotFoundException Вопрос не найден
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     **/
+
+    @GetMapping("/{id}")
+    public ResponseEntity getQuestion(@PathVariable Long id,
+                                      @RequestHeader("Authorization") String accessToken) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            return ResponseEntity.ok(faqService.getQuestion(id));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

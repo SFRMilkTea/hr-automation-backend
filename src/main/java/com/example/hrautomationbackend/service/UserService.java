@@ -39,30 +39,26 @@ public class UserService {
 
     }
 
-    public Boolean delete(Long id) throws UserNotFoundException {
+    public void delete(Long id) throws UserNotFoundException {
         try {
             userRepository.deleteById(id);
         } catch (NoSuchElementException e) {
             throw new UserNotFoundException("Пользователь не найден");
         }
-        return true;
     }
 
-    public boolean registration(UserEntity user) throws UserAlreadyExistException {
+    public void registration(UserEntity user) throws UserAlreadyExistException {
         if (userRepository.findByEmail(user.getEmail()) == null) {
             user.setAuthCode(-1);
             userRepository.save(user);
-            return true;
         } else
             throw new UserAlreadyExistException("Пользователь с email " + user.getEmail() + " уже существует");
     }
 
-    public boolean update(UserEntity user) throws UserNotFoundException {
+    public void update(UserEntity user) throws UserNotFoundException {
         if (userRepository.findById(user.getId()).isPresent()) {
             userRepository.save(user);
-            return true;
         } else
             throw new UserNotFoundException("Пользователь не существует");
     }
-
 }

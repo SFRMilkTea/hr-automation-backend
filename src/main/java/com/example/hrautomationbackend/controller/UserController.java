@@ -1,16 +1,11 @@
 package com.example.hrautomationbackend.controller;
 
 import com.example.hrautomationbackend.entity.UserEntity;
-import com.example.hrautomationbackend.exception.AccessTokenIsNotValidException;
-import com.example.hrautomationbackend.exception.UserAlreadyExistException;
-import com.example.hrautomationbackend.exception.UserNotFoundException;
-import com.example.hrautomationbackend.jwt.JwtProvider;
 import com.example.hrautomationbackend.service.JwtService;
 import com.example.hrautomationbackend.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,12 +18,13 @@ public class UserController {
      * СОТРУДНИКИ
      */
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private JwtProvider jwtProvider;
-    @Autowired
-    private JwtService jwtService;
+    private final UserService userService;
+    private final JwtService jwtService;
+
+    public UserController(UserService userService, JwtService jwtService) {
+        this.userService = userService;
+        this.jwtService = jwtService;
+    }
 
     /**
      * @api {get} /users/[id] Получение пользователя по айди
@@ -36,7 +32,14 @@ public class UserController {
      * @apiGroup USERS
      * @apiParam {Number} id Уникальный идентефикатор пользователя
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {Object} user Пользователь
+     * @apiSuccess {Long} id id пользователя
+     * @apiSuccess {String} email email пользователя
+     * @apiSuccess {String} username имя пользователя
+     * @apiSuccess {String} about информация о пользователе
+     * @apiSuccess {String} post должность пользователя
+     * @apiSuccess {String} project проект пользователя
+     * @apiSuccess {boolean} admin является ли пользователь админом
+     * @apiSuccess {Date} birthDate дата рождения пользователя
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
@@ -44,17 +47,11 @@ public class UserController {
     public ResponseEntity getOneUser(@PathVariable Long id,
                                      @RequestHeader("Authorization") String accessToken) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(userService.getUser(id));
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            return ResponseEntity.ok(userService.getUser(id));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -65,7 +62,7 @@ public class UserController {
      * @apiParam {Number} pageNumber Номер страницы
      * @apiParam {Number} size Количество элементов на странице
      * @apiParam {String} sortBy Фильтр сортировки
-     * @apiSuccess {List[Object]} users Список всех пользователей
+     * @apiSuccess {List[User]} users Список всех пользователей (поля id, username, post)
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
@@ -75,18 +72,12 @@ public class UserController {
                                    @RequestParam int size,
                                    @RequestParam String sortBy) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
-                    return ResponseEntity.ok(userService.getUsers(pageable));
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
+            return ResponseEntity.ok(userService.getUsers(pageable));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -95,7 +86,6 @@ public class UserController {
      * @apiGroup USERS
      * @apiParam {Number} id Уникальный идентефикатор пользователя
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {Boolean} result True, если пользователь успешно удален
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) UserNotFoundException Пользователь с таким id не существует
      **/
@@ -104,19 +94,12 @@ public class UserController {
     public ResponseEntity deleteUser(@RequestHeader("Authorization") String accessToken,
                                      @PathVariable Long id) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(userService.delete(id));
-                } catch (UserNotFoundException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            userService.delete(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
@@ -125,9 +108,12 @@ public class UserController {
      * @apiGroup USERS
      * @apiBody {String} email Корпоративная почта пользователя
      * @apiBody {String} username Username пользователя
-     * @apiBody {Boolean} [admin=false]  Роль пользователя
+     * @apiBody {String} [about] информация о пользователе
+     * @apiBody {String} [post] должность пользователя
+     * @apiBody {String} [project] проект пользователя
+     * @apiBody {boolean} [admin=false] является ли пользователь админом
+     * @apiBody {Date} [birthDate] дата рождения пользователя
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {Boolean} result True, если пользователь успешно добавлен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) UserAlreadyExistException Пользователь уже существует
      **/
@@ -136,28 +122,26 @@ public class UserController {
     public ResponseEntity addUser(@RequestHeader("Authorization") String accessToken,
                                   @RequestBody UserEntity user) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(userService.registration(user));
-                } catch (UserAlreadyExistException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка во время добавления");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            userService.registration(user);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 
     /**
      * @api {put} /users Обновление пользователя
      * @apiName updateUser
      * @apiGroup USERS
-     * @apiBody {Object} user Новые данные пользователя (+ старые, если не изменялись!)
+     * @apiBody {String} email Корпоративная почта пользователя
+     * @apiBody {String} username Username пользователя
+     * @apiBody {String} about информация о пользователе
+     * @apiBody {String} post должность пользователя
+     * @apiBody {String} project проект пользователя
+     * @apiBody {boolean} admin=false является ли пользователь админом
+     * @apiBody {Date} birthDate дата рождения пользователя
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {Boolean} result True, если пользователь успешно обновлен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) UserNotFoundException Пользователь не существует
      **/
@@ -166,18 +150,11 @@ public class UserController {
     public ResponseEntity updateUser(@RequestHeader("Authorization") String accessToken,
                                      @RequestBody UserEntity user) {
         try {
-            if (jwtService.checkAccessToken(accessToken)) {
-                try {
-                    return ResponseEntity.ok(userService.update(user));
-                } catch (UserNotFoundException e) {
-                    return ResponseEntity.badRequest().body(e.getMessage());
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("Произошла ошибка во время апдейта");
-                }
-            }
-        } catch (AccessTokenIsNotValidException e) {
-            return ResponseEntity.status(401).body(e.getMessage());
+            jwtService.checkAccessToken(accessToken);
+            userService.update(user);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return ResponseEntity.badRequest().body("Произошла ошибка");
     }
 }

@@ -1,18 +1,19 @@
 package com.example.hrautomationbackend.service;
 
-import com.example.hrautomationbackend.entity.CategoryEntity;
+import com.example.hrautomationbackend.entity.QuestionCategoryEntity;
 import com.example.hrautomationbackend.entity.QuestionEntity;
-import com.example.hrautomationbackend.exception.CategoryAlreadyExistException;
-import com.example.hrautomationbackend.exception.CategoryNotFoundException;
 import com.example.hrautomationbackend.exception.QuestionAlreadyExistException;
+import com.example.hrautomationbackend.exception.QuestionCategoryAlreadyExistException;
+import com.example.hrautomationbackend.exception.QuestionCategoryNotFoundException;
 import com.example.hrautomationbackend.exception.QuestionNotFoundException;
-import com.example.hrautomationbackend.repository.CategoryRepository;
+import com.example.hrautomationbackend.model.Question;
+import com.example.hrautomationbackend.repository.QuestionCategoryRepository;
 import com.example.hrautomationbackend.repository.QuestionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -20,69 +21,82 @@ import java.util.Optional;
 @Service
 public class FaqService {
 
-    @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
+    private QuestionCategoryRepository categoryRepository;
     private QuestionRepository questionRepository;
 
-    public boolean addQuestion(QuestionEntity question, Long categoryId)
-            throws QuestionAlreadyExistException, CategoryNotFoundException {
+    public FaqService(QuestionCategoryRepository categoryRepository, QuestionRepository questionRepository) {
+        this.categoryRepository = categoryRepository;
+        this.questionRepository = questionRepository;
+    }
+
+    public void addQuestion(QuestionEntity question, Long categoryId)
+            throws QuestionAlreadyExistException, QuestionCategoryNotFoundException {
         if (questionRepository.findByTitle(question.getTitle()) == null) {
-            Optional<CategoryEntity> categoryOptional = categoryRepository.findById(categoryId);
+            Optional<QuestionCategoryEntity> categoryOptional = categoryRepository.findById(categoryId);
             if (categoryRepository.findById(categoryId).isPresent()) {
-                question.setCategory(categoryOptional.get());
+                question.setQuestionCategory(categoryOptional.get());
                 questionRepository.save(question);
-                return true;
             } else
-                throw new CategoryNotFoundException("Указанная категория не существует");
+                throw new QuestionCategoryNotFoundException("Указанная категория не существует");
         } else
             throw new QuestionAlreadyExistException("Вопрос '" + question.getTitle() + "' уже существует");
     }
 
-    public boolean addCategory(CategoryEntity category) throws CategoryAlreadyExistException {
+    public void addQuestionCategory(QuestionCategoryEntity category) throws QuestionCategoryAlreadyExistException {
         if (categoryRepository.findByName(category.getName()) == null) {
             categoryRepository.save(category);
-            return true;
         } else
-            throw new CategoryAlreadyExistException("Категория " + category.getName() + " уже существует");
+            throw new QuestionCategoryAlreadyExistException("Категория " + category.getName() + " уже существует");
     }
 
-    public Page<QuestionEntity> getQuestions(Pageable pageable) {
-        return questionRepository.findAll(pageable);
+    public List<Question> getQuestions(Pageable pageable) {
+        Page<QuestionEntity> questions = questionRepository.findAll(pageable);
+        ArrayList<Question> questionsModel = new ArrayList<>();
+        for (QuestionEntity question : questions) {
+            questionsModel.add(Question.toModel(question));
+        }
+        return questionsModel;
     }
 
-    public List<CategoryEntity> getCategories() {
-        return (List<CategoryEntity>) categoryRepository.findAll();
+    public List<QuestionCategoryEntity> getCategories() {
+        return (List<QuestionCategoryEntity>) categoryRepository.findAll();
     }
 
-    public Boolean deleteQuestion(Long id) throws QuestionNotFoundException {
+    public void deleteQuestion(Long id) throws QuestionNotFoundException {
         try {
             questionRepository.deleteById(id);
         } catch (NoSuchElementException e) {
-            throw new QuestionNotFoundException("Такой вопрос не найден");
+            throw new QuestionNotFoundException("Такой вопрос не найден", e);
         }
-        return true;
     }
 
-    public boolean updateQuestion(QuestionEntity question, Long categoryId) throws QuestionNotFoundException,
-            CategoryNotFoundException {
+    public void updateQuestion(QuestionEntity question, Long categoryId) throws QuestionNotFoundException,
+            QuestionCategoryNotFoundException {
         if (questionRepository.findById(question.getId()).isPresent()) {
-            Optional<CategoryEntity> categoryOptional = categoryRepository.findById(categoryId);
+            Optional<QuestionCategoryEntity> categoryOptional = categoryRepository.findById(categoryId);
             if (categoryOptional.isPresent()) {
-                question.setCategory(categoryOptional.get());
+                question.setQuestionCategory(categoryOptional.get());
                 questionRepository.save(question);
-                return true;
             } else
-                throw new CategoryNotFoundException("Такая категория не найдена");
+                throw new QuestionCategoryNotFoundException("Такая категория не найдена");
         } else
             throw new QuestionNotFoundException("Такой вопрос не найден");
     }
 
-    public List<QuestionEntity> getQuestionsByCategory(Long categoryId) throws CategoryNotFoundException {
-        Optional<CategoryEntity> categoryOptional = categoryRepository.findById(categoryId);
+    public List<QuestionEntity> getQuestionsByQuestionCategory(Long categoryId) throws QuestionCategoryNotFoundException {
+        Optional<QuestionCategoryEntity> categoryOptional = categoryRepository.findById(categoryId);
         if (categoryOptional.isPresent()) {
             return categoryOptional.get().getQuestions();
         }
-        throw new CategoryNotFoundException("Такая категория не найдена");
+        throw new QuestionCategoryNotFoundException("Такая категория не найдена");
     }
+
+    public Question getQuestion(Long id) throws QuestionNotFoundException {
+
+        QuestionEntity question = questionRepository
+                .findById(id)
+                .orElseThrow(() -> new QuestionNotFoundException("Вопрос с id " + id + " не существует"));
+        return Question.toModel(question);
+    }
+
 }

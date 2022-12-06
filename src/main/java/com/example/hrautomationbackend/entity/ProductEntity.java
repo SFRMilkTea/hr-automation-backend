@@ -1,9 +1,10 @@
 package com.example.hrautomationbackend.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import javax.persistence.*;
 
 @Entity
 public class ProductEntity {
@@ -11,10 +12,21 @@ public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String code;
     private String pictureUrl;
     private boolean isOrdered;
+    @Column(columnDefinition = "int default 1")
+    private int quantity;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "product_category_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private ProductCategoryEntity productCategory;
+
 
     public ProductEntity() {
     }
@@ -57,5 +69,21 @@ public class ProductEntity {
 
     public void setOrdered(boolean ordered) {
         isOrdered = ordered;
+    }
+
+    public ProductCategoryEntity getProductCategory() {
+        return productCategory;
+    }
+
+    public void setProductCategory(ProductCategoryEntity productCategory) {
+        this.productCategory = productCategory;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }
