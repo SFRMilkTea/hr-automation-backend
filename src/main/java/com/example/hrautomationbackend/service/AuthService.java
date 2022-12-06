@@ -30,7 +30,7 @@ public class AuthService {
     public void checkAdminEmail(String email) throws UserNotFoundException, UserNotAdminException {
         UserEntity user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new UserNotFoundException("Пользователь с данным email не существует");
+            throw new UserNotFoundException("Пользователь с email " + email + " не существует");
         }
         if (!user.isAdmin()) {
             throw new UserNotAdminException("Недостаточно прав доступа");
@@ -41,7 +41,7 @@ public class AuthService {
     public void checkEmail(String email) throws UserNotFoundException {
         UserEntity user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new UserNotFoundException("Пользователь с данным email не существует");
+            throw new UserNotFoundException("Пользователь с email " + email + " не существует");
         }
         sendCode(user);
     }

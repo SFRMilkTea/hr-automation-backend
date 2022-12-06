@@ -215,4 +215,27 @@ public class FaqController {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * @api {delete} /faq/categories/[id] Удаление категории вопроса по айди
+     * @apiName deleteQuestionCategory
+     * @apiGroup FAQ
+     * @apiParam {Number} id Уникальный идентификатор категории вопроса
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) QuestionCategoryNotFoundException Категория вопроса с таким id не существует
+     **/
+
+    @DeleteMapping("/categories/{id}")
+    public ResponseEntity deleteQuestionCategory(@RequestHeader("Authorization") String accessToken,
+                                                 @PathVariable Long id) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            faqService.deleteCategory(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

@@ -6,27 +6,28 @@ import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.model.User;
 import com.example.hrautomationbackend.model.UserForAll;
 import com.example.hrautomationbackend.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public User getUser(Long id) throws UserNotFoundException {
-        try {
-            userRepository.findById(id).get();
-        } catch (NoSuchElementException e) {
-            throw new UserNotFoundException("Пользователь не найден");
-        }
-        return User.toModel(userRepository.findById(id).get());
+        UserEntity userEntity = userRepository
+                .findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь с id: " + id + " не существует"));
+        return User.toModel(userEntity);
     }
 
     public List<UserForAll> getUsers(Pageable pageable) {
@@ -42,8 +43,8 @@ public class UserService {
     public void delete(Long id) throws UserNotFoundException {
         try {
             userRepository.deleteById(id);
-        } catch (NoSuchElementException e) {
-            throw new UserNotFoundException("Пользователь не найден");
+        } catch (EmptyResultDataAccessException e) {
+            throw new UserNotFoundException("Пользователь с id: " + id + " не существует");
         }
     }
 
@@ -59,6 +60,6 @@ public class UserService {
         if (userRepository.findById(user.getId()).isPresent()) {
             userRepository.save(user);
         } else
-            throw new UserNotFoundException("Пользователь не существует");
+            throw new UserNotFoundException("Пользователь с id: " + user.getId() + " не существует");
     }
 }

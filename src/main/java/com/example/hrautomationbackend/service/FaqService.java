@@ -2,27 +2,23 @@ package com.example.hrautomationbackend.service;
 
 import com.example.hrautomationbackend.entity.QuestionCategoryEntity;
 import com.example.hrautomationbackend.entity.QuestionEntity;
-import com.example.hrautomationbackend.exception.QuestionAlreadyExistException;
-import com.example.hrautomationbackend.exception.QuestionCategoryAlreadyExistException;
-import com.example.hrautomationbackend.exception.QuestionCategoryNotFoundException;
-import com.example.hrautomationbackend.exception.QuestionNotFoundException;
+import com.example.hrautomationbackend.exception.*;
 import com.example.hrautomationbackend.model.Question;
 import com.example.hrautomationbackend.repository.QuestionCategoryRepository;
 import com.example.hrautomationbackend.repository.QuestionRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class FaqService {
 
-    private QuestionCategoryRepository categoryRepository;
-    private QuestionRepository questionRepository;
+    private final QuestionCategoryRepository categoryRepository;
+    private final QuestionRepository questionRepository;
 
     public FaqService(QuestionCategoryRepository categoryRepository, QuestionRepository questionRepository) {
         this.categoryRepository = categoryRepository;
@@ -32,12 +28,11 @@ public class FaqService {
     public void addQuestion(QuestionEntity question, Long categoryId)
             throws QuestionAlreadyExistException, QuestionCategoryNotFoundException {
         if (questionRepository.findByTitle(question.getTitle()) == null) {
-            Optional<QuestionCategoryEntity> categoryOptional = categoryRepository.findById(categoryId);
-            if (categoryRepository.findById(categoryId).isPresent()) {
-                question.setQuestionCategory(categoryOptional.get());
-                questionRepository.save(question);
-            } else
-                throw new QuestionCategoryNotFoundException("Указанная категория не существует");
+            QuestionCategoryEntity category = categoryRepository
+                    .findById(categoryId)
+                    .orElseThrow(() -> new QuestionCategoryNotFoundException("Категория с id " + categoryId + " не существует"));
+            question.setQuestionCategory(category);
+            questionRepository.save(question);
         } else
             throw new QuestionAlreadyExistException("Вопрос '" + question.getTitle() + "' уже существует");
     }
@@ -65,38 +60,44 @@ public class FaqService {
     public void deleteQuestion(Long id) throws QuestionNotFoundException {
         try {
             questionRepository.deleteById(id);
-        } catch (NoSuchElementException e) {
-            throw new QuestionNotFoundException("Такой вопрос не найден", e);
+        } catch (EmptyResultDataAccessException e) {
+            throw new QuestionNotFoundException("Вопрос с id " + id + " не найден");
         }
     }
 
     public void updateQuestion(QuestionEntity question, Long categoryId) throws QuestionNotFoundException,
             QuestionCategoryNotFoundException {
-        if (questionRepository.findById(question.getId()).isPresent()) {
-            Optional<QuestionCategoryEntity> categoryOptional = categoryRepository.findById(categoryId);
-            if (categoryOptional.isPresent()) {
-                question.setQuestionCategory(categoryOptional.get());
-                questionRepository.save(question);
-            } else
-                throw new QuestionCategoryNotFoundException("Такая категория не найдена");
-        } else
-            throw new QuestionNotFoundException("Такой вопрос не найден");
+        QuestionEntity questionEntity = questionRepository
+                .findById(question.getId())
+                .orElseThrow(() -> new QuestionNotFoundException("Вопрос с id " + question.getId() + " не существует"));
+        QuestionCategoryEntity category = categoryRepository
+                .findById(categoryId)
+                .orElseThrow(() -> new QuestionCategoryNotFoundException("Категория с id " + categoryId + " не существует"));
+
+        questionEntity.setQuestionCategory(category);
+        questionRepository.save(questionEntity);
     }
 
     public List<QuestionEntity> getQuestionsByQuestionCategory(Long categoryId) throws QuestionCategoryNotFoundException {
-        Optional<QuestionCategoryEntity> categoryOptional = categoryRepository.findById(categoryId);
-        if (categoryOptional.isPresent()) {
-            return categoryOptional.get().getQuestions();
-        }
-        throw new QuestionCategoryNotFoundException("Такая категория не найдена");
+        QuestionCategoryEntity category = categoryRepository
+                .findById(categoryId)
+                .orElseThrow(() -> new QuestionCategoryNotFoundException("Категория с id " + categoryId + " не существует"));
+        return category.getQuestions();
     }
 
     public Question getQuestion(Long id) throws QuestionNotFoundException {
-
         QuestionEntity question = questionRepository
                 .findById(id)
                 .orElseThrow(() -> new QuestionNotFoundException("Вопрос с id " + id + " не существует"));
         return Question.toModel(question);
+    }
+
+    public void deleteCategory(Long id) throws QuestionCategoryNotFoundException {
+        try {
+            categoryRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new QuestionCategoryNotFoundException("Категория с id " + id + " не найдена");
+        }
     }
 
 }

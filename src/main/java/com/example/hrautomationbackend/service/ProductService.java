@@ -6,6 +6,7 @@ import com.example.hrautomationbackend.exception.*;
 import com.example.hrautomationbackend.model.Product;
 import com.example.hrautomationbackend.repository.ProductCategoryRepository;
 import com.example.hrautomationbackend.repository.ProductRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,8 +14,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 @Service
@@ -40,7 +39,7 @@ public class ProductService {
     public void delete(Long id) throws ProductNotFoundException {
         try {
             productRepository.deleteById(id);
-        } catch (NoSuchElementException e) {
+        } catch (EmptyResultDataAccessException e) {
             throw new ProductNotFoundException("Продукт с id " + id + " не найден");
         }
     }
@@ -49,17 +48,17 @@ public class ProductService {
     public void addProduct(ProductEntity product, Long categoryId) throws ProductAlreadyExistException,
             ProductCategoryNotFoundException {
         if (productRepository.findByCode(product.getCode()) == null) {
-            Optional<ProductCategoryEntity> categoryOptional = productCategoryRepository.findById(categoryId);
-            if (productCategoryRepository.findById(categoryId).isPresent()) {
-                if (product.getQuantity() == 0){
-                    product.setQuantity(1);
-                    (Logger.getLogger(ProductService.class.getName())).info(
-                            "! Products quantity to order cannot be 0. Automatically changes to 1 !");
-                }
-                product.setProductCategory(categoryOptional.get());
-                productRepository.save(product);
-            } else
-                throw new ProductCategoryNotFoundException("Указанная категория не существует");
+            ProductCategoryEntity category = productCategoryRepository
+                    .findById(categoryId)
+                    .orElseThrow(() -> new ProductCategoryNotFoundException("Категория с id " + categoryId + " не найдена"));
+
+            if (product.getQuantity() == 0) {
+                product.setQuantity(1);
+                (Logger.getLogger(ProductService.class.getName())).info(
+                        "! Products quantity to order cannot be 0. Automatically changes to 1 !");
+            }
+            product.setProductCategory(category);
+            productRepository.save(product);
         } else
             throw new ProductAlreadyExistException("Продукт с артикулом " + product.getCode() + " уже существует");
     }
@@ -67,27 +66,22 @@ public class ProductService {
     @Transactional
     public void update(ProductEntity product, Long categoryId) throws ProductNotFoundException,
             ProductCategoryNotFoundException {
+        ProductCategoryEntity category = productCategoryRepository
+                .findById(categoryId)
+                .orElseThrow(() -> new ProductCategoryNotFoundException("Категория с id " + categoryId + " не найдена"));
         if (productRepository.findById(product.getId()).isPresent()) {
-            Optional<ProductCategoryEntity> categoryOptional = productCategoryRepository.findById(categoryId);
-            if (categoryOptional.isPresent()) {
-                product.setProductCategory(categoryOptional.get());
-                productRepository.save(product);
-            } else
-                throw new ProductCategoryNotFoundException("Такая категория не найдена");
+            product.setProductCategory(category);
+            productRepository.save(product);
         } else
             throw new ProductNotFoundException("Продукт с id " + product.getId() + " не существует");
     }
 
-    public void orderProduct(Long id) throws ProductNotFoundException, ProductAlreadyOrderedException {
+    public void orderProduct(Long id) throws ProductNotFoundException {
         ProductEntity product = productRepository
                 .findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Продукт с id " + id + " не существует"));
-        if (!product.isOrdered()) {
-            product.setOrdered(true);
-            productRepository.save(product);
-        } else {
-            throw new ProductAlreadyOrderedException("Продукт с id " + product.getId() + " уже заказан");
-        }
+        product.setOrdered(true);
+        productRepository.save(product);
     }
 
     public void unorderProduct(Long id) throws ProductNotFoundException, ProductNotOrderedException {
@@ -114,17 +108,16 @@ public class ProductService {
     }
 
     public List<ProductEntity> getProductsByProductCategory(Long categoryId) throws ProductCategoryNotFoundException {
-        Optional<ProductCategoryEntity> categoryOptional = productCategoryRepository.findById(categoryId);
-        if (categoryOptional.isPresent()) {
-            return categoryOptional.get().getProducts();
-        }
-        throw new ProductCategoryNotFoundException("Категория с id " + categoryId + " не найдена");
+        ProductCategoryEntity category = productCategoryRepository
+                .findById(categoryId)
+                .orElseThrow(() -> new ProductCategoryNotFoundException("Категория с id " + categoryId + " не найдена"));
+        return category.getProducts();
     }
 
     public void deleteCategory(Long id) throws ProductCategoryNotFoundException {
         try {
             productCategoryRepository.deleteById(id);
-        } catch (NoSuchElementException e) {
+        } catch (EmptyResultDataAccessException e) {
             throw new ProductCategoryNotFoundException("Категория с id " + id + " не найдена");
         }
     }
@@ -149,12 +142,8 @@ public class ProductService {
     }
 
     public ProductEntity getProduct(Long id) throws ProductNotFoundException {
-        try {
-            productRepository.findById(id).get();
-        } catch (NoSuchElementException e) {
-            throw new ProductNotFoundException("Продукт с id " + id + " не найден");
-        }
-        return productRepository.findById(id).get();
+        return productRepository
+                .findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Продукт с id " + id + " не найден"));
     }
-
 }

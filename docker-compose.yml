@@ -16,8 +16,6 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/hr_automation
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=12345
-      - AWS_ACCESS_KEY_ID=YCAJEt4WD4PxPGAqxKcXlEyY-
-      - AWS_SECRET_ACCESS_KEY=YCNPyDN7Vb45pd5mTk5uTCjq1p6k2TKtG8NJS5zB
     restart: always
 
   postgres:

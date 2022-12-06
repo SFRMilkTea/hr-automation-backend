@@ -9,13 +9,8 @@ import com.example.hrautomationbackend.jwt.JwtResponse;
 import com.example.hrautomationbackend.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,10 +18,13 @@ import java.util.Map;
 public class JwtService {
 
     private final Map<String, String> refreshStorage = new HashMap<>();
-    @Autowired
-    private JwtProvider jwtProvider;
-    @Autowired
-    private UserRepository userRepository;
+    private final JwtProvider jwtProvider;
+    private final UserRepository userRepository;
+
+    public JwtService(JwtProvider jwtProvider, UserRepository userRepository) {
+        this.jwtProvider = jwtProvider;
+        this.userRepository = userRepository;
+    }
 
     public void checkAccessToken(String accessToken) throws AccessTokenIsNotValidException {
 //        if (jwtProvider.validateAccessToken(accessToken)) {
@@ -57,7 +55,7 @@ public class JwtService {
             if (saveRefreshToken != null && saveRefreshToken.equals(refreshToken)) {
                 final UserEntity user = userRepository.findByEmail(email);
                 if (user == null)
-                    throw new UserNotFoundException("Пользователь с данным email не существует");
+                    throw new UserNotFoundException("Пользователь с email " + email + " не существует");
                 return getTokens(user);
             }
         }
