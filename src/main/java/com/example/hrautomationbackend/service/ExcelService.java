@@ -45,7 +45,7 @@ public class ExcelService {
             cell2.setCellValue(product.getQuantity());
         }
 
-        File f = new File("src/main/java/com/example/hrautomationbackend/file/ordered_products.xls");
+        File f = new File("ordered_products.xls");
         f.createNewFile();
         FileOutputStream out = new FileOutputStream(f);
         workbook.write(out);
