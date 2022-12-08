@@ -1,8 +1,6 @@
 package com.example.hrautomationbackend.service;
 
 import com.amazonaws.AmazonClientException;
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -19,13 +17,8 @@ public class S3Service {
 
     public static void qwerty(File file) throws IOException {
 
-        AWSCredentials credentials = null;
-        credentials = new EnvironmentVariableCredentialsProvider().getCredentials();
-
-        (Logger.getLogger(ProductService.class.getName())).info(
-                "! Creds: id : " + credentials.getAWSAccessKeyId() + " key : " + credentials.getAWSSecretKey());
         AmazonS3 s3 = AmazonS3ClientBuilder.standard()
-                .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                .withCredentials(new EnvironmentVariableCredentialsProvider())
                 .withEndpointConfiguration(
                         new AmazonS3ClientBuilder.EndpointConfiguration(
                                 "storage.yandexcloud.net", "ru-central1"
