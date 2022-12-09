@@ -151,7 +151,8 @@ public class ProductService {
         Page<ProductEntity> products = productRepository.findAll(pageable);
         ArrayList<ProductEntity> productsList = new ArrayList<>();
         for (ProductEntity product : products) {
-            if (product.getName().contains(str) || product.getCode().contains(str)) {
+            if (product.getName().toLowerCase().contains(str.toLowerCase()) ||
+                    product.getCode().toLowerCase().contains(str.toLowerCase())) {
                 productsList.add(product);
             }
         }

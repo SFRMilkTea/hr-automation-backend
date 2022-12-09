@@ -107,7 +107,8 @@ public class FaqService {
         Page<QuestionEntity> questions = questionRepository.findAll(pageable);
         ArrayList<QuestionEntity> questionsList = new ArrayList<>();
         for (QuestionEntity question : questions) {
-            if (question.getTitle().contains(str)||question.getDescription().contains(str)) {
+            if (question.getTitle().toLowerCase().contains(str.toLowerCase()) ||
+                    question.getDescription().toLowerCase().contains(str.toLowerCase())) {
                 questionsList.add(question);
             }
         }

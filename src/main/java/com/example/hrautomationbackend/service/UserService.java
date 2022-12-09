@@ -67,7 +67,7 @@ public class UserService {
         Page<UserEntity> users = userRepository.findAll(pageable);
         ArrayList<UserForAll> usersModel = new ArrayList<>();
         for (UserEntity user : users) {
-            if (user.getUsername().contains(str)) {
+            if (user.getUsername().toLowerCase().contains(str.toLowerCase())) {
                 usersModel.add(UserForAll.toModel(user));
             }
         }
