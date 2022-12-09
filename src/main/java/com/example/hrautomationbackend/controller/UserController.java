@@ -157,4 +157,33 @@ public class UserController {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * @api {get} /users/search?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy]&filter=[filter] Поиск по пользователям
+     * @apiName findUsers
+     * @apiGroup USERS
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiParam {Number} pageNumber Номер страницы
+     * @apiParam {Number} size Количество элементов на странице
+     * @apiParam {String} sortBy Фильтр сортировки
+     * @apiParam {String} filter Строка поиска
+     * @apiSuccess {List[User]} users Список найденных пользователей (id, username, post)
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     **/
+
+    @GetMapping("/search")
+    public ResponseEntity findUsers(@RequestHeader("Authorization") String accessToken,
+                                    @RequestParam int pageNumber,
+                                    @RequestParam int size,
+                                    @RequestParam String sortBy,
+                                    @RequestParam String filter) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
+            return ResponseEntity.ok(userService.findByString(pageable, filter));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

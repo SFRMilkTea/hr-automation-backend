@@ -62,4 +62,15 @@ public class UserService {
         } else
             throw new UserNotFoundException("Пользователь с id: " + user.getId() + " не существует");
     }
+
+    public List<UserForAll> findByString(Pageable pageable, String str) {
+        Page<UserEntity> users = userRepository.findAll(pageable);
+        ArrayList<UserForAll> usersModel = new ArrayList<>();
+        for (UserEntity user : users) {
+            if (user.getUsername().contains(str)) {
+                usersModel.add(UserForAll.toModel(user));
+            }
+        }
+        return usersModel;
+    }
 }
