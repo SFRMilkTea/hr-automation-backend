@@ -146,4 +146,15 @@ public class ProductService {
                 .findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Продукт с id " + id + " не найден"));
     }
+
+    public List<ProductEntity> findByString(Pageable pageable, String str) {
+        Page<ProductEntity> products = productRepository.findAll(pageable);
+        ArrayList<ProductEntity> productsList = new ArrayList<>();
+        for (ProductEntity product : products) {
+            if (product.getName().contains(str) || product.getCode().contains(str)) {
+                productsList.add(product);
+            }
+        }
+        return productsList;
+    }
 }
