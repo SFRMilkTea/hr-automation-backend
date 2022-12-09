@@ -2,7 +2,10 @@ package com.example.hrautomationbackend.service;
 
 import com.example.hrautomationbackend.entity.QuestionCategoryEntity;
 import com.example.hrautomationbackend.entity.QuestionEntity;
-import com.example.hrautomationbackend.exception.*;
+import com.example.hrautomationbackend.exception.QuestionAlreadyExistException;
+import com.example.hrautomationbackend.exception.QuestionCategoryAlreadyExistException;
+import com.example.hrautomationbackend.exception.QuestionCategoryNotFoundException;
+import com.example.hrautomationbackend.exception.QuestionNotFoundException;
 import com.example.hrautomationbackend.model.Question;
 import com.example.hrautomationbackend.repository.QuestionCategoryRepository;
 import com.example.hrautomationbackend.repository.QuestionRepository;
@@ -98,6 +101,17 @@ public class FaqService {
         } catch (EmptyResultDataAccessException e) {
             throw new QuestionCategoryNotFoundException("Категория с id " + id + " не найдена");
         }
+    }
+
+    public List<QuestionEntity> findByString(Pageable pageable, String str) {
+        Page<QuestionEntity> questions = questionRepository.findAll(pageable);
+        ArrayList<QuestionEntity> questionsList = new ArrayList<>();
+        for (QuestionEntity question : questions) {
+            if (question.getTitle().contains(str)||question.getDescription().contains(str)) {
+                questionsList.add(question);
+            }
+        }
+        return questionsList;
     }
 
 }

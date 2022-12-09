@@ -238,4 +238,32 @@ public class FaqController {
         }
     }
 
+    /**
+     * @api {get} /faq/search?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy]&filter=[filter] Поиск по вопросам
+     * @apiName findQuestions
+     * @apiGroup FAQ
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiParam {Number} pageNumber Номер страницы
+     * @apiParam {Number} size Количество элементов на странице
+     * @apiParam {String} sortBy Фильтр сортировки
+     * @apiParam {String} filter Строка поиска
+     * @apiSuccess {List[Questions]} questions Список найденных вопросов (id, title, description)
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     **/
+
+    @GetMapping("/search")
+    public ResponseEntity findQuestions(@RequestHeader("Authorization") String accessToken,
+                                        @RequestParam int pageNumber,
+                                        @RequestParam int size,
+                                        @RequestParam String sortBy,
+                                        @RequestParam String filter) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
+            return ResponseEntity.ok(faqService.findByString(pageable, filter));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
