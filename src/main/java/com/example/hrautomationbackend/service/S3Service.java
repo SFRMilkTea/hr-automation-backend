@@ -2,7 +2,9 @@ package com.example.hrautomationbackend.service;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
-import com.amazonaws.services.s3.*;
+import com.amazonaws.metrics.AwsSdkMetrics;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,7 +17,7 @@ import java.util.logging.Logger;
 public class S3Service {
 
     public static void qwerty(File file) throws IOException {
-
+        AwsSdkMetrics.disableMetrics();
         AmazonS3 s3 = AmazonS3ClientBuilder.standard()
                 .withCredentials(new EnvironmentVariableCredentialsProvider())
                 .withEndpointConfiguration(
@@ -28,10 +30,6 @@ public class S3Service {
         (Logger.getLogger(ProductService.class.getName())).info("! Region: " + s3.getRegionName());
         String bucketName = "hr-automation";
         String key = file.getName();
-
-        System.out.println("===========================================");
-        System.out.println("Getting Started with Amazon S3");
-        System.out.println("===========================================\n");
 
         try {
             // Create a list of ETag objects. You retrieve ETags for each object part uploaded,
