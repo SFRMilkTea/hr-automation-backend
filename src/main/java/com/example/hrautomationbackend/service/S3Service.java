@@ -22,7 +22,7 @@ public class S3Service {
                 .withCredentials(new EnvironmentVariableCredentialsProvider())
                 .withEndpointConfiguration(
                         new AmazonS3ClientBuilder.EndpointConfiguration(
-                                "storage.yandexcloud.net", "ru-central1"
+                                "storage.yandexcloud.net", "us-west-2"
                         )
                 )
                 .build();
