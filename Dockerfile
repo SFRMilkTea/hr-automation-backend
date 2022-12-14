@@ -4,13 +4,13 @@ COPY . /home/gradle/project
 WORKDIR /home/gradle/project
 RUN ./gradlew build -x check
 
-FROM openjdk:17-jdk-alpine as extractor
+FROM eclipse-temurin:17-jdk-alpine as extractor
 RUN mkdir -p /opt
 COPY --from=build /home/gradle/project/build/libs/hr-automation-backend.jar /opt/app.jar
 WORKDIR /opt
 RUN java -Djarmode=layertools -jar app.jar extract
 
-FROM openjdk:17-jdk-alpine
+FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /opt
 COPY --from=extractor opt/dependencies/ ./
 COPY --from=extractor opt/spring-boot-loader/ ./
