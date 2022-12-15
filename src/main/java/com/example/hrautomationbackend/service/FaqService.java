@@ -89,10 +89,14 @@ public class FaqService {
     }
 
     public Question getQuestion(Long id) throws QuestionNotFoundException {
-        QuestionEntity question = questionRepository
+        QuestionEntity questionEntity = getQuestionEntity(id);
+        return Question.toModel(questionEntity);
+    }
+
+    public QuestionEntity getQuestionEntity(Long id) throws QuestionNotFoundException {
+        return questionRepository
                 .findById(id)
                 .orElseThrow(() -> new QuestionNotFoundException("Вопрос с id " + id + " не существует"));
-        return Question.toModel(question);
     }
 
     public void deleteCategory(Long id) throws QuestionCategoryNotFoundException {

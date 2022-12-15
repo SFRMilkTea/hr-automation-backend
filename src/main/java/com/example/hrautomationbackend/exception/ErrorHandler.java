@@ -1,6 +1,7 @@
 package com.example.hrautomationbackend.exception;
 
 import com.amazonaws.AmazonClientException;
+import com.amazonaws.SdkClientException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
@@ -98,6 +99,11 @@ public class ErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity handleValidationError(final EmptyResultDataAccessException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleValidationError(final SdkClientException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 

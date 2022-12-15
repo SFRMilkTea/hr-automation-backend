@@ -24,10 +24,14 @@ public class UserService {
     }
 
     public User getUser(Long id) throws UserNotFoundException {
-        UserEntity userEntity = userRepository
+        UserEntity userEntity = getUserEntity(id);
+        return User.toModel(userEntity);
+    }
+
+    public UserEntity getUserEntity(Long id) throws UserNotFoundException {
+        return userRepository
                 .findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Пользователь с id: " + id + " не существует"));
-        return User.toModel(userEntity);
     }
 
     public List<UserForAll> getUsers(Pageable pageable) {
