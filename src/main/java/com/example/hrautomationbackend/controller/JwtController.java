@@ -18,7 +18,7 @@ public class JwtController {
     }
 
     /**
-     * @api {get} /refresh Запрос на обновление токена
+     * @api {post} /refresh Запрос на обновление токена
      * @apiGroup JWT
      * @apiName refresh
      * @apiBody {String} refreshToken Рефреш токен

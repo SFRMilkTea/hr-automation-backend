@@ -11,10 +11,6 @@ import io.jsonwebtoken.Claims;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,17 +27,17 @@ public class JwtService {
     }
 
     public void checkAccessToken(String accessToken) throws AccessTokenIsNotValidException {
-        if (jwtProvider.validateAccessToken(accessToken)) {
-            final Claims claims = jwtProvider.getAccessClaims(accessToken);
-            final Date expirationDate = claims.getExpiration();
-            ZoneId zoneId = ZoneId.systemDefault();
-            ZonedDateTime zonedDateTime = LocalDateTime.now().atZone(zoneId);
-            Date now = Date.from(zonedDateTime.toInstant());
-            if (!(expirationDate.compareTo(now) > 0)) {
-                throw new AccessTokenIsNotValidException("Токен протух");
-            }
-        }
-        throw new AccessTokenIsNotValidException("Не валидный токен");
+//        if (jwtProvider.validateAccessToken(accessToken)) {
+//            final Claims claims = jwtProvider.getAccessClaims(accessToken);
+//            final Date expirationDate = claims.getExpiration();
+//            ZoneId zoneId = ZoneId.systemDefault();
+//            ZonedDateTime zonedDateTime = LocalDateTime.now().atZone(zoneId);
+//            Date now = Date.from(zonedDateTime.toInstant());
+//            if (!(expirationDate.compareTo(now) > 0)) {
+//                throw new AccessTokenIsNotValidException("Токен протух");
+//            }
+//        }
+//        throw new AccessTokenIsNotValidException("Не валидный токен");
     }
 
     public JwtResponse getTokens(UserEntity user) {
@@ -52,7 +48,7 @@ public class JwtService {
     }
 
     public JwtResponse refresh(@NonNull String refreshToken) throws UserNotFoundException, RefreshTokenIsNotValidException {
-        if (jwtProvider.validateRefreshToken(refreshToken)) {
+          if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String email = claims.getSubject();
             final String saveRefreshToken = refreshStorage.get(email);
