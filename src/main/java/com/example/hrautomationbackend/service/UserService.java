@@ -5,6 +5,7 @@ import com.example.hrautomationbackend.exception.UserAlreadyExistException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.model.User;
 import com.example.hrautomationbackend.model.UserForAll;
+import com.example.hrautomationbackend.model.UsersWithCount;
 import com.example.hrautomationbackend.repository.UserRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -34,13 +35,13 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("Пользователь с id: " + id + " не существует"));
     }
 
-    public List<UserForAll> getUsers(Pageable pageable) {
+    public UsersWithCount getUsers(Pageable pageable) {
         Page<UserEntity> users = userRepository.findAll(pageable);
         ArrayList<UserForAll> usersModel = new ArrayList<>();
         for (UserEntity user : users) {
             usersModel.add(UserForAll.toModel(user));
         }
-        return usersModel;
+        return UsersWithCount.toModel(usersModel, userRepository.count());
 
     }
 

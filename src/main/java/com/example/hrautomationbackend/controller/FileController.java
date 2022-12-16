@@ -62,15 +62,15 @@ public class FileController {
      * @apiError (Error 400) UserNotFoundException Пользователь с данным id не найден
      **/
 
-    @GetMapping("/{id}")
-    public ResponseEntity downloadPicture(@PathVariable Long id,
-                                          @RequestHeader("Authorization") String accessToken) {
-        try {
-            jwtService.checkAccessToken(accessToken);
-            return ResponseEntity.ok(s3.downloadPicture(id));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity downloadPicture(@PathVariable Long id,
+//                                          @RequestHeader("Authorization") String accessToken) {
+//        try {
+//            jwtService.checkAccessToken(accessToken);
+//            return ResponseEntity.ok(s3.downloadPicture(id));
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
 }

@@ -14,8 +14,8 @@ import com.example.hrautomationbackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
-import java.net.URI;
+import java.io.File;
+import java.io.IOException;
 
 @Service
 public class S3Service {
@@ -52,20 +52,21 @@ public class S3Service {
             UserEntity userEntity = userRepository
                     .findById(id)
                     .orElseThrow(() -> new UserNotFoundException("Пользователь с id: " + id + " не существует"));
-            userEntity.setPictureUrl(photo.getKey());
+            S3Object object = s3.getObject(new GetObjectRequest(bucketName, photo.getKey()));
+            userEntity.setPictureUrl(String.valueOf(object.getObjectContent().getHttpRequest().getURI()));
             userRepository.save(userEntity);
         } catch (SdkClientException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public URI downloadPicture(Long id) throws UserNotFoundException {
-        AmazonS3 s3 = buildS3();
-        UserEntity userEntity = userService.getUserEntity(id);
-        String photo = userEntity.getPictureUrl();
-        S3Object object = s3.getObject(new GetObjectRequest(bucketName, photo));
-        return object.getObjectContent().getHttpRequest().getURI();
-    }
+//    public URI downloadPicture(Long id) throws UserNotFoundException {
+//        AmazonS3 s3 = buildS3();
+//        UserEntity userEntity = userService.getUserEntity(id);
+//        String photo = userEntity.getPictureUrl();
+//        S3Object object = s3.getObject(new GetObjectRequest(bucketName, photo));
+//        return object.getObjectContent().getHttpRequest().getURI();
+//    }
 
     /*
      * Delete an object - Unless versioning has been turned on for your bucket,
