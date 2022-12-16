@@ -6,16 +6,26 @@ public class UserForAll {
     private Long id;
     private String username;
     private String post;
+    private String pictureUrl;
 
     public static UserForAll toModel(UserEntity entity) {
         UserForAll model = new UserForAll();
         model.setId(entity.getId());
         model.setUsername(entity.getUsername());
         model.setPost(entity.getPost());
+        model.setPictureUrl(entity.getPictureUrl());
         return model;
     }
 
     public UserForAll() {
+    }
+
+    public String getPictureUrl() {
+        return pictureUrl;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
     }
 
     public Long getId() {

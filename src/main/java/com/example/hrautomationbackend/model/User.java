@@ -14,6 +14,7 @@ public class User {
     private String project;
     private boolean isAdmin;
     private Date birthDate;
+    private String pictureUrl;
 
     public static User toModel(UserEntity entity) {
         User model = new User();
@@ -25,6 +26,7 @@ public class User {
         model.setProject(entity.getProject());
         model.setAdmin(entity.isAdmin());
         model.setBirthDate(entity.getBirthDate());
+        model.setPictureUrl(entity.getPictureUrl());
         return model;
     }
 
@@ -93,5 +95,13 @@ public class User {
 
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public String getPictureUrl() {
+        return pictureUrl;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
     }
 }
