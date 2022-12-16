@@ -2,11 +2,13 @@ package com.example.hrautomationbackend.exception;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.SdkClientException;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @Slf4j
 @RestControllerAdvice()
@@ -104,6 +106,16 @@ public class ErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity handleValidationError(final SdkClientException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleValidationError(final MaxUploadSizeExceededException e) {
+        return ResponseEntity.badRequest().body("Превышен максимальный размер картинки");
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleValidationError(final ExpiredJwtException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 

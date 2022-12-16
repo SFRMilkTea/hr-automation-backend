@@ -1,11 +1,8 @@
 package com.example.hrautomationbackend.jwt;
 
 import com.example.hrautomationbackend.entity.UserEntity;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import com.example.hrautomationbackend.exception.AccessTokenIsNotValidException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -41,7 +38,7 @@ public class JwtProvider {
         final Instant accessExpirationInstant = now.plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant();
         final Date accessExpiration = Date.from(accessExpirationInstant);
         return Jwts.builder()
-                .setSubject(user.getEmail())
+                .setSubject(String.valueOf(user.getId()))
                 .setExpiration(accessExpiration)
                 .signWith(jwtAccessSecret)
                 .compact();
@@ -52,21 +49,21 @@ public class JwtProvider {
         final Instant refreshExpirationInstant = now.plusDays(30).atZone(ZoneId.systemDefault()).toInstant();
         final Date refreshExpiration = Date.from(refreshExpirationInstant);
         return Jwts.builder()
-                .setSubject(user.getEmail())
+                .setSubject(String.valueOf(user.getId()))
                 .setExpiration(refreshExpiration)
                 .signWith(jwtRefreshSecret)
                 .compact();
     }
 
-    public boolean validateAccessToken(@NonNull String accessToken) {
+    public boolean validateAccessToken(@NonNull String accessToken) throws AccessTokenIsNotValidException {
         return validateToken(accessToken, jwtAccessSecret);
     }
 
-    public boolean validateRefreshToken(@NonNull String refreshToken) {
+    public boolean validateRefreshToken(@NonNull String refreshToken) throws AccessTokenIsNotValidException {
         return validateToken(refreshToken, jwtRefreshSecret);
     }
 
-    private boolean validateToken(@NonNull String token, @NonNull Key secret) {
+    private boolean validateToken(@NonNull String token, @NonNull Key secret) throws AccessTokenIsNotValidException {
         token = deleteBearer(token);
         try {
             Jwts.parserBuilder()
@@ -75,7 +72,7 @@ public class JwtProvider {
                     .parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException expEx) {
-            System.out.print(expEx.getMessage());
+            throw new AccessTokenIsNotValidException("Токен протух");
         } catch (UnsupportedJwtException unsEx) {
             System.out.print(unsEx.getMessage());
         } catch (MalformedJwtException mjEx) {

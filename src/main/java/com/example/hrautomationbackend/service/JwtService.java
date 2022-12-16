@@ -6,56 +6,59 @@ import com.example.hrautomationbackend.exception.RefreshTokenIsNotValidException
 import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.jwt.JwtProvider;
 import com.example.hrautomationbackend.jwt.JwtResponse;
-import com.example.hrautomationbackend.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @Service
 public class JwtService {
 
     private final Map<String, String> refreshStorage = new HashMap<>();
     private final JwtProvider jwtProvider;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public JwtService(JwtProvider jwtProvider, UserRepository userRepository) {
+    public JwtService(JwtProvider jwtProvider, UserService userService) {
         this.jwtProvider = jwtProvider;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public void checkAccessToken(String accessToken) throws AccessTokenIsNotValidException {
-//        if (jwtProvider.validateAccessToken(accessToken)) {
-//            final Claims claims = jwtProvider.getAccessClaims(accessToken);
-//            final Date expirationDate = claims.getExpiration();
-//            ZoneId zoneId = ZoneId.systemDefault();
-//            ZonedDateTime zonedDateTime = LocalDateTime.now().atZone(zoneId);
-//            Date now = Date.from(zonedDateTime.toInstant());
-//            if (!(expirationDate.compareTo(now) > 0)) {
-//                throw new AccessTokenIsNotValidException("Токен протух");
-//            }
-//        }
-//        throw new AccessTokenIsNotValidException("Не валидный токен");
+        if (jwtProvider.validateAccessToken(accessToken)) {
+            final Claims claims = jwtProvider.getAccessClaims(accessToken);
+            final Date expirationDate = claims.getExpiration();
+            ZoneId zoneId = ZoneId.systemDefault();
+            ZonedDateTime zonedDateTime = LocalDateTime.now().atZone(zoneId);
+            Date now = Date.from(zonedDateTime.toInstant());
+            if (!(expirationDate.compareTo(now) > 0)) {
+                throw new AccessTokenIsNotValidException("Токен протух");
+            }
+            return;
+        }
+        throw new AccessTokenIsNotValidException("Не валидный токен");
     }
 
     public JwtResponse getTokens(UserEntity user) {
         final String accessToken = jwtProvider.generateAccessToken(user);
         final String refreshToken = jwtProvider.generateRefreshToken(user);
-        refreshStorage.put(user.getEmail(), refreshToken);
+        refreshStorage.put(String.valueOf(user.getId()), refreshToken);
         return new JwtResponse(accessToken, refreshToken, user.getId(), user.getUsername());
     }
 
-    public JwtResponse refresh(@NonNull String refreshToken) throws UserNotFoundException, RefreshTokenIsNotValidException {
+    public JwtResponse refresh(@NonNull String refreshToken) throws UserNotFoundException, RefreshTokenIsNotValidException, AccessTokenIsNotValidException {
           if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
-            final String email = claims.getSubject();
-            final String saveRefreshToken = refreshStorage.get(email);
+            final String id = claims.getSubject();
+            final String saveRefreshToken = refreshStorage.get(id);
             if (saveRefreshToken != null && saveRefreshToken.equals(refreshToken)) {
-                final UserEntity user = userRepository.findByEmail(email);
-                if (user == null)
-                    throw new UserNotFoundException("Пользователь с email " + email + " не существует");
+                UserEntity user = userService.getUserEntity(Long.valueOf(id));
                 return getTokens(user);
             }
         }
