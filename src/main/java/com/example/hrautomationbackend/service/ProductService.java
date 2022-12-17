@@ -105,7 +105,9 @@ public class ProductService {
     }
 
     public List<ProductCategoryEntity> getCategories() {
-        return (List<ProductCategoryEntity>) productCategoryRepository.findAll();
+        List<ProductCategoryEntity> list = (List<ProductCategoryEntity>) productCategoryRepository.findAll();
+        list.sort((a, b) -> a.getName().compareToIgnoreCase(b.getName()));
+        return list;
     }
 
     public List<ProductEntity> getProductsByProductCategory(Long categoryId) throws ProductCategoryNotFoundException {

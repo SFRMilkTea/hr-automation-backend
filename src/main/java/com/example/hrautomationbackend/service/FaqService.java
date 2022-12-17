@@ -57,6 +57,8 @@ public class FaqService {
     }
 
     public List<QuestionCategoryEntity> getCategories() {
+        List<QuestionCategoryEntity> list = (List<QuestionCategoryEntity>) categoryRepository.findAll();
+        list.sort((a, b) -> a.getName().compareToIgnoreCase(b.getName()));
         return (List<QuestionCategoryEntity>) categoryRepository.findAll();
     }
 
