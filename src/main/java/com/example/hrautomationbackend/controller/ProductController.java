@@ -93,6 +93,7 @@ public class ProductController {
      * @apiBody {boolean} [ordered=false] Заказан ли продукт
      * @apiBody {int} quantity Количество продуктов для заказа
      * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {Long} id Айди продукта
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) ProductAlreadyExistException Продукт уже существует
      **/

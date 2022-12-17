@@ -117,6 +117,7 @@ public class UserController {
      * @apiBody {Date} [birthDate] дата рождения пользователя
      * @apiBody {String} [pictureUrl] фото пользователя
      * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {Long} id Айди пользователя
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) UserAlreadyExistException Пользователь уже существует
      **/

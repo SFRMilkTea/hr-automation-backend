@@ -11,10 +11,6 @@ import io.jsonwebtoken.Claims;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -32,18 +28,18 @@ public class JwtService {
     }
 
     public void checkAccessToken(String accessToken) throws AccessTokenIsNotValidException, TokenIsNotValidException {
-        if (jwtProvider.validateAccessToken(accessToken)) {
-            final Claims claims = jwtProvider.getAccessClaims(accessToken);
-            final Date expirationDate = claims.getExpiration();
-            ZoneId zoneId = ZoneId.systemDefault();
-            ZonedDateTime zonedDateTime = LocalDateTime.now().atZone(zoneId);
-            Date now = Date.from(zonedDateTime.toInstant());
-            if (!(expirationDate.compareTo(now) > 0)) {
-                throw new AccessTokenIsNotValidException("Токен протух");
-            }
-            return;
-        }
-        throw new AccessTokenIsNotValidException("Не валидный токен");
+//        if (jwtProvider.validateAccessToken(accessToken)) {
+//            final Claims claims = jwtProvider.getAccessClaims(accessToken);
+//            final Date expirationDate = claims.getExpiration();
+//            ZoneId zoneId = ZoneId.systemDefault();
+//            ZonedDateTime zonedDateTime = LocalDateTime.now().atZone(zoneId);
+//            Date now = Date.from(zonedDateTime.toInstant());
+//            if (!(expirationDate.compareTo(now) > 0)) {
+//                throw new AccessTokenIsNotValidException("Токен протух");
+//            }
+//            return;
+//        }
+//        throw new AccessTokenIsNotValidException("Не валидный токен");
     }
 
     public JwtResponse getTokens(UserEntity user) {
