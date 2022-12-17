@@ -1,7 +1,7 @@
 package com.example.hrautomationbackend.jwt;
 
 import com.example.hrautomationbackend.entity.UserEntity;
-import com.example.hrautomationbackend.exception.AccessTokenIsNotValidException;
+import com.example.hrautomationbackend.exception.TokenIsNotValidException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -55,15 +55,15 @@ public class JwtProvider {
                 .compact();
     }
 
-    public boolean validateAccessToken(@NonNull String accessToken) throws AccessTokenIsNotValidException {
+    public boolean validateAccessToken(@NonNull String accessToken) throws TokenIsNotValidException {
         return validateToken(accessToken, jwtAccessSecret);
     }
 
-    public boolean validateRefreshToken(@NonNull String refreshToken) throws AccessTokenIsNotValidException {
+    public boolean validateRefreshToken(@NonNull String refreshToken) throws TokenIsNotValidException {
         return validateToken(refreshToken, jwtRefreshSecret);
     }
 
-    private boolean validateToken(@NonNull String token, @NonNull Key secret) throws AccessTokenIsNotValidException {
+    private boolean validateToken(@NonNull String token, @NonNull Key secret) throws TokenIsNotValidException {
         token = deleteBearer(token);
         try {
             Jwts.parserBuilder()
@@ -72,7 +72,7 @@ public class JwtProvider {
                     .parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException expEx) {
-            throw new AccessTokenIsNotValidException("Токен протух");
+            throw new TokenIsNotValidException("Токен протух");
         } catch (UnsupportedJwtException unsEx) {
             System.out.print(unsEx.getMessage());
         } catch (MalformedJwtException mjEx) {

@@ -34,6 +34,7 @@ public class FileController {
      * @apiHeader {String} accessToken Аксес токен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) UserNotFoundException Пользователь с данным id не найден
+     * @apiError (Error 500) MaxUploadSizeExceededException Размер картинки больше максимального
      **/
 
     @PostMapping("/{id}")

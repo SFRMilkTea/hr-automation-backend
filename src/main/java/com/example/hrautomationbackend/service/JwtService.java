@@ -3,6 +3,7 @@ package com.example.hrautomationbackend.service;
 import com.example.hrautomationbackend.entity.UserEntity;
 import com.example.hrautomationbackend.exception.AccessTokenIsNotValidException;
 import com.example.hrautomationbackend.exception.RefreshTokenIsNotValidException;
+import com.example.hrautomationbackend.exception.TokenIsNotValidException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.jwt.JwtProvider;
 import com.example.hrautomationbackend.jwt.JwtResponse;
@@ -30,7 +31,7 @@ public class JwtService {
         this.userService = userService;
     }
 
-    public void checkAccessToken(String accessToken) throws AccessTokenIsNotValidException {
+    public void checkAccessToken(String accessToken) throws AccessTokenIsNotValidException, TokenIsNotValidException {
         if (jwtProvider.validateAccessToken(accessToken)) {
             final Claims claims = jwtProvider.getAccessClaims(accessToken);
             final Date expirationDate = claims.getExpiration();
@@ -52,7 +53,10 @@ public class JwtService {
         return new JwtResponse(accessToken, refreshToken, user.getId(), user.getUsername());
     }
 
-    public JwtResponse refresh(@NonNull String refreshToken) throws UserNotFoundException, RefreshTokenIsNotValidException, AccessTokenIsNotValidException {
+    public JwtResponse refresh(@NonNull String refreshToken) throws UserNotFoundException,
+            RefreshTokenIsNotValidException, TokenIsNotValidException {
+        Logger log = Logger.getLogger(JwtService.class.getName());
+        log.info("! Refresh token " + refreshToken);
           if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String id = claims.getSubject();

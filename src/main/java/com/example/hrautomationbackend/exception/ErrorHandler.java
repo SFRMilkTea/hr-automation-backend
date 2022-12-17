@@ -119,4 +119,10 @@ public class ErrorHandler {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
+
+    @ExceptionHandler
+    public ResponseEntity handleValidationError(final TokenIsNotValidException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
 }
