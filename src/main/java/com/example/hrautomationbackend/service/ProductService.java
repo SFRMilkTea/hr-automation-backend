@@ -45,7 +45,7 @@ public class ProductService {
     }
 
     @Transactional
-    public void addProduct(ProductEntity product, Long categoryId) throws ProductAlreadyExistException,
+    public Long addProduct(ProductEntity product, Long categoryId) throws ProductAlreadyExistException,
             ProductCategoryNotFoundException {
         if (productRepository.findByCode(product.getCode()) == null) {
             ProductCategoryEntity category = productCategoryRepository
@@ -59,6 +59,7 @@ public class ProductService {
             }
             product.setProductCategory(category);
             productRepository.save(product);
+            return product.getId();
         } else
             throw new ProductAlreadyExistException("Продукт с артикулом " + product.getCode() + " уже существует");
     }

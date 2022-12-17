@@ -53,10 +53,11 @@ public class UserService {
         }
     }
 
-    public void registration(UserEntity user) throws UserAlreadyExistException {
+    public Long registration(UserEntity user) throws UserAlreadyExistException {
         if (userRepository.findByEmail(user.getEmail()) == null) {
             user.setAuthCode(-1);
             userRepository.save(user);
+            return user.getId();
         } else
             throw new UserAlreadyExistException("Пользователь с email " + user.getEmail() + " уже существует");
     }
