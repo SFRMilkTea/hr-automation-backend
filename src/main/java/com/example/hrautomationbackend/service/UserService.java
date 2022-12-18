@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class UserService {
@@ -41,7 +40,8 @@ public class UserService {
         for (UserEntity user : users) {
             usersModel.add(UserForAll.toModel(user));
         }
-        return UsersWithPages.toModel(usersModel, ((userRepository.count()+pageable.getPageSize()-1)/ pageable.getPageSize()));
+        return UsersWithPages.toModel(usersModel,
+                ((userRepository.count() + pageable.getPageSize() - 1) / pageable.getPageSize()));
 
     }
 
@@ -69,7 +69,7 @@ public class UserService {
             throw new UserNotFoundException("Пользователь с id: " + user.getId() + " не существует");
     }
 
-    public List<UserForAll> findByString(Pageable pageable, String str) {
+    public UsersWithPages findByString(Pageable pageable, String str) {
         Page<UserEntity> users = userRepository.findAll(pageable);
         ArrayList<UserForAll> usersModel = new ArrayList<>();
         for (UserEntity user : users) {
@@ -77,6 +77,8 @@ public class UserService {
                 usersModel.add(UserForAll.toModel(user));
             }
         }
-        return usersModel;
+        return UsersWithPages.toModel(usersModel,
+                ((userRepository.count() + pageable.getPageSize() - 1) / pageable.getPageSize()));
+
     }
 }

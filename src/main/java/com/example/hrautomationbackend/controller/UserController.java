@@ -172,7 +172,8 @@ public class UserController {
      * @apiParam {Number} size Количество элементов на странице
      * @apiParam {String} sortBy Фильтр сортировки
      * @apiParam {String} filter Строка поиска
-     * @apiSuccess {List[User]} users Список найденных пользователей (id, username, post, pictureUrl)
+     * @apiSuccess {List[Users]} users Список всех пользователей (поля id, username, post, pictureUrl)
+     * @apiSuccess {Long} pages Количество страниц
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
