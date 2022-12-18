@@ -105,8 +105,7 @@ public class ProductController {
                                      @RequestBody ProductEntity product) {
         try {
             jwtService.checkAccessToken(accessToken);
-            productService.addProduct(product, categoryId);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(productService.addProduct(product, categoryId));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
