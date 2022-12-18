@@ -161,4 +161,10 @@ public class ProductService {
         }
         return productsList;
     }
+
+    public void orderProducts(List<Long> idList) throws ProductNotFoundException {
+        for (Long id : idList) {
+            orderProduct(id);
+        }
+    }
 }

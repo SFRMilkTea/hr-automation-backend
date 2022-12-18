@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -382,6 +383,28 @@ public class ProductController {
             jwtService.checkAccessToken(accessToken);
             Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
             return ResponseEntity.ok(productService.findByString(pageable, filter));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * @api {post} /products/order Заказать несколько продуктов
+     * @apiName orderProducts
+     * @apiGroup PRODUCTS
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiBody {List[Long]} idList id продуктов для заказа
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) ProductNotFoundException Продукт не найден
+     **/
+
+    @PostMapping("/order")
+    public ResponseEntity orderProducts(@RequestHeader("Authorization") String accessToken,
+                                        @RequestBody List<Long> idList) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            productService.orderProducts(idList);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
