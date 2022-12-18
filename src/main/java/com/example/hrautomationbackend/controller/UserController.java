@@ -127,8 +127,7 @@ public class UserController {
                                   @RequestBody UserEntity user) {
         try {
             jwtService.checkAccessToken(accessToken);
-            userService.registration(user);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(userService.registration(user));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
