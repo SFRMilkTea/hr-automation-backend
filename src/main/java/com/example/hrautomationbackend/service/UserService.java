@@ -70,12 +70,10 @@ public class UserService {
     }
 
     public UsersWithPages findByString(Pageable pageable, String str) {
-        Page<UserEntity> users = userRepository.findAll(pageable);
+        Page<UserEntity> users = userRepository.findByUsernameContainingIgnoreCase(str, pageable);
         ArrayList<UserForAll> usersModel = new ArrayList<>();
         for (UserEntity user : users) {
-            if (user.getUsername().toLowerCase().contains(str.toLowerCase())) {
-                usersModel.add(UserForAll.toModel(user));
-            }
+            usersModel.add(UserForAll.toModel(user));
         }
         return UsersWithPages.toModel(usersModel,
                 ((userRepository.count() + pageable.getPageSize() - 1) / pageable.getPageSize()));

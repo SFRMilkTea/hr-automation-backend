@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface UserRepository extends PagingAndSortingRepository<UserEntity, Long> {
-    UserEntity findByUsername (String username);
     UserEntity findByEmail (String email);
     Page<UserEntity> findAll(Pageable pageable);
+    Page<UserEntity> findByUsernameContainingIgnoreCase(String title, Pageable pageable);
 }
