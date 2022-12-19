@@ -57,7 +57,8 @@ public class UserService {
         if (userRepository.findByEmail(user.getEmail()) == null) {
             user.setAuthCode(-1);
             userRepository.save(user);
-            return user.getId();
+            UserEntity user1 = userRepository.findByEmail(user.getEmail());
+            return user1.getId();
         } else
             throw new UserAlreadyExistException("Пользователь с email " + user.getEmail() + " уже существует");
     }
