@@ -38,6 +38,8 @@ dependencies {
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.348'
     implementation 'org.apache.poi:poi:4.1.1'
     implementation 'commons-io:commons-io:2.7'
+
+    implementation 'org.liquibase:liquibase-core'
 }
 
 tasks.named('test') {
