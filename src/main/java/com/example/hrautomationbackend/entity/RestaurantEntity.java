@@ -25,7 +25,7 @@ public class RestaurantEntity {
     private double lng;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "review_id")
+    @JoinColumn(name = "reviews")
     private List<ReviewEntity> reviews = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

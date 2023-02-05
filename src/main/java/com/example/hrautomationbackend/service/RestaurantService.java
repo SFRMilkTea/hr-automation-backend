@@ -1,5 +1,6 @@
 package com.example.hrautomationbackend.service;
 
+import com.example.hrautomationbackend.entity.CityEntity;
 import com.example.hrautomationbackend.entity.RestaurantEntity;
 import com.example.hrautomationbackend.entity.RestaurantStatusEntity;
 import com.example.hrautomationbackend.exception.*;
@@ -30,16 +31,18 @@ public class RestaurantService {
     }
 
     @Transactional
-    public Long addRestaurant(RestaurantEntity restaurant) throws RestaurantAlreadyExistException,
+    public Long addRestaurant(RestaurantEntity restaurant, Long statusId, Long cityId) throws RestaurantAlreadyExistException,
             RestaurantStatusNotFoundException, CityNotFoundException {
-        if (restaurantRepository.findByNameAndAddress(restaurant.getName(), restaurant.getAddress()) == null) {
-            restaurantStatusRepository.findById(restaurant.getStatus().getId())
-                    .orElseThrow(() -> new RestaurantStatusNotFoundException("Статус ресторана с id " +
-                            restaurant.getStatus().getId() + " не найден"));
-            cityRepository.findById(restaurant.getCity().getId())
-                    .orElseThrow(() -> new CityNotFoundException("Город с id " +
-                            restaurant.getCity().getId() + " не найден"));
 
+        if (restaurantRepository.findByNameAndAddress(restaurant.getName(), restaurant.getAddress()) == null) {
+            RestaurantStatusEntity status = restaurantStatusRepository
+                    .findById(statusId)
+                    .orElseThrow(() -> new RestaurantStatusNotFoundException("Статус с id " + statusId + " не найден"));
+            restaurant.setStatus(status);
+            CityEntity city = cityRepository
+                    .findById(cityId)
+                    .orElseThrow(() -> new CityNotFoundException("Город с id " + cityId + " не найден"));
+            restaurant.setCity(city);
             restaurantRepository.save(restaurant);
             return restaurant.getId();
         } else
@@ -87,6 +90,20 @@ public class RestaurantService {
             restaurantsModel.add(Restaurant.toModel(restaurant));
         }
         return restaurantsModel;
+    }
+
+    public void deleteStatus(Long id) throws RestaurantStatusNotFoundException {
+        try {
+            restaurantStatusRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new RestaurantStatusNotFoundException("Статус с id " + id + " не найден");
+        }
+    }
+
+    public RestaurantEntity getRestaurant(Long id) throws RestaurantNotFoundException {
+        return restaurantRepository
+                .findById(id)
+                .orElseThrow(() -> new RestaurantNotFoundException("Ресторан с id " + id + " не найден"));
     }
 
 }
