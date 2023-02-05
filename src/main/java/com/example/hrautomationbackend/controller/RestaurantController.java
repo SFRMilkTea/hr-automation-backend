@@ -191,16 +191,7 @@ public class RestaurantController {
         }
     }
 
-    /**
-     * @api {get} /restaurants/get/status/[statusId] Вывод всех ресторанов с определенным статусом
-     * @apiName getRestaurantsByStatus
-     * @apiGroup RESTAURANTS
-     * @apiParam {Long} statusId Айди статуса ресторана
-     * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {List[Restaurants]} restaurants Список ресторанов с заданным статусом
-     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
-     * @apiError (Error 400) RestaurantStatusNotFoundException Категория не найдена
-     **/
+//    Переделать на список фильтров
 
     @GetMapping("/get/status/{statusId}")
     public ResponseEntity getRestaurantsByStatus(@RequestHeader("Authorization") String accessToken,
@@ -214,7 +205,7 @@ public class RestaurantController {
     }
 
     /**
-     * @api {delete} /restaurants/delete/status/[id] Удаление статуа ресторана по айди
+     * @api {delete} /restaurants/delete/status/[id] Удаление статуса ресторана по айди
      * @apiName deleteRestaurantStatus
      * @apiGroup RESTAURANTS
      * @apiParam {Number} id Уникальный идентификатор статуса ресторана
