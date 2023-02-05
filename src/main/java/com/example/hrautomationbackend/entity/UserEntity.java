@@ -2,7 +2,9 @@ package com.example.hrautomationbackend.entity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class UserEntity {
@@ -22,12 +24,23 @@ public class UserEntity {
     private LocalDateTime codeExpTime;
     private Date birthDate;
     private String pictureUrl;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "review_id")
+    private List<ReviewEntity> reviews = new ArrayList<>();
 
     public UserEntity() {
     }
 
     public Long getId() {
         return id;
+    }
+
+    public List<ReviewEntity> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<ReviewEntity> reviews) {
+        this.reviews = reviews;
     }
 
     public void setId(Long id) {

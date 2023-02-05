@@ -20,6 +20,16 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity handleValidationError(final CityAlreadyExistException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleValidationError(final CityNotFoundException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
     public ResponseEntity handleValidationError(final ProductAlreadyExistException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
@@ -74,6 +84,33 @@ public class ErrorHandler {
         return ResponseEntity.status(401).body(e.getMessage());
     }
 
+
+    @ExceptionHandler
+    public ResponseEntity handleValidationError(final RestaurantAlreadyExistException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleValidationError(final RestaurantNotFoundException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+
+    @ExceptionHandler
+    public ResponseEntity handleValidationError(final RestaurantStatusAlreadyExistException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleValidationError(final RestaurantStatusNotFoundException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleValidationError(final TokenIsNotValidException e) {
+        return ResponseEntity.status(401).body(e.getMessage());
+    }
+
     @ExceptionHandler
     public ResponseEntity handleValidationError(final UserAlreadyExistException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
@@ -117,12 +154,6 @@ public class ErrorHandler {
     @ExceptionHandler
     public ResponseEntity handleValidationError(final ExpiredJwtException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-
-    @ExceptionHandler
-    public ResponseEntity handleValidationError(final TokenIsNotValidException e) {
-        return ResponseEntity.status(401).body(e.getMessage());
     }
 
 }
