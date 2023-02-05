@@ -12,7 +12,7 @@ public class CityController {
 
     /**
      * @apiDefine CITIES
-     * ГОРОДА
+     * Р“РћР РћР”Рђ
      */
 
     private final CityService cityService;
@@ -24,14 +24,14 @@ public class CityController {
     }
 
     /**
-     * @api {post} /cities/add Добавление нового города
+     * @api {post} /cities/add Р”РѕР±Р°РІР»РµРЅРёРµ РЅРѕРІРѕРіРѕ РіРѕСЂРѕРґР°
      * @apiGroup CITIES
      * @apiName addCity
-     * @apiHeader {String} accessToken Аксес токен
-     * @apiBody {String} name Название города
-     * @apiSuccess {Long} id id добавленного города
-     * @apiError (Error 400) CityAlreadyExistException Город уже существует
-     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiHeader {String} accessToken РђРєСЃРµСЃ С‚РѕРєРµРЅ
+     * @apiBody {String} name РќР°Р·РІР°РЅРёРµ РіРѕСЂРѕРґР°
+     * @apiSuccess {Long} id id РґРѕР±Р°РІР»РµРЅРЅРѕРіРѕ РіРѕСЂРѕРґР°
+     * @apiError (Error 400) CityAlreadyExistException Р“РѕСЂРѕРґ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
+     * @apiError (Error 401) AccessTokenIsNotValidException РќРµ РІР°Р»РёРґРЅС‹Р№ AccessToken
      **/
 
     @PostMapping("/add")
