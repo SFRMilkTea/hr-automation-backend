@@ -1,28 +1,28 @@
-databaseChangeLog:
-  - preConditions:
-      onFail: HALT
-      onError: HALT
-  - changeSet:
-      id: 29.01.2023-1
-      labels: example
-      author: SFRMilkTea
-      changes:
-        - modifyDataType:
-            tableName:   question_entity
-            columnName:  description
-            newDataType: varchar(1000)
-  - changeSet:
-      id: 05.02.2023-1
-      labels: example
-      author: SFRMilkTea
-      changes:
-        - addNotNullConstraint:
-            tableName: restaurant_entity
-            columnName: rating
-        - addNotNullConstraint:
-            tableName: restaurant_entity
-            columnName: average
-        - renameColumn:
-            tableName: restaurant_entity
-            oldColumnName: restaurant_id
-            newColumnName: reviews
+#databaseChangeLog:
+#  - preConditions:
+#      onFail: HALT
+#      onError: HALT
+#  - changeSet:
+#      id: 29.01.2023-1
+#      labels: example
+#      author: SFRMilkTea
+#      changes:
+#        - modifyDataType:
+#            tableName:   question_entity
+#            columnName:  description
+#            newDataType: varchar(1000)
+#  - changeSet:
+#      id: 05.02.2023-1
+#      labels: example
+#      author: SFRMilkTea
+#      changes:
+#        - addNotNullConstraint:
+#            tableName: restaurant_entity
+#            columnName: rating
+#        - addNotNullConstraint:
+#            tableName: restaurant_entity
+#            columnName: average
+#        - renameColumn:
+#            tableName: restaurant_entity
+#            oldColumnName: restaurant_id
+#            newColumnName: reviews
