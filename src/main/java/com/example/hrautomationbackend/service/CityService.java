@@ -5,6 +5,8 @@ import com.example.hrautomationbackend.exception.CityAlreadyExistException;
 import com.example.hrautomationbackend.repository.CityRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CityService {
 
@@ -21,4 +23,11 @@ public class CityService {
         } else
             throw new CityAlreadyExistException("Город " + city.getName() + " уже существует");
     }
+
+    public List<CityEntity> getCities() {
+        List<CityEntity> list = (List<CityEntity>) cityRepository.findAll();
+        list.sort((a, b) -> a.getName().compareToIgnoreCase(b.getName()));
+        return list;
+    }
+
 }

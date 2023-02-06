@@ -46,4 +46,23 @@ public class CityController {
         }
     }
 
+    /**
+     * @api {get} /cities/get/all Получение списка городов
+     * @apiName getCities
+     * @apiGroup CITIES
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {List[Cities]} statuses Список всех городов
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     **/
+
+    @GetMapping(path = "/get/all")
+    public ResponseEntity getCities(@RequestHeader("Authorization") String accessToken) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            return ResponseEntity.ok(cityService.getCities());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
