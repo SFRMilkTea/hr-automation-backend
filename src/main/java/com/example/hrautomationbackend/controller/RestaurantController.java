@@ -165,7 +165,6 @@ public class RestaurantController {
                                               @RequestBody RestaurantStatusEntity status) {
         try {
             jwtService.checkAccessToken(accessToken);
-            restaurantService.addRestaurantStatus(status);
             return ResponseEntity.ok(restaurantService.addRestaurantStatus(status));
         } catch (Exception e) {
             throw new RuntimeException(e);
