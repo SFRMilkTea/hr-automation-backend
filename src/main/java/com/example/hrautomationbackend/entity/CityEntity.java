@@ -1,6 +1,8 @@
 package com.example.hrautomationbackend.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class CityEntity {
@@ -10,18 +12,22 @@ public class CityEntity {
     private Long id;
     @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
+    private double lat;
+    @Column(nullable = false)
+    private double lng;
 
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinColumn(name = "restaurant_id")
-//    private List<RestaurantEntity> restaurants = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "restaurants")
+    private List<RestaurantEntity> restaurants = new ArrayList<>();
 
-//    public List<RestaurantEntity> getRestaurants() {
-//        return restaurants;
-//    }
-//
-//    public void setRestaurants(List<RestaurantEntity> restaurants) {
-//        this.restaurants = restaurants;
-//    }
+    public List<RestaurantEntity> getRestaurants() {
+        return restaurants;
+    }
+
+    public void setRestaurants(List<RestaurantEntity> restaurants) {
+        this.restaurants = restaurants;
+    }
 
     public CityEntity() {
     }
@@ -40,5 +46,21 @@ public class CityEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 }
