@@ -29,6 +29,8 @@ public class CityController {
      * @apiName addCity
      * @apiHeader {String} accessToken Аксес токен
      * @apiBody {String} name Название города
+     * @apiBody {double} lat Широта города
+     * @apiBody {double} lng Долгота города
      * @apiSuccess {Long} id id добавленного города
      * @apiError (Error 400) CityAlreadyExistException Город уже существует
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken

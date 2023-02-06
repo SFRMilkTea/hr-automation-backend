@@ -23,7 +23,7 @@ public class CityService {
             cityRepository.save(city);
             return city.getId();
         } else
-            throw new CityAlreadyExistException("Город " + city.getName() + " уже существует");
+            throw new CityAlreadyExistException("Р“РѕСЂРѕРґ " + city.getName() + " СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
     }
 
     public List<CityEntity> getCities() {
@@ -36,7 +36,7 @@ public class CityService {
         try {
             cityRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new CityNotFoundException("Город с id " + id + " не найден");
+            throw new CityNotFoundException("Р“РѕСЂРѕРґ СЃ id " + id + " РЅРµ РЅР°Р№РґРµРЅ");
         }
     }
 
