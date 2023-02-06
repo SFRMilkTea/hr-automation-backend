@@ -51,7 +51,7 @@ public class CityController {
      * @apiName getCities
      * @apiGroup CITIES
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {List[Cities]} statuses Список всех городов
+     * @apiSuccess {List[Cities]} cities Список всех городов
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
