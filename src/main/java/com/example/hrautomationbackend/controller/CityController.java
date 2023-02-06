@@ -64,5 +64,26 @@ public class CityController {
             throw new RuntimeException(e);
         }
     }
+    /**
+      * @api {delete} /cities/delete/[id] Удаление города по айди
+     * @apiName deleteCity
+     * @apiGroup CITIES
+     * @apiParam {Number} id Уникальный идентификатор города
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) CityNotFoundException Город с таким id не существует
+     **/
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity deleteCity(@RequestHeader("Authorization") String accessToken,
+                                     @PathVariable Long id) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            cityService.deleteCity(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
