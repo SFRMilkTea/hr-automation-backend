@@ -18,7 +18,7 @@ public class CityEntity {
     private double lng;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "restaurants")
+    @JoinColumn(name = "city_id")
     private List<RestaurantEntity> restaurants = new ArrayList<>();
 
     public List<RestaurantEntity> getRestaurants() {
