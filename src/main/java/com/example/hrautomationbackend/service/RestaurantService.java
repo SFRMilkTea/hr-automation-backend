@@ -95,6 +95,17 @@ public class RestaurantService {
         return restaurantsModel;
     }
 
+    public List<Restaurant> getRestaurantsByCity(Long cityId) throws CityNotFoundException {
+        CityEntity city = cityRepository
+                .findById(cityId)
+                .orElseThrow(() -> new CityNotFoundException("Город с id " + cityId + " не найден"));
+        ArrayList<Restaurant> restaurantsModel = new ArrayList<>();
+        for (RestaurantEntity restaurant : city.getRestaurants()) {
+            restaurantsModel.add(Restaurant.toModel(restaurant));
+        }
+        return restaurantsModel;
+    }
+
     public void deleteStatus(Long id) throws RestaurantStatusNotFoundException {
         try {
             restaurantStatusRepository.deleteById(id);

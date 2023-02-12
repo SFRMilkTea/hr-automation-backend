@@ -104,49 +104,6 @@ public class RestaurantController {
             throw new RuntimeException(e);
         }
     }
-//
-
-//
-//    @PutMapping("/category/{categoryId}")
-//    public ResponseEntity updateProduct(@RequestHeader("Authorization") String accessToken,
-//                                        @PathVariable(value = "categoryId") Long categoryId,
-//                                        @RequestBody ProductEntity restaurant) {
-//        try {
-//            jwtService.checkAccessToken(accessToken);
-//            restaurantService.update(restaurant, categoryId);
-//            return ResponseEntity.ok().build();
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
-
-//
-//    @GetMapping("/order/{id}")
-//    public ResponseEntity orderProduct(@RequestHeader("Authorization") String accessToken,
-//                                       @PathVariable Long id) {
-//        try {
-//            jwtService.checkAccessToken(accessToken);
-//            restaurantService.orderProduct(id);
-//            return ResponseEntity.ok().build();
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
-
-//    @GetMapping("/unorder/{id}")
-//    public ResponseEntity unorderProduct(@RequestHeader("Authorization") String accessToken,
-//                                         @PathVariable Long id) {
-//        try {
-//            jwtService.checkAccessToken(accessToken);
-//            restaurantService.unorderProduct(id);
-//            return ResponseEntity.ok().build();
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
 
 
     /**
@@ -202,6 +159,29 @@ public class RestaurantController {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * @api {get} /restaurants/get/city/[cityId] Получение списка ресторанов по городу
+     * @apiName getRestaurantsByCity
+     * @apiGroup RESTAURANTS
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiParam {Long} cityId Id города
+     * @apiSuccess {List[Restaurants]} restaurants Список всех ресторанов города
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) CityNotFoundException Город не найден
+     **/
+
+    @GetMapping("/get/city/{cityId}")
+    public ResponseEntity getRestaurantsByCity(@RequestHeader("Authorization") String accessToken,
+                                               @PathVariable(value = "cityId") Long cityId) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            return ResponseEntity.ok(restaurantService.getRestaurantsByCity(cityId));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     /**
      * @api {delete} /restaurants/delete/status/[id] Удаление статуса ресторана по айди
