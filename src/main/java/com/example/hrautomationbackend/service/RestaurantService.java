@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 public class RestaurantService {
@@ -43,6 +44,8 @@ public class RestaurantService {
                     .findById(cityId)
                     .orElseThrow(() -> new CityNotFoundException("Город с id " + cityId + " не найден"));
             restaurant.setCity(city);
+            (Logger.getLogger(RestaurantService.class.getName())).info(
+                    "! Hello Arina this is your address ---> " + restaurant.getAddress() );
             restaurantRepository.save(restaurant);
             return restaurant.getId();
         } else

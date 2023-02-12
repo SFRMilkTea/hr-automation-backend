@@ -41,8 +41,7 @@ public class CityController {
                                   @RequestBody CityEntity city) {
         try {
             jwtService.checkAccessToken(accessToken);
-            cityService.addCity(city);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(cityService.addCity(city));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
