@@ -107,6 +107,11 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity handleValidationError(final ReviewNotFoundException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
     public ResponseEntity handleValidationError(final TokenIsNotValidException e) {
         return ResponseEntity.status(401).body(e.getMessage());
     }

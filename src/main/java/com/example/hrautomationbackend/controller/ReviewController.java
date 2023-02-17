@@ -74,4 +74,28 @@ public class ReviewController {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * @api {delete} /reviews/delete/[id] Удаление отзыва по айди
+     * @apiName deleteReview
+     * @apiGroup REVIEWS
+     * @apiParam {Number} id Уникальный идентификатор отзыва
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) ReviewNotFoundException Отзыв с таким id не существует
+     **/
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity deleteReview(@RequestHeader("Authorization") String accessToken,
+                                       @PathVariable Long id) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            reviewService.deleteReview(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }

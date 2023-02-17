@@ -4,10 +4,12 @@ import com.example.hrautomationbackend.entity.RestaurantEntity;
 import com.example.hrautomationbackend.entity.ReviewEntity;
 import com.example.hrautomationbackend.entity.UserEntity;
 import com.example.hrautomationbackend.exception.RestaurantNotFoundException;
+import com.example.hrautomationbackend.exception.ReviewNotFoundException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.repository.RestaurantRepository;
 import com.example.hrautomationbackend.repository.ReviewRepository;
 import com.example.hrautomationbackend.repository.UserRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -46,5 +48,12 @@ public class ReviewService {
         return restaurant.getReviews();
     }
 
+    public void deleteReview(Long id) throws ReviewNotFoundException {
+        try {
+            reviewRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ReviewNotFoundException("Отзыв с id " + id + " не найден");
+        }
+    }
 
 }
