@@ -11,6 +11,7 @@ import com.example.hrautomationbackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class ReviewService {
@@ -28,14 +29,22 @@ public class ReviewService {
     public Long addReview(ReviewEntity review, Long restaurantId, Long userId) throws RestaurantNotFoundException, UserNotFoundException {
         RestaurantEntity restaurant = restaurantRepository
                 .findById(restaurantId)
-                .orElseThrow(() -> new RestaurantNotFoundException("–ÂÒÚÓ‡Ì Ò id " + restaurantId + " ÌÂ Ì‡È‰ÂÌ"));
+                .orElseThrow(() -> new RestaurantNotFoundException("–†–µ—Å—Ç–æ—Ä–∞–Ω —Å id " + restaurantId + " –Ω–µ –Ω–∞–π–¥–µ–Ω"));
         review.setRestaurant(restaurant);
         UserEntity user = userRepository
                 .findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("œÓÎ¸ÁÓ‚‡ÚÂÎ¸ Ò id " + userId + " ÌÂ Ì‡È‰ÂÌ"));
+                .orElseThrow(() -> new UserNotFoundException("–ü–æ–ª—å–∑–æ–≤–∞—Ç–µ–ª—å —Å id " + userId + " –Ω–µ –Ω–∞–π–¥–µ–Ω"));
         review.setUser(user);
         reviewRepository.save(review);
         return review.getId();
     }
+
+    public List<ReviewEntity> getReviewsByRestaurant(Long restaurantId) throws RestaurantNotFoundException {
+        RestaurantEntity restaurant = restaurantRepository
+                .findById(restaurantId)
+                .orElseThrow(() -> new RestaurantNotFoundException("–†–µ—Å—Ç–æ—Ä–∞–Ω —Å id " + restaurantId + " –Ω–µ –Ω–∞–π–¥–µ–Ω"));
+        return restaurant.getReviews();
+    }
+
 
 }

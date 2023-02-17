@@ -12,7 +12,7 @@ public class ReviewController {
 
     /**
      * @apiDefine REVIEWS
-     * ОТЗЫВЫ
+     * РћРўР—Р«Р’Р«
      */
 
     private final ReviewService reviewService;
@@ -25,19 +25,19 @@ public class ReviewController {
     }
 
     /**
-     * @api {post} /reviews/add/restaurant/[restaurantId]/user/[userId] Добавление отзыва
+     * @api {post} /reviews/add/restaurant/[restaurantId]/user/[userId] Р”РѕР±Р°РІР»РµРЅРёРµ РѕС‚Р·С‹РІР°
      * @apiName addReview
      * @apiGroup REVIEWS
-     * @apiParam {Long} restaurantId Айди ресторана
-     * @apiParam {Long} userId Айди пользователя
-     * @apiBody {String} content Содержимое отзыва
-     * @apiBody {Integer} average Средний чек
-     * @apiBody {float} rating Рейтинг ресторана
-     * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {Long} id Айди отзыва
-     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
-     * @apiError (Error 400) UserNotFoundException Пользователь не существует
-     * @apiError (Error 400) RestaurantNotFoundException Ресторан не существует
+     * @apiParam {Long} restaurantId РђР№РґРё СЂРµСЃС‚РѕСЂР°РЅР°
+     * @apiParam {Long} userId РђР№РґРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+     * @apiBody {String} content РЎРѕРґРµСЂР¶РёРјРѕРµ РѕС‚Р·С‹РІР°
+     * @apiBody {Integer} average РЎСЂРµРґРЅРёР№ С‡РµРє
+     * @apiBody {float} rating Р РµР№С‚РёРЅРі СЂРµСЃС‚РѕСЂР°РЅР°
+     * @apiHeader {String} accessToken РђРєСЃРµСЃ С‚РѕРєРµРЅ
+     * @apiSuccess {Long} id РђР№РґРё РѕС‚Р·С‹РІР°
+     * @apiError (Error 401) AccessTokenIsNotValidException РќРµ РІР°Р»РёРґРЅС‹Р№ AccessToken
+     * @apiError (Error 400) UserNotFoundException РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
+     * @apiError (Error 400) RestaurantNotFoundException Р РµСЃС‚РѕСЂР°РЅ РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
      **/
 
     @PostMapping("/add/restaurant/{restaurantId}/user/{userId}")
@@ -48,6 +48,28 @@ public class ReviewController {
         try {
             jwtService.checkAccessToken(accessToken);
             return ResponseEntity.ok(reviewService.addReview(review, restaurantId, userId));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * @api {get} /reviews/get/restaurant/[restaurantId] РџРѕР»СѓС‡РµРЅРёРµ РѕС‚Р·С‹РІРѕРІ Рє СЂРµСЃС‚РѕСЂР°РЅСѓ
+     * @apiName getReviewsByRestaurants
+     * @apiGroup REVIEWS
+     * @apiHeader {String} accessToken РђРєСЃРµСЃ С‚РѕРєРµРЅ
+     * @apiParam {Long} restaurantId Id СЂРµСЃС‚РѕСЂР°РЅР°
+     * @apiSuccess {List[Reviews]} reviews РЎРїРёСЃРѕРє РІСЃРµС… РѕС‚Р·С‹РІРѕРІ Рє СЂРµСЃС‚РѕСЂР°РЅСѓ
+     * @apiError (Error 401) AccessTokenIsNotValidException РќРµ РІР°Р»РёРґРЅС‹Р№ AccessToken
+     * @apiError (Error 400) RestaurantNotFoundException Р РµСЃС‚РѕСЂР°РЅ РЅРµ РЅР°Р№РґРµРЅ
+     **/
+
+    @GetMapping("/get/restaurant/{restaurantId}")
+    public ResponseEntity getReviewsByRestaurant(@RequestHeader("Authorization") String accessToken,
+                                                 @PathVariable(value = "restaurantId") Long restaurantId) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            return ResponseEntity.ok(reviewService.getReviewsByRestaurant(restaurantId));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
