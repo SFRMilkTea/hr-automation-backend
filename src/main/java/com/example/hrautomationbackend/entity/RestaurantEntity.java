@@ -17,12 +17,6 @@ public class RestaurantEntity {
     private String name;
     private float rating;
     private Integer average;
-    @Column(nullable = false)
-    private String address;
-    @Column(nullable = false)
-    private double lat;
-    @Column(nullable = false)
-    private double lng;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "restaurant_id")
@@ -35,10 +29,10 @@ public class RestaurantEntity {
     private RestaurantStatusEntity status;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "city_id", nullable = false)
+    @JoinColumn(name = "building_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
-    private CityEntity city;
+    private BuildingEntity building;
 
     public RestaurantEntity() {
     }
@@ -75,30 +69,6 @@ public class RestaurantEntity {
         this.average = average;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public double getLat() {
-        return lat;
-    }
-
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
-
-    public double getLng() {
-        return lng;
-    }
-
-    public void setLng(double lng) {
-        this.lng = lng;
-    }
-
     public List<ReviewEntity> getReviews() {
         return reviews;
     }
@@ -115,11 +85,11 @@ public class RestaurantEntity {
         this.status = status;
     }
 
-    public CityEntity getCity() {
-        return city;
+    public BuildingEntity getBuilding() {
+        return building;
     }
 
-    public void setCity(CityEntity city) {
-        this.city = city;
+    public void setBuilding(BuildingEntity building) {
+        this.building = building;
     }
 }
