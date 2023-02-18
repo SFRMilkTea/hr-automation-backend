@@ -1,10 +1,12 @@
 package com.example.hrautomationbackend.service;
 
 import com.example.hrautomationbackend.exception.UndefinedLatitudeException;
-import com.example.hrautomationbackend.exception.UndefinedLongitudeException;
-import com.example.hrautomationbackend.geocoder.Geocoder;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.GeocodingResult;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -12,46 +14,42 @@ import java.io.IOException;
 @Service
 public class GeocoderService {
 
-    private final ObjectMapper mapper;
-    private final Geocoder geocoder;
-
-
-    public GeocoderService(ObjectMapper mapper, Geocoder geocoder) {
-        this.mapper = mapper;
-        this.geocoder = geocoder;
+    public GeocoderService() {
     }
 
 
     // здесь можно подумать над оптимизацией
 
-    public Long getLat(String address) throws IOException, InterruptedException, UndefinedLatitudeException {
-        String response = geocoder.GeocodeSync(address);
-        JsonNode responseJsonNode = mapper.readTree(response);
-        JsonNode items = responseJsonNode.get("items");
+    public String getLat(String address) throws IOException, InterruptedException, UndefinedLatitudeException, ApiException {
 
-        Long lat = null;
-        for (JsonNode item : items) {
-            JsonNode position = item.get("position");
-            lat = position.get("lat").asLong();
-        }
-        if (lat != null) {
-            return lat;
-        } else throw new UndefinedLatitudeException("Невозможно определить широту для адреса " + address);
+        GeoApiContext context = new GeoApiContext.Builder()
+                .apiKey("AIzaSyD0x8OjD9BWDrSPy2GDApSqt_pChbbCYQU")
+                .build();
+        GeocodingResult[] results = GeocodingApi.geocode(context,
+                address).await();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        String lat = gson.toJson(results[0].geometry.location.lat);
+
+        context.shutdown();
+
+        return lat;
     }
 
-    public Long getLng(String address) throws IOException, InterruptedException, UndefinedLongitudeException {
-        String response = geocoder.GeocodeSync(address);
-        JsonNode responseJsonNode = mapper.readTree(response);
-        JsonNode items = responseJsonNode.get("items");
+    public String getLng(String address) throws IOException, InterruptedException, ApiException {
+        GeoApiContext context = new GeoApiContext.Builder()
+                .apiKey("AIzaSyD0x8OjD9BWDrSPy2GDApSqt_pChbbCYQU")
+                .build();
+        GeocodingResult[] results = GeocodingApi.geocode(context,
+                address).await();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        Long lng = null;
-        for (JsonNode item : items) {
-            JsonNode position = item.get("position");
-            lng = position.get("lng").asLong();
-        }
-        if (lng != null) {
-            return lng;
-        } else throw new UndefinedLongitudeException("Невозможно определить долготу для адреса " + address);
+        String lng = gson.toJson(results[0].geometry.location.lng);
+
+        context.shutdown();
+
+        return lng;
+
     }
 }
 
