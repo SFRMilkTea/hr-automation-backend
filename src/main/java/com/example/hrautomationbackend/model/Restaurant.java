@@ -18,9 +18,9 @@ public class Restaurant {
         model.setId(entity.getId());
         model.setName(entity.getName());
         model.setRating(entity.getRating());
-        model.setAddress(entity.getAddress());
-        model.setLat(entity.getLat());
-        model.setLng(entity.getLng());
+        model.setAddress(entity.getBuilding().getAddress());
+        model.setLat(entity.getBuilding().getLat());
+        model.setLng(entity.getBuilding().getLng());
         model.setStatus(entity.getStatus().getName());
         return model;
     }

@@ -11,12 +11,12 @@ import com.example.hrautomationbackend.repository.BuildingRepository;
 import com.example.hrautomationbackend.repository.CityRepository;
 import com.example.hrautomationbackend.repository.RestaurantRepository;
 import com.example.hrautomationbackend.repository.RestaurantStatusRepository;
+import com.google.maps.errors.ApiException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +38,8 @@ public class RestaurantService {
         this.geocoderService = geocoderService;
     }
 
-    @Transactional
     public Long addRestaurant(RestaurantResponse restaurantResponse, Long statusId, Long cityId) throws RestaurantAlreadyExistException,
-            RestaurantStatusNotFoundException, CityNotFoundException, UndefinedLatitudeException, IOException, InterruptedException, UndefinedLongitudeException {
+            RestaurantStatusNotFoundException, CityNotFoundException, UndefinedLatitudeException, IOException, InterruptedException, UndefinedLongitudeException, ApiException {
 
         BuildingEntity building = new BuildingEntity();
 
@@ -50,8 +49,8 @@ public class RestaurantService {
                     .orElseThrow(() -> new CityNotFoundException("Город с id " + cityId + " не найден"));
             building.setCity(city);
             building.setAddress(restaurantResponse.getAddress());
-            building.setLat(geocoderService.getLat(restaurantResponse.getAddress()));
-            building.setLng(geocoderService.getLng(restaurantResponse.getAddress()));
+            building.setLat(Double.parseDouble(geocoderService.getLat(restaurantResponse.getAddress())));
+            building.setLng(Double.parseDouble(geocoderService.getLng(restaurantResponse.getAddress())));
             buildingRepository.save(building);
         } else {
             building = buildingRepository.findByAddress(restaurantResponse.getAddress());

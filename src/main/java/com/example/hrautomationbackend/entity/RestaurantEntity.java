@@ -29,7 +29,7 @@ public class RestaurantEntity {
     private RestaurantStatusEntity status;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "building_id", nullable = false)
+    @JoinColumn(name = "building_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private BuildingEntity building;
