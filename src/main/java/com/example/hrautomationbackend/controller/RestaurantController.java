@@ -82,8 +82,6 @@ public class RestaurantController {
      * @apiParam {Long} cityId Айди города ресторана
      * @apiBody {String} name Название ресторана
      * @apiBody {String} address Адрес ресторана
-     * @apiBody {double} lat Широта
-     * @apiBody {double} lng Долгота
      * @apiHeader {String} accessToken Аксес токен
      * @apiSuccess {Long} id Айди ресторана
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken

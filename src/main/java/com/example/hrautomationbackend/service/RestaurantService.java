@@ -118,8 +118,11 @@ public class RestaurantService {
                 .findById(cityId)
                 .orElseThrow(() -> new CityNotFoundException("Город с id " + cityId + " не найден"));
         ArrayList<Restaurant> restaurantsModel = new ArrayList<>();
-        for (RestaurantEntity restaurant : city.getRestaurants()) {
-            restaurantsModel.add(Restaurant.toModel(restaurant));
+
+        for (BuildingEntity building : city.getBuildings()) {
+            for (RestaurantEntity restaurant : building.getRestaurants()) {
+                restaurantsModel.add(Restaurant.toModel(restaurant));
+            }
         }
         return restaurantsModel;
     }
