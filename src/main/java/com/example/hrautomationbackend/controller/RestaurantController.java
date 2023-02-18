@@ -1,7 +1,7 @@
 package com.example.hrautomationbackend.controller;
 
-import com.example.hrautomationbackend.entity.RestaurantEntity;
 import com.example.hrautomationbackend.entity.RestaurantStatusEntity;
+import com.example.hrautomationbackend.model.RestaurantResponse;
 import com.example.hrautomationbackend.service.JwtService;
 import com.example.hrautomationbackend.service.RestaurantService;
 import org.springframework.data.domain.PageRequest;
@@ -82,8 +82,6 @@ public class RestaurantController {
      * @apiParam {Long} cityId Айди города ресторана
      * @apiBody {String} name Название ресторана
      * @apiBody {String} address Адрес ресторана
-     * @apiBody {double} lat Широта
-     * @apiBody {double} lng Долгота
      * @apiHeader {String} accessToken Аксес токен
      * @apiSuccess {Long} id Айди ресторана
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
@@ -96,7 +94,7 @@ public class RestaurantController {
     public ResponseEntity addRestaurant(@RequestHeader("Authorization") String accessToken,
                                         @PathVariable(value = "statusId") Long statusId,
                                         @PathVariable(value = "cityId") Long cityId,
-                                        @RequestBody RestaurantEntity restaurant) {
+                                        @RequestBody RestaurantResponse restaurant) {
         try {
             jwtService.checkAccessToken(accessToken);
             return ResponseEntity.ok(restaurantService.addRestaurant(restaurant, statusId, cityId));

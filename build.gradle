@@ -41,6 +41,8 @@ dependencies {
 
     implementation 'org.liquibase:liquibase-core'
 
+    implementation 'com.google.maps:google-maps-services:2.1.2'
+
 }
 
 tasks.named('test') {

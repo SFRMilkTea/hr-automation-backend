@@ -19,14 +19,14 @@ public class CityEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "city_id")
-    private List<RestaurantEntity> restaurants = new ArrayList<>();
+    private List<BuildingEntity> buildings = new ArrayList<>();
 
-    public List<RestaurantEntity> getRestaurants() {
-        return restaurants;
+    public List<BuildingEntity> getBuildings() {
+        return buildings;
     }
 
-    public void setRestaurants(List<RestaurantEntity> restaurants) {
-        this.restaurants = restaurants;
+    public void setBuildings(List<BuildingEntity> buildings) {
+        this.buildings = buildings;
     }
 
     public CityEntity() {

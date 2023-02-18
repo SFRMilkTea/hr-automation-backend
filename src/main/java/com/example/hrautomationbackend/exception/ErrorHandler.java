@@ -117,6 +117,16 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity handleValidationError(final UndefinedLatitudeException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleValidationError(final UndefinedLongitudeException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
     public ResponseEntity handleValidationError(final UserAlreadyExistException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
