@@ -18,10 +18,17 @@ public class Restaurant {
         model.setId(entity.getId());
         model.setName(entity.getName());
         model.setRating(entity.getRating());
-        model.setAddress(entity.getBuilding().getAddress());
-        model.setLat(entity.getBuilding().getLat());
-        model.setLng(entity.getBuilding().getLng());
-        model.setStatus(entity.getStatus().getName());
+        if (entity.getBuilding() == null) {
+            model.setAddress("address is null");
+            model.setLat(0);
+            model.setLng(0);
+
+        } else {
+            model.setAddress(entity.getBuilding().getAddress());
+            model.setLat(entity.getBuilding().getLat());
+            model.setLng(entity.getBuilding().getLng());
+            model.setStatus(entity.getStatus().getName());
+        }
         return model;
     }
 
