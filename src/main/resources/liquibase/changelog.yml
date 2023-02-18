@@ -8,8 +8,8 @@ databaseChangeLog:
       author: SFRMilkTea
       changes:
         - modifyDataType:
-            tableName:   question_entity
-            columnName:  description
+            tableName: question_entity
+            columnName: description
             newDataType: varchar(1000)
   - changeSet:
       id: 05.02.2023-1
@@ -26,3 +26,30 @@ databaseChangeLog:
             tableName: restaurant_entity
             oldColumnName: restaurant_id
             newColumnName: reviews
+  - changeSet:
+      id: 18.02.2023-1
+      labels: dropColumnsFromRestaurants
+      author: SFRMilkTea
+      changes:
+        - dropColumn:
+            tableName: restaurant_entity
+            columns:
+              - column:
+                  name: address
+              - column:
+                  name: lat
+              - column:
+                  name: lng
+              - column:
+                  name: city_id
+  - changeSet:
+      id: 18.02.2023-2
+      labels: dropNotNullConstraints
+      author: SFRMilkTea
+      changes:
+        - dropNotNullConstraint:
+            tableName: restaurant_entity
+            columnName: rating
+        - dropNotNullConstraint:
+            tableName: restaurant_entity
+            columnName: average
