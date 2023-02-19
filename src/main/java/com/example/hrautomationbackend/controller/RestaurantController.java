@@ -240,11 +240,8 @@ public class RestaurantController {
      * @apiSuccess {float} rating Рейтинг ресторана
      * @apiSuccess {int} average Средний чек ресторана
      * @apiSuccess {String} address Адрес ресторана
-     * @apiSuccess {double} lat Широта расположения ресторана
-     * @apiSuccess {double} lng Долгота расположения ресторана
      * @apiSuccess {List[ReviewEntity]} reviews Отзывы ресторана
      * @apiSuccess {RestaurantStatusEntity} status Статус ресторана
-     * @apiSuccess {CityEntity} city Город ресторана
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) RestaurantNotFoundException Ресторан не существует
      **/
@@ -261,20 +258,32 @@ public class RestaurantController {
     }
 
 
-//
-//    @GetMapping("/search")
-//    public ResponseEntity findProducts(@RequestHeader("Authorization") String accessToken,
-//                                       @RequestParam int pageNumber,
-//                                       @RequestParam int size,
-//                                       @RequestParam String sortBy,
-//                                       @RequestParam String filter) {
-//        try {
-//            jwtService.checkAccessToken(accessToken);
-//            Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
-//            return ResponseEntity.ok(restaurantService.findByString(pageable, filter));
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
+    /**
+     * @api {get} /restaurants/search?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy]&filter=[filter] Поиск по ресторанам
+     * @apiName findRestaurants
+     * @apiGroup RESTAURANTS
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiParam {Number} pageNumber Номер страницы
+     * @apiParam {Number} size Количество элементов на странице
+     * @apiParam {String} sortBy Фильтр сортировки
+     * @apiParam {String} filter Строка поиска
+     * @apiSuccess {List[Restaurants]} restaurants Список найденных ресторанов (id, name, rating, average, status, address)
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     **/
+
+    @GetMapping("/search")
+    public ResponseEntity findRestaurants(@RequestHeader("Authorization") String accessToken,
+                                          @RequestParam int pageNumber,
+                                          @RequestParam int size,
+                                          @RequestParam String sortBy,
+                                          @RequestParam String filter) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
+            return ResponseEntity.ok(restaurantService.findByString(pageable, filter));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

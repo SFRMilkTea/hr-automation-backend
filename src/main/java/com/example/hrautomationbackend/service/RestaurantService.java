@@ -1,9 +1,6 @@
 package com.example.hrautomationbackend.service;
 
-import com.example.hrautomationbackend.entity.BuildingEntity;
-import com.example.hrautomationbackend.entity.CityEntity;
-import com.example.hrautomationbackend.entity.RestaurantEntity;
-import com.example.hrautomationbackend.entity.RestaurantStatusEntity;
+import com.example.hrautomationbackend.entity.*;
 import com.example.hrautomationbackend.exception.*;
 import com.example.hrautomationbackend.model.Restaurant;
 import com.example.hrautomationbackend.model.RestaurantCard;
@@ -133,6 +130,18 @@ public class RestaurantService {
         return RestaurantCard.toModel(restaurantRepository
                 .findById(id)
                 .orElseThrow(() -> new RestaurantNotFoundException("Ресторан с id " + id + " не найден")));
+    }
+
+    public List<Restaurant> findByString(Pageable pageable, String str) {
+        Page<RestaurantEntity> restaurants = restaurantRepository.findAll(pageable);
+        ArrayList<Restaurant> restaurantList = new ArrayList<>();
+        for (RestaurantEntity restaurant : restaurants) {
+            if (restaurant.getName().toLowerCase().contains(str.toLowerCase()) ||
+                    restaurant.getBuilding().getAddress().toLowerCase().contains(str.toLowerCase())) {
+                restaurantList.add(Restaurant.toModel(restaurant));
+            }
+        }
+        return restaurantList;
     }
 
 }
