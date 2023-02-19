@@ -1,7 +1,7 @@
 databaseChangeLog:
   - preConditions:
-      onFail: HALT
-      onError: HALT
+      onFail: CONTINUE
+      onError: CONTINUE
   - changeSet:
       id: 29.01.2023-1
       labels: example
@@ -26,22 +26,22 @@ databaseChangeLog:
             tableName: restaurant_entity
             oldColumnName: restaurant_id
             newColumnName: reviews
-  - changeSet:
-      id: 18.02.2023-1
-      labels: dropColumnsFromRestaurants
-      author: SFRMilkTea
-      changes:
-        - dropColumn:
-            tableName: restaurant_entity
-            columns:
-              - column:
-                  name: address
-              - column:
-                  name: lat
-              - column:
-                  name: lng
-              - column:
-                  name: city_id
+#  - changeSet:
+#      id: 18.02.2023-1
+#      labels: dropColumnsFromRestaurants
+#      author: SFRMilkTea
+#      changes:
+#        - dropColumn:
+#            tableName: restaurant_entity
+#            columns:
+#              - column:
+#                  name: address
+#              - column:
+#                  name: lat
+#              - column:
+#                  name: lng
+#              - column:
+#                  name: city_id
   - changeSet:
       id: 18.02.2023-2
       labels: dropNotNullConstraints
@@ -53,14 +53,14 @@ databaseChangeLog:
         - dropNotNullConstraint:
             tableName: restaurant_entity
             columnName: average
-#  - changeSet:
-#      id: 18.02.2023-3
-#      labels: addBuildingId
-#      author: SFRMilkTea
-#      changes:
-#        - addColumn:
-#            tableName: restaurant_entity
-#            columns:
-#              - column:
-#                  name: building_id
-#                  type: bigint
+  - changeSet:
+      id: 18.02.2023-3
+      labels: addBuildingId
+      author: SFRMilkTea
+      changes:
+        - addColumn:
+            tableName: restaurant_entity
+            columns:
+              - column:
+                  name: building_id
+                  type: bigint
