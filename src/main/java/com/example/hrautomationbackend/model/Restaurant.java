@@ -8,9 +8,6 @@ public class Restaurant {
     private String name;
     private float rating;
     private int average;
-    private String address;
-    private double lat;
-    private double lng;
     private String status;
 
     public static Restaurant toModel(RestaurantEntity entity) {
@@ -18,17 +15,9 @@ public class Restaurant {
         model.setId(entity.getId());
         model.setName(entity.getName());
         model.setRating(entity.getRating());
-        if (entity.getBuilding() == null) {
-            model.setAddress("address is null");
-            model.setLat(0);
-            model.setLng(0);
 
-        } else {
-            model.setAddress(entity.getBuilding().getAddress());
-            model.setLat(entity.getBuilding().getLat());
-            model.setLng(entity.getBuilding().getLng());
-            model.setStatus(entity.getStatus().getName());
-        }
+        model.setStatus(entity.getStatus().getName());
+
         return model;
     }
 
@@ -65,30 +54,6 @@ public class Restaurant {
 
     public void setAverage(int average) {
         this.average = average;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public double getLat() {
-        return lat;
-    }
-
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
-
-    public double getLng() {
-        return lng;
-    }
-
-    public void setLng(double lng) {
-        this.lng = lng;
     }
 
     public String getStatus() {

@@ -1,5 +1,6 @@
 package com.example.hrautomationbackend.entity;
 
+import com.example.hrautomationbackend.model.Restaurant;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -64,8 +65,12 @@ public class BuildingEntity {
         this.lng = lng;
     }
 
-    public List<RestaurantEntity> getRestaurants() {
-        return restaurants;
+    public List<Restaurant> getRestaurants() {
+        ArrayList<Restaurant> restaurantsModel = new ArrayList<>();
+        for (RestaurantEntity restaurant : restaurants) {
+            restaurantsModel.add(Restaurant.toModel(restaurant));
+        }
+        return restaurantsModel;
     }
 
     public void setRestaurants(List<RestaurantEntity> restaurants) {
