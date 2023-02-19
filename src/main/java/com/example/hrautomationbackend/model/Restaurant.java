@@ -9,13 +9,14 @@ public class Restaurant {
     private float rating;
     private int average;
     private String status;
+    private String address;
 
     public static Restaurant toModel(RestaurantEntity entity) {
         Restaurant model = new Restaurant();
         model.setId(entity.getId());
         model.setName(entity.getName());
         model.setRating(entity.getRating());
-
+        model.setAddress(entity.getBuilding().getAddress());
         model.setStatus(entity.getStatus().getName());
 
         return model;
@@ -62,5 +63,13 @@ public class Restaurant {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
