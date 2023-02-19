@@ -6,6 +6,7 @@ import com.example.hrautomationbackend.entity.RestaurantEntity;
 import com.example.hrautomationbackend.entity.RestaurantStatusEntity;
 import com.example.hrautomationbackend.exception.*;
 import com.example.hrautomationbackend.model.Restaurant;
+import com.example.hrautomationbackend.model.RestaurantCard;
 import com.example.hrautomationbackend.model.RestaurantResponse;
 import com.example.hrautomationbackend.repository.BuildingRepository;
 import com.example.hrautomationbackend.repository.CityRepository;
@@ -128,10 +129,10 @@ public class RestaurantService {
         }
     }
 
-    public RestaurantEntity getRestaurant(Long id) throws RestaurantNotFoundException {
-        return restaurantRepository
+    public RestaurantCard getRestaurant(Long id) throws RestaurantNotFoundException {
+        return RestaurantCard.toModel(restaurantRepository
                 .findById(id)
-                .orElseThrow(() -> new RestaurantNotFoundException("Ресторан с id " + id + " не найден"));
+                .orElseThrow(() -> new RestaurantNotFoundException("Ресторан с id " + id + " не найден")));
     }
 
 }

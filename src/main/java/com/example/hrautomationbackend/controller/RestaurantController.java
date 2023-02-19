@@ -230,7 +230,7 @@ public class RestaurantController {
 //    }
 
     /**
-     * @api {get} /restaurants/get/[id] Получение ресторана по айди
+     * @api {get} /restaurants/[id] Получение ресторана по айди
      * @apiName getOneRestaurant
      * @apiGroup RESTAURANTS
      * @apiParam {Long} id Уникальный идентефикатор ресторана
