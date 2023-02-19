@@ -3,23 +3,30 @@ package com.example.hrautomationbackend.service;
 import com.example.hrautomationbackend.entity.CityEntity;
 import com.example.hrautomationbackend.exception.CityAlreadyExistException;
 import com.example.hrautomationbackend.exception.CityNotFoundException;
+import com.example.hrautomationbackend.exception.UndefinedLatitudeException;
 import com.example.hrautomationbackend.repository.CityRepository;
+import com.google.maps.errors.ApiException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
 public class CityService {
 
     private final CityRepository cityRepository;
+    private final GeocoderService geocoderService;
 
-    public CityService(CityRepository cityRepository) {
+    public CityService(CityRepository cityRepository, GeocoderService geocoderService) {
         this.cityRepository = cityRepository;
+        this.geocoderService = geocoderService;
     }
 
-    public Long addCity(CityEntity city) throws CityAlreadyExistException {
+    public Long addCity(CityEntity city) throws CityAlreadyExistException, UndefinedLatitudeException, IOException, InterruptedException, ApiException {
         if (cityRepository.findByName(city.getName()) == null) {
+            city.setLat(Double.parseDouble(geocoderService.getLat(city.getName())));
+            city.setLng(Double.parseDouble(geocoderService.getLng(city.getName())));
             cityRepository.save(city);
             return city.getId();
         } else
