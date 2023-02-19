@@ -18,7 +18,6 @@ public class Restaurant {
         model.setId(entity.getId());
         model.setName(entity.getName());
         model.setRating(entity.getRating());
-        // commit
         if (entity.getBuilding() == null) {
             model.setAddress("address is null");
             model.setLat(0);
