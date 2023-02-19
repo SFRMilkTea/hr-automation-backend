@@ -53,14 +53,14 @@ databaseChangeLog:
         - dropNotNullConstraint:
             tableName: restaurant_entity
             columnName: average
-#  - changeSet:
-#      id: 18.02.2023-3
-#      labels: addBuildingId
-#      author: SFRMilkTea
-#      changes:
-#        - addColumn:
-#            tableName: restaurant_entity
-#            columns:
-#              - column:
-#                  name: building_id
-#                  type: bigint
+  - changeSet:
+      id: 18.02.2023-3
+      labels: addBuildingId
+      author: SFRMilkTea
+      changes:
+        - addColumn:
+            tableName: restaurant_entity
+            columns:
+              - column:
+                  name: building_id
+                  type: bigint
