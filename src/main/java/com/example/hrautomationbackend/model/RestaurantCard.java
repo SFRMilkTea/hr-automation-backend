@@ -14,6 +14,8 @@ public class RestaurantCard {
     private String status;
     private String address;
     private List<ReviewEntity> reviews;
+    private double lat;
+    private double lng;
 
     public static RestaurantCard toModel(RestaurantEntity entity) {
         RestaurantCard model = new RestaurantCard();
@@ -23,6 +25,8 @@ public class RestaurantCard {
         model.setAddress(entity.getBuilding().getAddress());
         model.setStatus(entity.getStatus().getName());
         model.setReviews(entity.getReviews());
+        model.setLat(entity.getBuilding().getLat());
+        model.setLng(entity.getBuilding().getLng());
 
         return model;
     }
@@ -84,5 +88,21 @@ public class RestaurantCard {
 
     public void setReviews(List<ReviewEntity> reviews) {
         this.reviews = reviews;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 }

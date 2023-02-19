@@ -240,6 +240,8 @@ public class RestaurantController {
      * @apiSuccess {float} rating Рейтинг ресторана
      * @apiSuccess {int} average Средний чек ресторана
      * @apiSuccess {String} address Адрес ресторана
+     * @apiSuccess {double} lat Широта
+     * @apiSuccess {double} lng Долгота
      * @apiSuccess {List[ReviewEntity]} reviews Отзывы ресторана
      * @apiSuccess {RestaurantStatusEntity} status Статус ресторана
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
