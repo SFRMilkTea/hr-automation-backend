@@ -3,6 +3,7 @@ package com.example.hrautomationbackend.model;
 import com.example.hrautomationbackend.entity.RestaurantEntity;
 import com.example.hrautomationbackend.entity.ReviewEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RestaurantCard {
@@ -13,7 +14,7 @@ public class RestaurantCard {
     private int average;
     private String status;
     private String address;
-    private List<ReviewEntity> reviews;
+    private List<Review> reviews;
     private double lat;
     private double lng;
 
@@ -24,7 +25,11 @@ public class RestaurantCard {
         model.setRating(entity.getRating());
         model.setAddress(entity.getBuilding().getAddress());
         model.setStatus(entity.getStatus().getName());
-        model.setReviews(entity.getReviews());
+        ArrayList<Review> reviewList = new ArrayList<>();
+        for (ReviewEntity review : entity.getReviews()) {
+            reviewList.add(Review.toModel(review));
+        }
+        model.setReviews(reviewList);
         model.setLat(entity.getBuilding().getLat());
         model.setLng(entity.getBuilding().getLng());
 
@@ -82,11 +87,11 @@ public class RestaurantCard {
         this.address = address;
     }
 
-    public List<ReviewEntity> getReviews() {
+    public List<Review> getReviews() {
         return reviews;
     }
 
-    public void setReviews(List<ReviewEntity> reviews) {
+    public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
     }
 
