@@ -6,6 +6,7 @@ import com.example.hrautomationbackend.entity.UserEntity;
 import com.example.hrautomationbackend.exception.RestaurantNotFoundException;
 import com.example.hrautomationbackend.exception.ReviewNotFoundException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
+import com.example.hrautomationbackend.model.Review;
 import com.example.hrautomationbackend.repository.RestaurantRepository;
 import com.example.hrautomationbackend.repository.ReviewRepository;
 import com.example.hrautomationbackend.repository.UserRepository;
@@ -13,6 +14,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,11 +43,17 @@ public class ReviewService {
         return review.getId();
     }
 
-    public List<ReviewEntity> getReviewsByRestaurant(Long restaurantId) throws RestaurantNotFoundException {
+    public List<Review> getReviewsByRestaurant(Long restaurantId) throws RestaurantNotFoundException {
         RestaurantEntity restaurant = restaurantRepository
                 .findById(restaurantId)
                 .orElseThrow(() -> new RestaurantNotFoundException("Ресторан с id " + restaurantId + " не найден"));
-        return restaurant.getReviews();
+
+        ArrayList<Review> reviewList = new ArrayList<>();
+        for (ReviewEntity review : restaurant.getReviews()) {
+            reviewList.add(Review.toModel(review));
+        }
+
+        return reviewList;
     }
 
     public void deleteReview(Long id) throws ReviewNotFoundException {
