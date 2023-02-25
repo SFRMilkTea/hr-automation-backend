@@ -80,6 +80,10 @@ public class RestaurantService {
 
     public void deleteRestaurant(Long id) throws RestaurantNotFoundException {
         try {
+            RestaurantEntity restaurant = restaurantRepository
+                    .findById(id)
+                    .orElseThrow(() -> new RestaurantNotFoundException("Ресторан с id " + id + " не найден"));
+            restaurant.setAverage(0);
             restaurantRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new RestaurantNotFoundException("Ресторан с id " + id + " не найден");
