@@ -17,7 +17,7 @@ public class Restaurant {
         model.setId(entity.getId());
         model.setName(entity.getName());
         model.setRating(entity.getRating());
-//        model.setAverage(entity.getAverage());
+        model.setAverage(entity.getAverage());
         model.setAddress(entity.getBuilding().getAddress());
         model.setStatus(entity.getStatus().getName());
         model.setReviewCount(entity.getReviews().size());
