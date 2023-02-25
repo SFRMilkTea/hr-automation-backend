@@ -1,0 +1,86 @@
+
+databaseChangeLog:
+  - preConditions:
+      onFail: CONTINUE
+      onError: CONTINUE
+  - changeSet:
+      id: 29.01.2023-1
+      labels: example
+      author: SFRMilkTea
+      changes:
+        - modifyDataType:
+            tableName: question_entity
+            columnName: description
+            newDataType: varchar(1000)
+  - changeSet:
+      id: 05.02.2023-1
+      labels: example
+      author: SFRMilkTea
+      changes:
+        - addNotNullConstraint:
+            tableName: restaurant_entity
+            columnName: rating
+        - addNotNullConstraint:
+            tableName: restaurant_entity
+            columnName: average
+        - renameColumn:
+            tableName: restaurant_entity
+            oldColumnName: restaurant_id
+            newColumnName: reviews
+  #  - changeSet:
+  #      id: 18.02.2023-1
+  #      labels: dropColumnsFromRestaurants
+  #      author: SFRMilkTea
+  #      changes:
+  #        - dropColumn:
+  #            tableName: restaurant_entity
+  #            columns:
+  #              - column:
+  #                  name: address
+  #              - column:
+  #                  name: lat
+  #              - column:
+  #                  name: lng
+  #              - column:
+  #                  name: city_id
+  - changeSet:
+      id: 18.02.2023-2
+      labels: dropNotNullConstraints
+      author: SFRMilkTea
+      changes:
+        - dropNotNullConstraint:
+            tableName: restaurant_entity
+            columnName: rating
+        - dropNotNullConstraint:
+            tableName: restaurant_entity
+            columnName: average
+  - changeSet:
+      id: 18.02.2023-3
+      labels: addBuildingId
+      author: SFRMilkTea
+      changes:
+        - addColumn:
+            tableName: restaurant_entity
+            columns:
+              - column:
+                  name: building_id
+                  type: bigint
+  - changeSet:
+      id: 25.02.2023-1
+      labels: fixAverage
+      author: SFRMilkTea
+      changes:
+        - addDefaultValue:
+            tableName: restaurant_entity
+            columnName: rating
+            defaultValueComputed: 0
+
+  - changeSet:
+      id: 25.02.2023-2
+      labels: fixAverage
+      author: SFRMilkTea
+      changes:
+        - addDefaultValue:
+            tableName: restaurant_entity
+            columnName: average
+            defaultValueComputed: 0
