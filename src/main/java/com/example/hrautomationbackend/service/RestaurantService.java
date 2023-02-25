@@ -144,4 +144,25 @@ public class RestaurantService {
         return restaurantList;
     }
 
+    public void calculateRating(RestaurantEntity restaurant) {
+        float rating = 0;
+        for (ReviewEntity review : restaurant.getReviews()) {
+            rating = rating + review.getRating();
+        }
+        rating = rating / restaurant.getReviews().size();
+        restaurant.setRating(rating);
+        restaurantRepository.save(restaurant);
+    }
+
+    public void calculateAverage(RestaurantEntity restaurant) {
+        int average = 0;
+        for (ReviewEntity review : restaurant.getReviews()) {
+            average = average + review.getAverage();
+        }
+        average = Math.round(average / restaurant.getReviews().size());
+        restaurant.setAverage(average);
+        restaurantRepository.save(restaurant);
+    }
+
+
 }

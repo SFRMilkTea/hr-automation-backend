@@ -22,11 +22,13 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
+    private final RestaurantService restaurantService;
 
-    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, RestaurantRepository restaurantRepository) {
+    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, RestaurantRepository restaurantRepository, RestaurantService restaurantService) {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.restaurantRepository = restaurantRepository;
+        this.restaurantService = restaurantService;
     }
 
     @Transactional
@@ -40,6 +42,8 @@ public class ReviewService {
                 .orElseThrow(() -> new UserNotFoundException("Пользователь с id " + userId + " не найден"));
         review.setUser(user);
         reviewRepository.save(review);
+        restaurantService.calculateRating(restaurant);
+        restaurantService.calculateAverage(restaurant);
         return review.getId();
     }
 

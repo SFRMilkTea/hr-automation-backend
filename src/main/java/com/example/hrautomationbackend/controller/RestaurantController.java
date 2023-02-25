@@ -242,7 +242,7 @@ public class RestaurantController {
      * @apiSuccess {String} address Адрес ресторана
      * @apiSuccess {double} lat Широта
      * @apiSuccess {double} lng Долгота
-     * @apiSuccess {List[ReviewEntity]} reviews Отзывы ресторана
+     * @apiSuccess {List[Review]} reviews Отзывы ресторана (id, name, rating, average, status, address)
      * @apiSuccess {RestaurantStatusEntity} status Статус ресторана
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) RestaurantNotFoundException Ресторан не существует
