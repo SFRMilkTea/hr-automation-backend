@@ -10,14 +10,17 @@ public class Restaurant {
     private int average;
     private String status;
     private String address;
+    private int reviewCount;
 
     public static Restaurant toModel(RestaurantEntity entity) {
         Restaurant model = new Restaurant();
         model.setId(entity.getId());
         model.setName(entity.getName());
         model.setRating(entity.getRating());
+        model.setAverage(entity.getAverage());
         model.setAddress(entity.getBuilding().getAddress());
         model.setStatus(entity.getStatus().getName());
+        model.setReviewCount(entity.getReviews().size());
 
         return model;
     }
@@ -71,5 +74,13 @@ public class Restaurant {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public int getReviewCount() {
+        return reviewCount;
+    }
+
+    public void setReviewCount(int reviewCount) {
+        this.reviewCount = reviewCount;
     }
 }
