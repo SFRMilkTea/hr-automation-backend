@@ -16,7 +16,7 @@ public class RestaurantEntity {
     @Column(nullable = false)
     private String name;
     private float rating;
-    private Integer average;
+    private int average;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "restaurant_id")

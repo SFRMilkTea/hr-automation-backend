@@ -149,25 +149,23 @@ public class RestaurantService {
     }
 
     public void calculateRating(RestaurantEntity restaurant) {
-        return;
-//        float rating = 0;
-//        for (ReviewEntity review : restaurant.getReviews()) {
-//            rating = rating + review.getRating();
-//        }
-//        rating = rating / restaurant.getReviews().size();
-//        restaurant.setRating(rating);
-//        restaurantRepository.save(restaurant);
+        float rating = 0;
+        for (ReviewEntity review : restaurant.getReviews()) {
+            rating = rating + review.getRating();
+        }
+        rating = rating / restaurant.getReviews().size();
+        restaurant.setRating(rating);
+        restaurantRepository.save(restaurant);
     }
 
     public void calculateAverage(RestaurantEntity restaurant) {
-        return;
-//        int average = 0;
-//        for (ReviewEntity review : restaurant.getReviews()) {
-//            average = average + review.getAverage();
-//        }
-//        average = Math.round(average / restaurant.getReviews().size());
-//        restaurant.setAverage(average);
-//        restaurantRepository.save(restaurant);
+        int average = 0;
+        for (ReviewEntity review : restaurant.getReviews()) {
+            average = average + review.getAverage();
+        }
+        average = Math.round(average / restaurant.getReviews().size());
+        restaurant.setAverage(average);
+        restaurantRepository.save(restaurant);
     }
 
     public void deleteBuilding(Long id) throws BuildingNotFoundException {
@@ -177,5 +175,4 @@ public class RestaurantService {
             throw new BuildingNotFoundException("Здание с id " + id + " не найдено");
         }
     }
-
 }
