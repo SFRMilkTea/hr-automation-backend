@@ -164,5 +164,12 @@ public class RestaurantService {
         restaurantRepository.save(restaurant);
     }
 
+    public void deleteBuilding(Long id) throws BuildingNotFoundException {
+        try {
+            buildingRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new BuildingNotFoundException("Здание с id " + id + " не найдено");
+        }
+    }
 
 }

@@ -288,4 +288,26 @@ public class RestaurantController {
         }
     }
 
+    /**
+     * @api {delete} /restaurants/delete/building/[id] Удаление статуса ресторана по айди
+     * @apiName deleteBuilding
+     * @apiGroup RESTAURANTS
+     * @apiParam {Number} id Уникальный идентификатор статуса здания
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) BuildingNotFoundException Здания с таким id не существует
+     **/
+
+    @DeleteMapping("/delete/building/{id}")
+    public ResponseEntity deleteBuilding(@RequestHeader("Authorization") String accessToken,
+                                         @PathVariable Long id) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            restaurantService.deleteBuilding(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
