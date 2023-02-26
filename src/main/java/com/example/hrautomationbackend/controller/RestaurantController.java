@@ -2,6 +2,7 @@ package com.example.hrautomationbackend.controller;
 
 import com.example.hrautomationbackend.entity.RestaurantStatusEntity;
 import com.example.hrautomationbackend.model.RestaurantResponse;
+import com.example.hrautomationbackend.model.RestaurantUpdate;
 import com.example.hrautomationbackend.service.JwtService;
 import com.example.hrautomationbackend.service.RestaurantService;
 import org.springframework.data.domain.PageRequest;
@@ -203,32 +204,6 @@ public class RestaurantController {
         }
     }
 
-
-//
-//    @PutMapping("/category")
-//    public ResponseEntity updateProductCategory(@RequestHeader("Authorization") String accessToken,
-//                                                @RequestBody ProductCategoryEntity category) {
-//        try {
-//            jwtService.checkAccessToken(accessToken);
-//            restaurantService.updateCategory(category);
-//            return ResponseEntity.ok().build();
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
-
-//
-//    @GetMapping("/ordered")
-//    public ResponseEntity getOrderedProducts(@RequestHeader("Authorization") String accessToken) {
-//        try {
-//            jwtService.checkAccessToken(accessToken);
-//            return ResponseEntity.ok(restaurantService.getOrderedProducts());
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
     /**
      * @api {get} /restaurants/[id] Получение ресторана по айди
      * @apiName getOneRestaurant
@@ -309,5 +284,56 @@ public class RestaurantController {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * @api {get} /restaurants/update/[id] Получение ресторана для редактирования
+     * @apiName getRestaurantForUpdate
+     * @apiGroup RESTAURANTS
+     * @apiParam {Long} id Уникальный идентефикатор ресторана
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {Long} id Уникальный идентефикатор ресторана
+     * @apiSuccess {String} name Название ресторана
+     * @apiSuccess {String} address Адрес ресторана
+     * @apiSuccess {String} status Статус ресторана
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) RestaurantNotFoundException Ресторан не существует
+     **/
+
+    @GetMapping("/update/{id}")
+    public ResponseEntity getRestaurantForUpdate(@PathVariable Long id,
+                                                 @RequestHeader("Authorization") String accessToken) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            return ResponseEntity.ok(restaurantService.getRestaurantForUpdate(id));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * @api {put} /restaurants/update Обновление ресторана
+     * @apiName updateRestaurant
+     * @apiGroup RESTAURANTS
+     * @apiBody {Long} id Уникальный идентефикатор ресторана
+     * @apiBody {String} name Название ресторана
+     * @apiBody {String} address Адрес ресторана
+     * @apiBody {String} status Статус ресторана
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) RestaurantNotFoundException Ресторан не существует
+     **/
+
+    @PutMapping("/update")
+    public ResponseEntity updateRestaurant(@RequestHeader("Authorization") String accessToken,
+                                           @RequestBody RestaurantUpdate restaurant) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            restaurantService.updateRestaurant(restaurant);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }
