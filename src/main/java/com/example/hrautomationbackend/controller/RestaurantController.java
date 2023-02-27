@@ -264,10 +264,10 @@ public class RestaurantController {
     }
 
     /**
-     * @api {delete} /restaurants/delete/building/[id] Удаление статуса ресторана по айди
+     * @api {delete} /restaurants/delete/building/[id] Удаление здания
      * @apiName deleteBuilding
      * @apiGroup RESTAURANTS
-     * @apiParam {Number} id Уникальный идентификатор статуса здания
+     * @apiParam {Number} id Уникальный идентификатор здания
      * @apiHeader {String} accessToken Аксес токен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) BuildingNotFoundException Здания с таким id не существует
