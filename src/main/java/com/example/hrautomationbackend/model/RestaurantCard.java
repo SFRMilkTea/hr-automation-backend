@@ -23,6 +23,7 @@ public class RestaurantCard {
         model.setId(entity.getId());
         model.setName(entity.getName());
         model.setRating(entity.getRating());
+        model.setAverage(entity.getAverage());
         model.setAddress(entity.getBuilding().getAddress());
         model.setStatus(entity.getStatus().getName());
         ArrayList<Review> reviewList = new ArrayList<>();
