@@ -5,4 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface BuildingRepository extends CrudRepository<BuildingEntity, Long> {
     BuildingEntity findByAddress(String address);
+    BuildingEntity findByLatAndLng(Double lat, Double lng);
 }

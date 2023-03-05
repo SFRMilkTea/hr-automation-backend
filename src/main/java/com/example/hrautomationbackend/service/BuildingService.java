@@ -2,10 +2,7 @@ package com.example.hrautomationbackend.service;
 
 import com.example.hrautomationbackend.entity.BuildingEntity;
 import com.example.hrautomationbackend.entity.CityEntity;
-import com.example.hrautomationbackend.exception.BuildingNotFoundException;
-import com.example.hrautomationbackend.exception.CityNotFoundException;
-import com.example.hrautomationbackend.exception.RestaurantAlreadyExistException;
-import com.example.hrautomationbackend.exception.UndefinedLatitudeException;
+import com.example.hrautomationbackend.exception.*;
 import com.example.hrautomationbackend.repository.BuildingRepository;
 import com.example.hrautomationbackend.repository.CityRepository;
 import com.example.hrautomationbackend.repository.RestaurantRepository;
@@ -31,17 +28,23 @@ public class BuildingService {
     }
 
     public BuildingEntity checkBuildingExist(String address, String name, Long cityId) throws UndefinedLatitudeException,
-            IOException, InterruptedException, ApiException, CityNotFoundException, RestaurantAlreadyExistException {
+            IOException, InterruptedException, ApiException, CityNotFoundException, RestaurantAlreadyExistException, BuildingAlreadyExistException {
         BuildingEntity building = new BuildingEntity();
         if (buildingRepository.findByAddress(address) == null) {
-            CityEntity city = cityRepository
-                    .findById(cityId)
-                    .orElseThrow(() -> new CityNotFoundException("Город с id " + cityId + " не найден"));
-            building.setCity(city);
-            building.setAddress(address);
-            building.setLat(Double.parseDouble(geocoderService.getLat(address)));
-            building.setLng(Double.parseDouble(geocoderService.getLng(address)));
-            buildingRepository.save(building);
+            Double lat = Double.parseDouble(geocoderService.getLat(address));
+            Double lng = Double.parseDouble(geocoderService.getLng(address));
+            if (buildingRepository.findByLatAndLng(lat, lng) == null) {
+                CityEntity city = cityRepository
+                        .findById(cityId)
+                        .orElseThrow(() -> new CityNotFoundException("Город с id " + cityId + " не найден"));
+                building.setCity(city);
+                building.setAddress(address);
+                building.setLat(lat);
+                building.setLng(lng);
+                buildingRepository.save(building);
+            } else
+                throw new BuildingAlreadyExistException("Здание по таким координатам уже существует. Укажите адрес вот так: " +
+                        buildingRepository.findByLatAndLng(lat, lng).getAddress());
         } else {
             building = buildingRepository.findByAddress(address);
             if (building.getRestaurants().contains(restaurantRepository.findByName(name))) {
@@ -52,8 +55,8 @@ public class BuildingService {
         return building;
     }
 
-    public void deleteBuildingIfEmpty(BuildingEntity building){
-        if (building.getRestaurants().size() == 0){
+    public void deleteBuildingIfEmpty(BuildingEntity building) {
+        if (building.getRestaurants().size() == 0) {
             buildingRepository.delete(building);
         }
     }

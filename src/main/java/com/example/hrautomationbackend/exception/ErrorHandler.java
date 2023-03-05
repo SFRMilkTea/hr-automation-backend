@@ -20,6 +20,11 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity handleValidationError(final BuildingAlreadyExistException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
     public ResponseEntity handleValidationError(final BuildingNotFoundException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }

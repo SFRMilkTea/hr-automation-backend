@@ -28,11 +28,8 @@ public class GeocoderService {
         GeocodingResult[] results = GeocodingApi.geocode(context,
                 address).await();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
         String lat = gson.toJson(results[0].geometry.location.lat);
-
         context.shutdown();
-
         return lat;
     }
 
@@ -43,11 +40,8 @@ public class GeocoderService {
         GeocodingResult[] results = GeocodingApi.geocode(context,
                 address).await();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
         String lng = gson.toJson(results[0].geometry.location.lng);
-
         context.shutdown();
-
         return lng;
 
     }

@@ -40,7 +40,7 @@ public class RestaurantService {
 
     public Long addRestaurant(RestaurantResponse restaurantResponse, Long statusId, Long cityId) throws RestaurantAlreadyExistException,
             RestaurantStatusNotFoundException, CityNotFoundException, UndefinedLatitudeException, IOException,
-            InterruptedException, ApiException {
+            InterruptedException, ApiException, BuildingAlreadyExistException {
         BuildingEntity building = buildingService.checkBuildingExist(restaurantResponse.getAddress(), restaurantResponse.getName(), cityId);
         RestaurantEntity restaurant = new RestaurantEntity();
         restaurant.setBuilding(building);
@@ -163,7 +163,7 @@ public class RestaurantService {
     @Transactional
     public void updateRestaurant(RestaurantUpdate restaurant) throws RestaurantNotFoundException,
             RestaurantAlreadyExistException, UndefinedLatitudeException, IOException, InterruptedException,
-            ApiException, CityNotFoundException {
+            ApiException, CityNotFoundException, BuildingAlreadyExistException {
         RestaurantEntity restaurantEntity = restaurantRepository
                 .findById(restaurant.getId())
                 .orElseThrow(() -> new RestaurantNotFoundException("Ресторан с id " + restaurant.getId() + " не найден"));
