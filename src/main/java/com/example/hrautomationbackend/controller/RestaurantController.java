@@ -79,8 +79,8 @@ public class RestaurantController {
     }
 
     /**
-     * @api {post} /add/status/[statusId]/city/[cityId] Добавление ресторана
-     * @apiName addRestaurant
+     * @api {post} /add/address/status/[statusId]/city/[cityId] Добавление ресторана по адресу
+     * @apiName addRestaurantByAddress
      * @apiGroup RESTAURANTS
      * @apiParam {Long} statusId Айди статуса ресторана
      * @apiParam {Long} cityId Айди города ресторана
@@ -94,18 +94,48 @@ public class RestaurantController {
      * @apiError (Error 400) CityNotFoundException Указанный статус ресторана не существует
      **/
 
-    @PostMapping("/add/status/{statusId}/city/{cityId}")
-    public ResponseEntity addRestaurant(@RequestHeader("Authorization") String accessToken,
-                                        @PathVariable(value = "statusId") Long statusId,
-                                        @PathVariable(value = "cityId") Long cityId,
-                                        @RequestBody RestaurantResponse restaurant) {
+    @PostMapping("/add/address/status/{statusId}/city/{cityId}")
+    public ResponseEntity addRestaurantByAddress(@RequestHeader("Authorization") String accessToken,
+                                                 @PathVariable(value = "statusId") Long statusId,
+                                                 @PathVariable(value = "cityId") Long cityId,
+                                                 @RequestBody RestaurantResponse restaurant) {
         try {
             jwtService.checkAccessToken(accessToken);
-            return ResponseEntity.ok(restaurantService.addRestaurant(restaurant, statusId, cityId));
+            return ResponseEntity.ok(restaurantService.addRestaurantByAddress(restaurant, statusId, cityId));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * @api {post} /add/coordinates/status/[statusId]/city/[cityId] Добавление ресторана по координатам
+     * @apiName addRestaurantByCoordinates
+     * @apiGroup RESTAURANTS
+     * @apiParam {Long} statusId Айди статуса ресторана
+     * @apiParam {Long} cityId Айди города ресторана
+     * @apiBody {String} name Название ресторана
+     * @apiBody {String} address Адрес ресторана
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {Long} id Айди ресторана
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) RestaurantAlreadyExistException Ресторан уже существует
+     * @apiError (Error 400) RestaurantStatusNotFoundException Указанный статус ресторана не существует
+     * @apiError (Error 400) CityNotFoundException Указанный статус ресторана не существует
+     **/
+
+    @PostMapping("/add/coordinates/status/{statusId}/city/{cityId}")
+    public ResponseEntity addRestaurantByCoordinates(@RequestHeader("Authorization") String accessToken,
+                                                     @PathVariable(value = "statusId") Long statusId,
+                                                     @PathVariable(value = "cityId") Long cityId,
+                                                     @RequestBody RestaurantResponse restaurant) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            return ResponseEntity.ok(restaurantService.addRestaurantByCoordinates(restaurant, statusId, cityId));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 
     /**

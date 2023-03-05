@@ -27,6 +27,30 @@ public class BuildingService {
         this.geocoderService = geocoderService;
     }
 
+    public BuildingEntity checkBuildingCoordinates(Double lat, Double lng, String name, Long cityId) throws UndefinedLatitudeException,
+            IOException, InterruptedException, ApiException, CityNotFoundException, RestaurantAlreadyExistException, BuildingAlreadyExistException {
+        BuildingEntity building = new BuildingEntity();
+        if (buildingRepository.findByLatAndLng(lat, lng) == null) {
+            CityEntity city = cityRepository
+                    .findById(cityId)
+                    .orElseThrow(() -> new CityNotFoundException("Город с id " + cityId + " не найден"));
+            building.setCity(city);
+            building.setAddress(geocoderService.getAddress(lat, lng));
+            building.setLat(lat);
+            building.setLng(lng);
+            buildingRepository.save(building);
+        } else
+            throw new BuildingAlreadyExistException("Здание по таким координатам уже существует. Укажите адрес вот так: " +
+                    buildingRepository.findByLatAndLng(lat, lng).getAddress());
+        building = buildingRepository.findByAddress(geocoderService.getAddress(lat, lng));
+        if (building.getRestaurants().contains(restaurantRepository.findByName(name))) {
+            throw new RestaurantAlreadyExistException("Ресторан " + name + " по адресу "
+                    + building.getAddress() + " уже существует");
+        }
+        return building;
+    }
+
+
     public BuildingEntity checkBuildingExist(String address, String name, Long cityId) throws UndefinedLatitudeException,
             IOException, InterruptedException, ApiException, CityNotFoundException, RestaurantAlreadyExistException, BuildingAlreadyExistException {
         BuildingEntity building = new BuildingEntity();

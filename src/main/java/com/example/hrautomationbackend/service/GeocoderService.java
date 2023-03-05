@@ -7,6 +7,7 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.GeocodingResult;
+import com.google.maps.model.LatLng;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -45,5 +46,17 @@ public class GeocoderService {
         return lng;
 
     }
+
+    public String getAddress(Double lat, Double lng) throws IOException, InterruptedException, ApiException {
+        GeoApiContext context = new GeoApiContext.Builder()
+                .apiKey("AIzaSyD0x8OjD9BWDrSPy2GDApSqt_pChbbCYQU")
+                .build();
+        GeocodingResult[] results = GeocodingApi.reverseGeocode(context, new LatLng(lat, lng)).await();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String address = gson.toJson(results[0].formattedAddress);
+        context.shutdown();
+        return address;
+    }
+
 }
 
