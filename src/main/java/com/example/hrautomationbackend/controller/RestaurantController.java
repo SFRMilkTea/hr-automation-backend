@@ -114,13 +114,14 @@ public class RestaurantController {
      * @apiParam {Long} statusId Айди статуса ресторана
      * @apiParam {Long} cityId Айди города ресторана
      * @apiBody {String} name Название ресторана
-     * @apiBody {String} address Адрес ресторана
+     * @apiBody {Double} lat Широта ресторана
+     * @apiBody {Double} lng Долгота ресторана
      * @apiHeader {String} accessToken Аксес токен
      * @apiSuccess {Long} id Айди ресторана
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) RestaurantAlreadyExistException Ресторан уже существует
      * @apiError (Error 400) RestaurantStatusNotFoundException Указанный статус ресторана не существует
-     * @apiError (Error 400) CityNotFoundException Указанный статус ресторана не существует
+     * @apiError (Error 400) CityNotFoundException Указанный город не существует
      **/
 
     @PostMapping("/add/coordinates/status/{statusId}/city/{cityId}")
