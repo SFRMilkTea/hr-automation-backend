@@ -62,13 +62,16 @@ public class RestaurantService {
         return restaurantsModel;
     }
 
-    public void deleteRestaurant(Long id) throws RestaurantNotFoundException {
+    public void deleteRestaurant(Long id) throws RestaurantNotFoundException, BuildingNotFoundException {
         try {
             RestaurantEntity restaurant = restaurantRepository
                     .findById(id)
                     .orElseThrow(() -> new RestaurantNotFoundException("Ресторан с id " + id + " не найден"));
-            restaurant.setAverage(0);
-            restaurantRepository.deleteById(id);
+            if (restaurant.getBuilding().getRestaurants().size() == 1) {
+                deleteBuilding(restaurant.getBuilding().getId());
+            } else
+                restaurantRepository.deleteById(id);
+
         } catch (EmptyResultDataAccessException e) {
             throw new RestaurantNotFoundException("Ресторан с id " + id + " не найден");
         }
