@@ -1,12 +1,15 @@
 package com.example.hrautomationbackend.service;
 
 import com.example.hrautomationbackend.entity.UserEntity;
+import com.example.hrautomationbackend.exception.UnableToDeleteYourselfException;
 import com.example.hrautomationbackend.exception.UserAlreadyExistException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
+import com.example.hrautomationbackend.jwt.JwtProvider;
 import com.example.hrautomationbackend.model.User;
 import com.example.hrautomationbackend.model.UserForAll;
 import com.example.hrautomationbackend.model.UsersWithPages;
 import com.example.hrautomationbackend.repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,9 +21,11 @@ import java.util.ArrayList;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, JwtProvider jwtProvider) {
         this.userRepository = userRepository;
+        this.jwtProvider = jwtProvider;
     }
 
     public User getUser(Long id) throws UserNotFoundException {
@@ -45,7 +50,12 @@ public class UserService {
 
     }
 
-    public void delete(Long id) throws UserNotFoundException {
+    public void delete(Long id, String token) throws UserNotFoundException, UnableToDeleteYourselfException {
+        Claims claims = jwtProvider.getAccessClaims(token);
+        Long userId = Long.valueOf(claims.getSubject());
+        if (userId == id) {
+            throw new UnableToDeleteYourselfException("Вы не можете удалить себя");
+        }
         try {
             userRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {

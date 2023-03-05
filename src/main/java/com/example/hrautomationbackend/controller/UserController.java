@@ -90,6 +90,7 @@ public class UserController {
      * @apiHeader {String} accessToken Аксес токен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) UserNotFoundException Пользователь с таким id не существует
+     * @apiError (Error 400) OnlyOneUserException Остался единственный пользователь
      **/
 
     @DeleteMapping("/{id}")
@@ -97,7 +98,7 @@ public class UserController {
                                      @PathVariable Long id) {
         try {
             jwtService.checkAccessToken(accessToken);
-            userService.delete(id);
+            userService.delete(id, accessToken);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             throw new RuntimeException(e);
