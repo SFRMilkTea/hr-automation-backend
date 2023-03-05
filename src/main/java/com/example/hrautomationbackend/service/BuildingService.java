@@ -3,9 +3,9 @@ package com.example.hrautomationbackend.service;
 import com.example.hrautomationbackend.entity.BuildingEntity;
 import com.example.hrautomationbackend.entity.CityEntity;
 import com.example.hrautomationbackend.exception.*;
+import com.example.hrautomationbackend.model.Restaurant;
 import com.example.hrautomationbackend.repository.BuildingRepository;
 import com.example.hrautomationbackend.repository.CityRepository;
-import com.example.hrautomationbackend.repository.RestaurantRepository;
 import com.google.maps.errors.ApiException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -17,18 +17,18 @@ public class BuildingService {
 
     private final BuildingRepository buildingRepository;
     private final CityRepository cityRepository;
-    private final RestaurantRepository restaurantRepository;
     private final GeocoderService geocoderService;
 
-    public BuildingService(BuildingRepository buildingRepository, CityRepository cityRepository, RestaurantRepository restaurantRepository, GeocoderService geocoderService) {
+    public BuildingService(BuildingRepository buildingRepository, CityRepository cityRepository,
+                           GeocoderService geocoderService) {
         this.buildingRepository = buildingRepository;
         this.cityRepository = cityRepository;
-        this.restaurantRepository = restaurantRepository;
         this.geocoderService = geocoderService;
     }
 
-    public BuildingEntity checkBuildingCoordinates(Double lat, Double lng, String name, Long cityId) throws UndefinedLatitudeException,
-            IOException, InterruptedException, ApiException, CityNotFoundException, RestaurantAlreadyExistException, BuildingAlreadyExistException {
+    public BuildingEntity checkBuildingCoordinates(Double lat, Double lng, String name, Long cityId) throws
+            IOException, InterruptedException, ApiException, CityNotFoundException, RestaurantAlreadyExistException,
+            BuildingAlreadyExistException {
         BuildingEntity building = new BuildingEntity();
         if (buildingRepository.findByLatAndLng(lat, lng) == null) {
             CityEntity city = cityRepository
@@ -43,16 +43,19 @@ public class BuildingService {
             throw new BuildingAlreadyExistException("Здание по таким координатам уже существует. Укажите адрес вот так: " +
                     buildingRepository.findByLatAndLng(lat, lng).getAddress());
         building = buildingRepository.findByAddress(geocoderService.getAddress(lat, lng));
-        if (building.getRestaurants().contains(restaurantRepository.findByName(name))) {
-            throw new RestaurantAlreadyExistException("Ресторан " + name + " по адресу "
-                    + building.getAddress() + " уже существует");
+        for (Restaurant restaurant : building.getRestaurants()) {
+            if (restaurant.getName().equals(name)) {
+                throw new RestaurantAlreadyExistException("Ресторан " + name + " по адресу "
+                        + building.getAddress() + " уже существует");
+            }
         }
         return building;
     }
 
-
-    public BuildingEntity checkBuildingExist(String address, String name, Long cityId) throws UndefinedLatitudeException,
-            IOException, InterruptedException, ApiException, CityNotFoundException, RestaurantAlreadyExistException, BuildingAlreadyExistException {
+    public BuildingEntity checkBuildingExist(String address, String name, Long cityId) throws
+            UndefinedLatitudeException,
+            IOException, InterruptedException, ApiException, CityNotFoundException, RestaurantAlreadyExistException,
+            BuildingAlreadyExistException {
         BuildingEntity building = new BuildingEntity();
         if (buildingRepository.findByAddress(address) == null) {
             Double lat = Double.parseDouble(geocoderService.getLat(address));
@@ -71,9 +74,11 @@ public class BuildingService {
                         buildingRepository.findByLatAndLng(lat, lng).getAddress());
         } else {
             building = buildingRepository.findByAddress(address);
-            if (building.getRestaurants().contains(restaurantRepository.findByName(name))) {
-                throw new RestaurantAlreadyExistException("Ресторан " + name + " по адресу "
-                        + building.getAddress() + " уже существует");
+            for (Restaurant restaurant : building.getRestaurants()) {
+                if (restaurant.getName().equals(name)) {
+                    throw new RestaurantAlreadyExistException("Ресторан " + name + " по адресу "
+                            + building.getAddress() + " уже существует");
+                }
             }
         }
         return building;
