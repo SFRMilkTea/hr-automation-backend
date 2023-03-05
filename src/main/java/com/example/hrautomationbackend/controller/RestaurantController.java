@@ -3,6 +3,7 @@ package com.example.hrautomationbackend.controller;
 import com.example.hrautomationbackend.entity.RestaurantStatusEntity;
 import com.example.hrautomationbackend.model.RestaurantResponse;
 import com.example.hrautomationbackend.model.RestaurantUpdate;
+import com.example.hrautomationbackend.service.BuildingService;
 import com.example.hrautomationbackend.service.JwtService;
 import com.example.hrautomationbackend.service.RestaurantService;
 import org.springframework.data.domain.PageRequest;
@@ -21,10 +22,12 @@ public class RestaurantController {
 
     private final RestaurantService restaurantService;
     private final JwtService jwtService;
+    private final BuildingService buildingService;
 
-    public RestaurantController(RestaurantService restaurantService, JwtService jwtService) {
+    public RestaurantController(RestaurantService restaurantService, JwtService jwtService, BuildingService buildingService) {
         this.restaurantService = restaurantService;
         this.jwtService = jwtService;
+        this.buildingService = buildingService;
     }
 
     /**
@@ -278,7 +281,7 @@ public class RestaurantController {
                                          @PathVariable Long id) {
         try {
             jwtService.checkAccessToken(accessToken);
-            restaurantService.deleteBuilding(id);
+            buildingService.deleteBuilding(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             throw new RuntimeException(e);

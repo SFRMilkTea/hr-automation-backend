@@ -84,4 +84,9 @@ public class BuildingEntity {
     public void setCity(CityEntity city) {
         this.city = city;
     }
+//
+//    public void removeRestaurant(RestaurantEntity restaurant) {
+//        restaurants.remove(restaurant);
+//    }
+
 }

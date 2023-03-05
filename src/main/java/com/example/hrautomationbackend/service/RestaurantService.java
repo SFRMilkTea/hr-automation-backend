@@ -28,20 +28,20 @@ public class RestaurantService {
     private final BuildingRepository buildingRepository;
     private final RestaurantStatusRepository restaurantStatusRepository;
     private final CityRepository cityRepository;
-    private final GeocoderService geocoderService;
+    private final BuildingService buildingService;
 
-    public RestaurantService(RestaurantRepository restaurantRepository, BuildingRepository buildingRepository, RestaurantStatusRepository restaurantStatusRepository, CityRepository cityRepository, GeocoderService geocoderService) {
+    public RestaurantService(RestaurantRepository restaurantRepository, BuildingRepository buildingRepository, RestaurantStatusRepository restaurantStatusRepository, CityRepository cityRepository, GeocoderService geocoderService, BuildingService buildingService) {
         this.restaurantRepository = restaurantRepository;
         this.buildingRepository = buildingRepository;
         this.restaurantStatusRepository = restaurantStatusRepository;
         this.cityRepository = cityRepository;
-        this.geocoderService = geocoderService;
+        this.buildingService = buildingService;
     }
 
     public Long addRestaurant(RestaurantResponse restaurantResponse, Long statusId, Long cityId) throws RestaurantAlreadyExistException,
             RestaurantStatusNotFoundException, CityNotFoundException, UndefinedLatitudeException, IOException,
             InterruptedException, ApiException {
-        BuildingEntity building = CheckBuilding(restaurantResponse.getAddress(), restaurantResponse.getName(), cityId);
+        BuildingEntity building = buildingService.checkBuildingExist(restaurantResponse.getAddress(), restaurantResponse.getName(), cityId);
         RestaurantEntity restaurant = new RestaurantEntity();
         restaurant.setBuilding(building);
         restaurant.setName(restaurantResponse.getName());
@@ -67,11 +67,9 @@ public class RestaurantService {
             RestaurantEntity restaurant = restaurantRepository
                     .findById(id)
                     .orElseThrow(() -> new RestaurantNotFoundException("Ресторан с id " + id + " не найден"));
-            if (restaurant.getBuilding().getRestaurants().size() == 1) {
-                deleteBuilding(restaurant.getBuilding().getId());
-            } else
-                restaurantRepository.deleteById(id);
-
+            BuildingEntity building = restaurant.getBuilding();
+            restaurantRepository.deleteById(id);
+            buildingService.deleteBuildingIfEmpty(building);
         } catch (EmptyResultDataAccessException e) {
             throw new RestaurantNotFoundException("Ресторан с id " + id + " не найден");
         }
@@ -161,13 +159,6 @@ public class RestaurantService {
         restaurantRepository.save(restaurant);
     }
 
-    public void deleteBuilding(Long id) throws BuildingNotFoundException {
-        try {
-            buildingRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new BuildingNotFoundException("Здание с id " + id + " не найдено");
-        }
-    }
 
     @Transactional
     public void updateRestaurant(RestaurantUpdate restaurant) throws RestaurantNotFoundException,
@@ -178,34 +169,10 @@ public class RestaurantService {
                 .orElseThrow(() -> new RestaurantNotFoundException("Ресторан с id " + restaurant.getId() + " не найден"));
         Long cityId = restaurantEntity.getBuilding().getCity().getId();
         restaurantEntity.setName(restaurant.getName());
-        BuildingEntity building = CheckBuilding(restaurant.getAddress(), restaurant.getName(), cityId);
+        BuildingEntity building = buildingService.checkBuildingExist(restaurant.getAddress(), restaurant.getName(), cityId);
         restaurantEntity.setBuilding(building);
         restaurantEntity.setStatus(restaurantStatusRepository.findByName(restaurant.getStatus()));
         restaurantRepository.save(restaurantEntity);
     }
-
-
-    public BuildingEntity CheckBuilding(String address, String name, Long cityId) throws UndefinedLatitudeException,
-            IOException, InterruptedException, ApiException, CityNotFoundException, RestaurantAlreadyExistException {
-        BuildingEntity building = new BuildingEntity();
-        if (buildingRepository.findByAddress(address) == null) {
-            CityEntity city = cityRepository
-                    .findById(cityId)
-                    .orElseThrow(() -> new CityNotFoundException("Город с id " + cityId + " не найден"));
-            building.setCity(city);
-            building.setAddress(address);
-            building.setLat(Double.parseDouble(geocoderService.getLat(address)));
-            building.setLng(Double.parseDouble(geocoderService.getLng(address)));
-            buildingRepository.save(building);
-        } else {
-            building = buildingRepository.findByAddress(address);
-            if (building.getRestaurants().contains(restaurantRepository.findByName(name))) {
-                throw new RestaurantAlreadyExistException("Ресторан " + name + " по адресу "
-                        + building.getAddress() + " уже существует");
-            }
-        }
-        return building;
-    }
-
 
 }
