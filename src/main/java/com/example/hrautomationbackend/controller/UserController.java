@@ -90,7 +90,7 @@ public class UserController {
      * @apiHeader {String} accessToken Аксес токен
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) UserNotFoundException Пользователь с таким id не существует
-     * @apiError (Error 400) OnlyOneUserException Остался единственный пользователь
+     * @apiError (Error 400) UnableToDeleteYourselfException Нельзя удалить себя
      **/
 
     @DeleteMapping("/{id}")
