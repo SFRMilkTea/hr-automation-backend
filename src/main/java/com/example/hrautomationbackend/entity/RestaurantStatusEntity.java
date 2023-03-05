@@ -1,5 +1,7 @@
 package com.example.hrautomationbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,7 @@ public class RestaurantStatusEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "restaurant_id")
+    @JsonIgnore
     private List<RestaurantEntity> restaurants = new ArrayList<>();
 
     public RestaurantStatusEntity() {
