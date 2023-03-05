@@ -62,7 +62,11 @@ public class ReviewService {
 
     public void deleteReview(Long id) throws ReviewNotFoundException {
         try {
+            RestaurantEntity restaurant = reviewRepository.findById(id).get().getRestaurant();
             reviewRepository.deleteById(id);
+            restaurantService.calculateAverage(restaurant);
+            restaurantService.calculateRating(restaurant);
+
         } catch (EmptyResultDataAccessException e) {
             throw new ReviewNotFoundException("Отзыв с id " + id + " не найден");
         }
