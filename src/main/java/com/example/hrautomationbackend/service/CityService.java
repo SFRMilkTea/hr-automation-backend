@@ -3,7 +3,6 @@ package com.example.hrautomationbackend.service;
 import com.example.hrautomationbackend.entity.CityEntity;
 import com.example.hrautomationbackend.exception.CityAlreadyExistException;
 import com.example.hrautomationbackend.exception.CityNotFoundException;
-import com.example.hrautomationbackend.exception.UndefinedLatitudeException;
 import com.example.hrautomationbackend.repository.CityRepository;
 import com.google.maps.errors.ApiException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -23,7 +22,7 @@ public class CityService {
         this.geocoderService = geocoderService;
     }
 
-    public Long addCity(CityEntity city) throws CityAlreadyExistException, UndefinedLatitudeException, IOException, InterruptedException, ApiException {
+    public Long addCity(CityEntity city) throws CityAlreadyExistException, IOException, InterruptedException, ApiException {
         if (cityRepository.findByName(city.getName()) == null) {
             city.setLat(Double.parseDouble(geocoderService.getLat(city.getName())));
             city.setLng(Double.parseDouble(geocoderService.getLng(city.getName())));

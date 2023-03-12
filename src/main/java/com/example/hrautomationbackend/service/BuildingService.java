@@ -3,7 +3,6 @@ package com.example.hrautomationbackend.service;
 import com.example.hrautomationbackend.entity.BuildingEntity;
 import com.example.hrautomationbackend.entity.CityEntity;
 import com.example.hrautomationbackend.exception.*;
-import com.example.hrautomationbackend.model.Restaurant;
 import com.example.hrautomationbackend.repository.BuildingRepository;
 import com.example.hrautomationbackend.repository.CityRepository;
 import com.google.maps.errors.ApiException;
@@ -26,11 +25,13 @@ public class BuildingService {
         this.geocoderService = geocoderService;
     }
 
-    public BuildingEntity checkBuildingCoordinates(Double lat, Double lng, String name, Long cityId) throws
-            IOException, InterruptedException, ApiException, CityNotFoundException, RestaurantAlreadyExistException,
-            BuildingAlreadyExistException {
+    public BuildingEntity checkBuildingByCoordinates(Double lat, Double lng, Long cityId) throws
+            IOException, InterruptedException, ApiException, CityNotFoundException {
+        // создание здания
         BuildingEntity building = new BuildingEntity();
+        // проверка существует ли здание по таким координатам
         if (buildingRepository.findByLatAndLng(lat, lng) == null) {
+            // если не существует, то создаем здание
             CityEntity city = cityRepository
                     .findById(cityId)
                     .orElseThrow(() -> new CityNotFoundException("Город с id " + cityId + " не найден"));
@@ -40,49 +41,21 @@ public class BuildingService {
             building.setLng(lng);
             buildingRepository.save(building);
         } else
-            throw new BuildingAlreadyExistException("Здание по таким координатам уже существует. Укажите адрес вот так: " +
-                    buildingRepository.findByLatAndLng(lat, lng).getAddress());
-        building = buildingRepository.findByAddress(geocoderService.getAddress(lat, lng));
-        for (Restaurant restaurant : building.getRestaurants()) {
-            if (restaurant.getName().equals(name)) {
-                throw new RestaurantAlreadyExistException("Ресторан " + name + " по адресу "
-                        + building.getAddress() + " уже существует");
-            }
+        // если здание существует, то берем его
+        {
+            building = buildingRepository.findByLatAndLng(lat, lng);
         }
         return building;
     }
 
-    public BuildingEntity checkBuildingExist(String address, String name, Long cityId) throws
-            UndefinedLatitudeException,
-            IOException, InterruptedException, ApiException, CityNotFoundException, RestaurantAlreadyExistException,
-            BuildingAlreadyExistException {
-        BuildingEntity building = new BuildingEntity();
-        if (buildingRepository.findByAddress(address) == null) {
-            Double lat = Double.parseDouble(geocoderService.getLat(address));
-            Double lng = Double.parseDouble(geocoderService.getLng(address));
-            if (buildingRepository.findByLatAndLng(lat, lng) == null) {
-                CityEntity city = cityRepository
-                        .findById(cityId)
-                        .orElseThrow(() -> new CityNotFoundException("Город с id " + cityId + " не найден"));
-                building.setCity(city);
-                building.setAddress(address);
-                building.setLat(lat);
-                building.setLng(lng);
-                buildingRepository.save(building);
-            } else
-                throw new BuildingAlreadyExistException("Здание по таким координатам уже существует. Укажите адрес вот так: " +
-                        buildingRepository.findByLatAndLng(lat, lng).getAddress());
-        } else {
-            building = buildingRepository.findByAddress(address);
-            for (Restaurant restaurant : building.getRestaurants()) {
-                if (restaurant.getName().equals(name)) {
-                    throw new RestaurantAlreadyExistException("Ресторан " + name + " по адресу "
-                            + building.getAddress() + " уже существует");
-                }
-            }
-        }
-        return building;
+    public BuildingEntity checkBuildingByAddress(String address, Long cityId) throws
+            IOException, InterruptedException, ApiException, CityNotFoundException {
+        // берем координаты
+        Double lat = Double.parseDouble(geocoderService.getLat(address));
+        Double lng = Double.parseDouble(geocoderService.getLng(address));
+        return checkBuildingByCoordinates(lat, lng, cityId);
     }
+
 
     public void deleteBuildingIfEmpty(BuildingEntity building) {
         if (building.getRestaurants().size() == 0) {

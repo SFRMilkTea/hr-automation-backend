@@ -1,6 +1,5 @@
 package com.example.hrautomationbackend.service;
 
-import com.example.hrautomationbackend.exception.UndefinedLatitudeException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.maps.GeoApiContext;
@@ -21,7 +20,7 @@ public class GeocoderService {
 
     // здесь можно подумать над оптимизацией
 
-    public String getLat(String address) throws IOException, InterruptedException, UndefinedLatitudeException, ApiException {
+    public String getLat(String address) throws IOException, InterruptedException, ApiException {
 
         GeoApiContext context = new GeoApiContext.Builder()
                 .apiKey("AIzaSyD0x8OjD9BWDrSPy2GDApSqt_pChbbCYQU")
