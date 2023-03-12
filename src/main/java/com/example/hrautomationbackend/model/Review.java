@@ -2,6 +2,8 @@ package com.example.hrautomationbackend.model;
 
 import com.example.hrautomationbackend.entity.ReviewEntity;
 
+import java.time.LocalDateTime;
+
 public class Review {
 
     private Long id;
@@ -10,6 +12,7 @@ public class Review {
     private float rating;
     private String username;
     private String userpic;
+    private LocalDateTime date;
 
 
     public static Review toModel(ReviewEntity entity) {
@@ -20,6 +23,7 @@ public class Review {
         model.setRating(entity.getRating());
         model.setUsername(entity.getUser().getUsername());
         model.setUserpic(entity.getUser().getPictureUrl());
+        model.setDate(entity.getPublicationDate());
         return model;
     }
 
@@ -72,5 +76,13 @@ public class Review {
 
     public void setUserpic(String userpic) {
         this.userpic = userpic;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 }

@@ -31,7 +31,7 @@ public class ReviewEntity {
     @JsonIgnore
     private UserEntity user;
 
-    private LocalDateTime publication_date;
+    private LocalDateTime publicationDate;
 
     public ReviewEntity() {
     }
@@ -84,12 +84,12 @@ public class ReviewEntity {
         this.restaurant = restaurant;
     }
 
-    public LocalDateTime getPublication_date() {
-        return publication_date;
+    public LocalDateTime getPublicationDate() {
+        return publicationDate;
     }
 
-    public void setPublication_date(LocalDateTime publication_date) {
-        this.publication_date = publication_date;
+    public void setPublicationDate(LocalDateTime publicationDate) {
+        this.publicationDate = publicationDate;
     }
 }
 

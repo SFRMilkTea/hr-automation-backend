@@ -42,7 +42,7 @@ public class ReviewService {
                 .findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Пользователь с id " + userId + " не найден"));
         review.setUser(user);
-        review.setPublication_date(LocalDateTime.now());
+        review.setPublicationDate(LocalDateTime.now());
         reviewRepository.save(review);
         restaurantService.calculateRating(restaurant);
         restaurantService.calculateAverage(restaurant);
