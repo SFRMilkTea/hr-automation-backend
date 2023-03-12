@@ -5,6 +5,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class ReviewEntity {
@@ -30,6 +31,7 @@ public class ReviewEntity {
     @JsonIgnore
     private UserEntity user;
 
+    private LocalDateTime publication_date;
 
     public ReviewEntity() {
     }
@@ -80,6 +82,14 @@ public class ReviewEntity {
 
     public void setRestaurant(RestaurantEntity restaurant) {
         this.restaurant = restaurant;
+    }
+
+    public LocalDateTime getPublication_date() {
+        return publication_date;
+    }
+
+    public void setPublication_date(LocalDateTime publication_date) {
+        this.publication_date = publication_date;
     }
 }
 

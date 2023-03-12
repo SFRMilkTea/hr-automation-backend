@@ -14,6 +14,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +42,7 @@ public class ReviewService {
                 .findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Пользователь с id " + userId + " не найден"));
         review.setUser(user);
+        review.setPublication_date(LocalDateTime.now());
         reviewRepository.save(review);
         restaurantService.calculateRating(restaurant);
         restaurantService.calculateAverage(restaurant);
