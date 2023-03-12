@@ -183,6 +183,7 @@ public class RestaurantService {
         RestaurantEntity restaurantEntity = restaurantRepository
                 .findById(restaurant.getId())
                 .orElseThrow(() -> new RestaurantNotFoundException("Ресторан с id " + restaurant.getId() + " не найден"));
+        BuildingEntity previousBuilding = restaurantEntity.getBuilding();
         // берем город
         Long cityId = restaurantEntity.getBuilding().getCity().getId();
         // берем имя
@@ -192,6 +193,8 @@ public class RestaurantService {
         restaurantEntity.setBuilding(building);
         restaurantEntity.setStatus(restaurantStatusRepository.findByName(restaurant.getStatus()));
         restaurantRepository.save(restaurantEntity);
+        // удаляем предыдущее здание, если вдруг оно опустело
+        buildingService.deleteBuildingIfEmpty(previousBuilding);
     }
 
 }
