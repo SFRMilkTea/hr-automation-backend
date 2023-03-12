@@ -27,7 +27,23 @@ public class BuildingService {
 
     public BuildingEntity checkBuildingByCoordinates(Double lat, Double lng, Long cityId) throws
             IOException, InterruptedException, ApiException, CityNotFoundException {
-        // создание здания
+        // получаем координаты непосредственно здания (а не маркера)
+        Double trueLat = Double.parseDouble(geocoderService.getLat(geocoderService.getAddress(lat, lng)));
+        Double trueLng = Double.parseDouble(geocoderService.getLng(geocoderService.getAddress(lat, lng)));
+        return createBuilding(trueLat, trueLng, cityId);
+    }
+
+    public BuildingEntity checkBuildingByAddress(String address, Long cityId) throws
+            IOException, InterruptedException, ApiException, CityNotFoundException {
+        // берем координаты
+        Double lat = Double.parseDouble(geocoderService.getLat(address));
+        Double lng = Double.parseDouble(geocoderService.getLng(address));
+        return createBuilding(lat, lng, cityId);
+    }
+
+    public BuildingEntity createBuilding(Double lat, Double lng, Long cityId) throws CityNotFoundException,
+            IOException, InterruptedException, ApiException {
+        // создаем здание
         BuildingEntity building = new BuildingEntity();
         // проверка существует ли здание по таким координатам
         if (buildingRepository.findByLatAndLng(lat, lng) == null) {
@@ -47,15 +63,6 @@ public class BuildingService {
         }
         return building;
     }
-
-    public BuildingEntity checkBuildingByAddress(String address, Long cityId) throws
-            IOException, InterruptedException, ApiException, CityNotFoundException {
-        // берем координаты
-        Double lat = Double.parseDouble(geocoderService.getLat(address));
-        Double lng = Double.parseDouble(geocoderService.getLng(address));
-        return checkBuildingByCoordinates(lat, lng, cityId);
-    }
-
 
     public void deleteBuildingIfEmpty(BuildingEntity building) {
         if (building.getRestaurants().size() == 0) {
