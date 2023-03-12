@@ -59,7 +59,7 @@ public class ReviewController {
      * @apiGroup REVIEWS
      * @apiHeader {String} accessToken Аксес токен
      * @apiParam {Long} restaurantId Id ресторана
-     * @apiSuccess {List[Reviews]} reviews Список всех отзывов к ресторану (id, content, average, rating, username, userpic)
+     * @apiSuccess {List[Reviews]} reviews Список всех отзывов к ресторану (id, content, average, rating, username, userpic, date)
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) RestaurantNotFoundException Ресторан не найден
      **/
