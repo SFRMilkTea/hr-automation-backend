@@ -52,8 +52,7 @@ public class GeocoderService {
                 .apiKey("AIzaSyD0x8OjD9BWDrSPy2GDApSqt_pChbbCYQU")
                 .build();
         GeocodingResult[] results = GeocodingApi.reverseGeocode(context, new LatLng(lat, lng)).await();
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String address = gson.toJson(results[0].formattedAddress);
+        String address = results[0].formattedAddress;
         context.shutdown();
         return address;
     }
