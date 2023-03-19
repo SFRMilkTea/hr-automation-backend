@@ -63,6 +63,7 @@ public class GeocoderService {
     public String getAddress(Double lat, Double lng) throws IOException, InterruptedException, ApiException {
         GeoApiContext context = new GeoApiContext.Builder()
                 .apiKey("AIzaSyD0x8OjD9BWDrSPy2GDApSqt_pChbbCYQU")
+ //               .baseUrlOverride("http://maps.googleapis.com/maps/api/geocode/json?language=ru&key=AIzaSyD0x8OjD9BWDrSPy2GDApSqt_pChbbCYQU")
                 .build();
         //        GeoApiContext context = getContext();
         GeocodingResult[] results = GeocodingApi.reverseGeocode(context, new LatLng(lat, lng)).await();
