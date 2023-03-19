@@ -21,7 +21,7 @@ public class ReviewEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "restaurant_id")
-    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private RestaurantEntity restaurant;
 
