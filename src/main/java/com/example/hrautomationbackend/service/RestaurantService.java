@@ -166,11 +166,16 @@ public class RestaurantService {
 
     public void calculateAverage(RestaurantEntity restaurant) {
         int average = 0;
+        int size = 0;
         if (!restaurant.getReviews().isEmpty()) {
             for (ReviewEntity review : restaurant.getReviews()) {
-                average = average + review.getAverage();
+                int reviewAverage = review.getAverage();
+                if (reviewAverage != 0) {
+                    average = average + reviewAverage;
+                    size++;
+                }
             }
-            average = Math.round(average / restaurant.getReviews().size());
+            average = Math.round(average / size);
         }
         restaurant.setAverage(average);
         restaurantRepository.save(restaurant);
