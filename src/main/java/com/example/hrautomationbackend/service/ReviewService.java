@@ -34,7 +34,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public Long addReview(ReviewEntity review, Long restaurantId, Long userId) throws RestaurantNotFoundException, UserNotFoundException {
+    public Review addReview(ReviewEntity review, Long restaurantId, Long userId) throws RestaurantNotFoundException, UserNotFoundException {
         RestaurantEntity restaurant = restaurantRepository
                 .findById(restaurantId)
                 .orElseThrow(() -> new RestaurantNotFoundException("Ресторан с id " + restaurantId + " не найден"));
@@ -47,7 +47,7 @@ public class ReviewService {
         reviewRepository.save(review);
         restaurantService.calculateRating(restaurant);
         restaurantService.calculateAverage(restaurant);
-        return review.getId();
+        return Review.toModel(review);
     }
 
     public List<Review> getReviewsByRestaurant(Long restaurantId) throws RestaurantNotFoundException {
