@@ -92,9 +92,5 @@ public class RestaurantEntity {
     public void setBuilding(BuildingEntity building) {
         this.building = building;
     }
-//
-//    @PreRemove
-//    private void removeRestaurantFromBuilding() {
-//        getBuilding().removeRestaurant(this);
-//    }
+
 }
