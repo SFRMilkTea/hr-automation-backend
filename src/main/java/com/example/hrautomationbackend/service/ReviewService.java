@@ -59,7 +59,7 @@ public class ReviewService {
         for (ReviewEntity review : restaurant.getReviews()) {
             reviewList.add(Review.toModel(review));
         }
-        reviewList.sort(Comparator.comparing(Review::getDate));
+        reviewList.sort(Comparator.comparing(Review::getDate).reversed());
         return reviewList;
     }
 
