@@ -40,7 +40,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity handleValidationError(final UnableToDeleteYourselfException e) {
+    public ResponseEntity handleValidationError(final EventAlreadyExistException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
@@ -129,6 +129,11 @@ public class ErrorHandler {
     @ExceptionHandler
     public ResponseEntity handleValidationError(final TokenIsNotValidException e) {
         return ResponseEntity.status(401).body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleValidationError(final UnableToDeleteYourselfException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler
