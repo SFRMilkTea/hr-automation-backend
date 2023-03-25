@@ -11,13 +11,13 @@ public class EventEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, columnDefinition = "varchar(255) default 'Без названия'")
+    @Column(nullable = false)
     private String name;
     @Column(length = 1024)
     private String description;
-    @Column(nullable = false, columnDefinition = "date default '01-01-2000'")
+    @Column(nullable = false)
     private Date date;
-    @Column(nullable = false, columnDefinition = "varchar(255) default 'Какой-то адрес'")
+    @Column(nullable = false)
     private String address;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
