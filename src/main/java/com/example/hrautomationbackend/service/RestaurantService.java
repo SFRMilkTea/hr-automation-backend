@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Float.compare;
+
 @Service
 public class RestaurantService {
 
@@ -72,6 +74,7 @@ public class RestaurantService {
         for (RestaurantEntity restaurant : restaurants) {
             restaurantsModel.add(Restaurant.toModel(restaurant));
         }
+        restaurantsModel.sort((b, a) -> compare(a.getRating(), b.getRating()));
         return restaurantsModel;
     }
 
@@ -98,7 +101,7 @@ public class RestaurantService {
 
     public List<RestaurantStatusEntity> getStatuses() {
         List<RestaurantStatusEntity> list = (List<RestaurantStatusEntity>) restaurantStatusRepository.findAll();
-        list.sort((a, b) -> a.getName().compareToIgnoreCase(b.getName()));
+        list.sort((b, a) -> a.getName().compareToIgnoreCase(b.getName()));
         return list;
     }
 
@@ -110,6 +113,7 @@ public class RestaurantService {
         for (RestaurantEntity restaurant : status.getRestaurants()) {
             restaurantsModel.add(Restaurant.toModel(restaurant));
         }
+        restaurantsModel.sort((b, a) -> compare(a.getRating(), b.getRating()));
         return restaurantsModel;
     }
 
@@ -142,13 +146,14 @@ public class RestaurantService {
 
     public List<Restaurant> findByString(Pageable pageable, String str) {
         Page<RestaurantEntity> restaurants = restaurantRepository.findAll(pageable);
-        ArrayList<Restaurant> restaurantList = new ArrayList<>();
+        List<Restaurant> restaurantList = new ArrayList<>();
         for (RestaurantEntity restaurant : restaurants) {
             if (restaurant.getName().toLowerCase().contains(str.toLowerCase()) ||
                     restaurant.getBuilding().getAddress().toLowerCase().contains(str.toLowerCase())) {
                 restaurantList.add(Restaurant.toModel(restaurant));
             }
         }
+        restaurantList.sort((b, a) -> compare(a.getRating(), b.getRating()));
         return restaurantList;
     }
 
