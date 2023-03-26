@@ -20,6 +20,7 @@ public class EventEntity {
     @Column(nullable = false)
     private String address;
     private String pictureUrl;
+    @Column(columnDefinition = "boolean default false")
     private boolean isOnline;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
