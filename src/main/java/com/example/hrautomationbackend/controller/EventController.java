@@ -104,18 +104,21 @@ public class EventController {
     }
 
     /**
-     * @api {get} /events/get/[id] Получение продукта по айди
+     * @api {get} /events/get/[id] Получение мероприятия по айди
      * @apiName getOneEvent
      * @apiGroup EVENTS
-     * @apiParam {Number} id Уникальный идентефикатор продукта
+     * @apiParam {Number} id Уникальный идентефикатор мероприятия
      * @apiHeader {String} accessToken Аксес токен
-     * @apiSuccess {Long} id id продукта
-     * @apiSuccess {String} name название продукта
-     * @apiSuccess {String} code артикул
-     * @apiSuccess {boolean} ordered заказан ли продукт
-     * @apiSuccess {int} quantity количество продуктов на заказ
+     * @apiSuccess {Long} id id мероприятия
+     * @apiSuccess {String} name название мероприятия
+     * @apiSuccess {String} description описание мероприятия
+     * @apiSuccess {Date} date дата проведения мероприятия
+     * @apiSuccess {String} address место проведения мероприятия
+     * @apiSuccess {String} pictureUrl заглавное фото мероприятия
+     * @apiSuccess {boolean} online онлайн/оффлайн
+     * @apiSuccess {List[EventGallery]} photos фоточки мероприятия (пока хз как это будет)
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
-     * @apiError (Error 400) ProductNotFoundException Продукт не существует
+     * @apiError (Error 400) EventNotFoundException Мероприятие не существует
      **/
 
     @GetMapping("/get/{id}")
