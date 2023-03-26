@@ -5,6 +5,7 @@ import com.example.hrautomationbackend.exception.EventAlreadyExistException;
 import com.example.hrautomationbackend.exception.EventNotFoundException;
 import com.example.hrautomationbackend.model.Event;
 import com.example.hrautomationbackend.repository.EventRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -64,9 +65,20 @@ public class EventService {
         eventsModel.sort((b, a) -> a.getDate().compareTo(b.getDate()));
         return eventsModel;
     }
+
     public EventEntity getOneEvent(Long id) throws EventNotFoundException {
         return eventRepository
                 .findById(id)
                 .orElseThrow(() -> new EventNotFoundException("Событие с id " + id + " не найдено"));
     }
+
+    public void deleteEvent(Long id) throws EventNotFoundException {
+        try {
+            eventRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new EventNotFoundException("Мероприятие с id " + id + " не найдено");
+        }
+    }
+
+
 }

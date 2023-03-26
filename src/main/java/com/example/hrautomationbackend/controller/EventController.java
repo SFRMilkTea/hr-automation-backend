@@ -132,4 +132,27 @@ public class EventController {
         }
     }
 
+
+    /**
+     * @api {delete} /events/delete/[id] Удаление мероприятия по айди
+     * @apiName deleteEvent
+     * @apiGroup EVENTS
+     * @apiParam {Number} id Уникальный идентификатор мероприятия
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) EventNotFoundException Мероприятие с таким id не существует
+     **/
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity deleteEvent(@RequestHeader("Authorization") String accessToken,
+                                      @PathVariable Long id) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            eventService.deleteEvent(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
