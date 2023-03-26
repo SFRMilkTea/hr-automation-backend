@@ -45,6 +45,11 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity handleValidationError(final EventNotFoundException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
     public ResponseEntity handleValidationError(final ProductAlreadyExistException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }

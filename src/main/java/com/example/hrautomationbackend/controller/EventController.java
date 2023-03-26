@@ -103,5 +103,30 @@ public class EventController {
         }
     }
 
+    /**
+     * @api {get} /events/get/[id] Получение продукта по айди
+     * @apiName getOneEvent
+     * @apiGroup EVENTS
+     * @apiParam {Number} id Уникальный идентефикатор продукта
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiSuccess {Long} id id продукта
+     * @apiSuccess {String} name название продукта
+     * @apiSuccess {String} code артикул
+     * @apiSuccess {boolean} ordered заказан ли продукт
+     * @apiSuccess {int} quantity количество продуктов на заказ
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) ProductNotFoundException Продукт не существует
+     **/
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity getOneEvent(@PathVariable Long id,
+                                      @RequestHeader("Authorization") String accessToken) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            return ResponseEntity.ok(eventService.getOneEvent(id));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

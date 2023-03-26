@@ -2,6 +2,7 @@ package com.example.hrautomationbackend.service;
 
 import com.example.hrautomationbackend.entity.EventEntity;
 import com.example.hrautomationbackend.exception.EventAlreadyExistException;
+import com.example.hrautomationbackend.exception.EventNotFoundException;
 import com.example.hrautomationbackend.model.Event;
 import com.example.hrautomationbackend.repository.EventRepository;
 import org.springframework.data.domain.Page;
@@ -63,5 +64,9 @@ public class EventService {
         eventsModel.sort((b, a) -> a.getDate().compareTo(b.getDate()));
         return eventsModel;
     }
-
+    public EventEntity getOneEvent(Long id) throws EventNotFoundException {
+        return eventRepository
+                .findById(id)
+                .orElseThrow(() -> new EventNotFoundException("Событие с id " + id + " не найдено"));
+    }
 }
