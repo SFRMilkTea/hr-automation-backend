@@ -3,6 +3,9 @@ package com.example.hrautomationbackend.controller;
 import com.example.hrautomationbackend.entity.EventEntity;
 import com.example.hrautomationbackend.service.EventService;
 import com.example.hrautomationbackend.service.JwtService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +15,7 @@ public class EventController {
 
     /**
      * @apiDefine EVENTS
-     * СОЦИАЛЬНОЕ
+     * СОБЫТИЯ
      */
 
     private final EventService eventService;
@@ -24,15 +27,15 @@ public class EventController {
     }
 
     /**
-     * @api {post} /faq/category/[categoryId] Добавление нового вопроса
-     * @apiGroup FAQ
-     * @apiName addQuestion
+     * @api {post} /events/add Добавление нового мероприятия
+     * @apiGroup EVENTS
+     * @apiName addEvent
      * @apiHeader {String} accessToken Аксес токен
-     * @apiParam {Long} categoryId Айди категории, к которой относится добавляемый вопрос
-     * @apiBody {String} title Заголовок вопроса
-     * @apiBody {String} description Описание вопроса
-     * @apiError (Error 400) QuestionAlreadyExistException Данный вопрос уже существует
-     * @apiError (Error 400) QuestionCategoryNotFoundException Данная категория не существует
+     * @apiBody {String} name Название мероприятия
+     * @apiBody {String} description Описание мероприятия
+     * @apiBody {Date} date Дата мероприятия
+     * @apiBody {String} address Адрес мероприятия
+     * @apiError (Error 400) EventAlreadyExistException Данное мероприятие уже существует
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
@@ -43,6 +46,58 @@ public class EventController {
             jwtService.checkAccessToken(accessToken);
             eventService.addEvent(event);
             return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * @api {get} /events/get/current?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение текущих событий
+     * @apiName getCurrentEvents
+     * @apiGroup EVENTS
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiParam {Number} pageNumber Номер страницы
+     * @apiParam {Number} size Количество элементов на странице
+     * @apiParam {String} sortBy Фильтр сортировки
+     * @apiSuccess {List[Event]} events Список текущих мероприятий(id, name, date, address, pictureUrl, online)
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     **/
+
+    @GetMapping("/get/current")
+    public ResponseEntity getCurrentEvents(@RequestHeader("Authorization") String accessToken,
+                                           @RequestParam int pageNumber,
+                                           @RequestParam int size,
+                                           @RequestParam String sortBy) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
+            return ResponseEntity.ok(eventService.getCurrentEvents(pageable));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * @api {get} /events/get/archive?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение прошедших событий
+     * @apiName getArchiveEvents
+     * @apiGroup EVENTS
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiParam {Number} pageNumber Номер страницы
+     * @apiParam {Number} size Количество элементов на странице
+     * @apiParam {String} sortBy Фильтр сортировки
+     * @apiSuccess {List[Event]} events Список прошедших мероприятий(id, name, date, address, pictureUrl, online)
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     **/
+
+    @GetMapping("/get/archive")
+    public ResponseEntity getArchiveEvents(@RequestHeader("Authorization") String accessToken,
+                                           @RequestParam int pageNumber,
+                                           @RequestParam int size,
+                                           @RequestParam String sortBy) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
+            return ResponseEntity.ok(eventService.getArchiveEvents(pageable));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
