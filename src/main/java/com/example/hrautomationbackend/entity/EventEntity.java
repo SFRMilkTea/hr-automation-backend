@@ -19,6 +19,8 @@ public class EventEntity {
     private Date date;
     @Column(nullable = false)
     private String address;
+    private String pictureUrl;
+    private boolean isOnline;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "event_gallery_id")
@@ -73,5 +75,21 @@ public class EventEntity {
 
     public void setPhotos(List<EventGalleryEntity> photos) {
         this.photos = photos;
+    }
+
+    public String getPictureUrl() {
+        return pictureUrl;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
+    }
+
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public void setOnline(boolean online) {
+        isOnline = online;
     }
 }
