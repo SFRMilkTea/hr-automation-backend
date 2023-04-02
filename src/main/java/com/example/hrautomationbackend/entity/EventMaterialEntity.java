@@ -7,20 +7,22 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 
 @Entity
-public class EventGalleryEntity {
-
+public class EventMaterialEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(columnDefinition = "varchar(2048) default 'https://www.slntechnologies.com/wp-content/uploads/2017/08/ef3-placeholder-image.jpg'")
-    private String pictureUrl;
+    @Column(nullable = false, length = 2048)
+    private String url;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "event_gallery_id", nullable = false)
+    @JoinColumn(name = "event_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private EventEntity event;
 
+
+    public EventMaterialEntity() {
+    }
 
     public Long getId() {
         return id;
@@ -30,12 +32,12 @@ public class EventGalleryEntity {
         this.id = id;
     }
 
-    public String getPictureUrl() {
-        return pictureUrl;
+    public String getUrl() {
+        return url;
     }
 
-    public void setPictureUrl(String pictureUrl) {
-        this.pictureUrl = pictureUrl;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public EventEntity getEvent() {

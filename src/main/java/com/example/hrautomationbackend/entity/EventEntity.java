@@ -1,5 +1,7 @@
 package com.example.hrautomationbackend.entity;
 
+import com.example.hrautomationbackend.model.EventResponse;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,8 +26,8 @@ public class EventEntity {
     private boolean isOnline;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "event_gallery_id")
-    private List<EventGalleryEntity> photos = new ArrayList<>();
+    @JoinColumn(name = "event_id")
+    private List<EventMaterialEntity> materials = new ArrayList<>();
 
     public EventEntity() {
     }
@@ -70,14 +72,6 @@ public class EventEntity {
         this.address = address;
     }
 
-    public List<EventGalleryEntity> getPhotos() {
-        return photos;
-    }
-
-    public void setPhotos(List<EventGalleryEntity> photos) {
-        this.photos = photos;
-    }
-
     public String getPictureUrl() {
         return pictureUrl;
     }
@@ -92,5 +86,25 @@ public class EventEntity {
 
     public void setOnline(boolean online) {
         isOnline = online;
+    }
+
+    public List<EventMaterialEntity> getMaterials() {
+        return materials;
+    }
+
+    public void setMaterials(List<EventMaterialEntity> materials) {
+        this.materials = materials;
+    }
+
+    public static EventEntity toEntity(EventResponse response) {
+        EventEntity entity = new EventEntity();
+        entity.setId(response.getId());
+        entity.setName(response.getName());
+        entity.setDate(response.getDate());
+        entity.setAddress(response.getAddress());
+        entity.setOnline(response.isOnline());
+        entity.setDescription(response.getDescription());
+        entity.setPictureUrl(response.getPictureUrl());
+        return entity;
     }
 }

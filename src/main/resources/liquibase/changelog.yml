@@ -115,3 +115,21 @@ databaseChangeLog:
             baseTableName: review_entity
             constraintName: fkoy7tww3o4ankwlarmwfl4y5d1
 
+  - changeSet:
+      id: 02.04.2023-1
+      labels: reworkEventGallery
+      author: SFRMilkTea
+      changes:
+        - renameColumn:
+            tableName: event_gallery_entity
+            oldColumnName: picture_url
+            newColumnName: url
+
+  - changeSet:
+      id: 02.04.2023-2
+      labels: deleteEventGallery
+      author: SFRMilkTea
+      changes:
+       - dropTable:
+            tableName: event_gallery_entity
+            cascadeConstraints: true

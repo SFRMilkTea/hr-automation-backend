@@ -1,16 +1,18 @@
 package com.example.hrautomationbackend.service;
 
 import com.example.hrautomationbackend.entity.EventEntity;
+import com.example.hrautomationbackend.entity.EventMaterialEntity;
 import com.example.hrautomationbackend.exception.EventAlreadyExistException;
 import com.example.hrautomationbackend.exception.EventNotFoundException;
 import com.example.hrautomationbackend.model.Event;
+import com.example.hrautomationbackend.model.EventResponse;
+import com.example.hrautomationbackend.repository.EventMaterialRepository;
 import com.example.hrautomationbackend.repository.EventRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -22,16 +24,28 @@ import java.util.List;
 public class EventService {
 
     private final EventRepository eventRepository;
+    private final EventMaterialRepository eventMaterialRepository;
 
-    public EventService(EventRepository eventRepository) {
+    public EventService(EventRepository eventRepository, EventMaterialRepository eventMaterialRepository) {
         this.eventRepository = eventRepository;
+        this.eventMaterialRepository = eventMaterialRepository;
     }
 
-    @Transactional
-    public Long addEvent(EventEntity event) throws EventAlreadyExistException {
+    public Long addEvent(EventResponse event) throws EventAlreadyExistException {
         if (eventRepository.findByName(event.getName()) == null) {
-            eventRepository.save(event);
-            return event.getId();
+
+            EventEntity entity = EventEntity.toEntity(event);
+            eventRepository.save(entity);
+            if (event.getMaterials()!=null) {
+                for (String material : event.getMaterials()) {
+                    EventMaterialEntity eventMaterial = new EventMaterialEntity();
+                    eventMaterial.setUrl(material);
+                    eventMaterial.setEvent(entity);
+                    eventMaterialRepository.save(eventMaterial);
+                }
+            }
+            eventRepository.save(entity);
+            return entity.getId();
         } else
             throw new EventAlreadyExistException("Мероприятие " + event.getName() + " уже существует");
     }

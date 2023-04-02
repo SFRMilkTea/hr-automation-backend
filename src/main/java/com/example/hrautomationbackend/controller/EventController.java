@@ -1,6 +1,6 @@
 package com.example.hrautomationbackend.controller;
 
-import com.example.hrautomationbackend.entity.EventEntity;
+import com.example.hrautomationbackend.model.EventResponse;
 import com.example.hrautomationbackend.service.EventService;
 import com.example.hrautomationbackend.service.JwtService;
 import org.springframework.data.domain.PageRequest;
@@ -32,16 +32,19 @@ public class EventController {
      * @apiName addEvent
      * @apiHeader {String} accessToken Аксес токен
      * @apiBody {String} name Название мероприятия
-     * @apiBody {String} description Описание мероприятия
+     * @apiBody {String} [description] Описание мероприятия
      * @apiBody {Date} date Дата мероприятия
      * @apiBody {String} address Адрес мероприятия
+     * @apiBody {Boolean} [online] Онлайн/оффлайн
+     * @apiBody {PokaHZ} [picture] заглавное фото мероприятия
+     * @apiBody {List[String]} [materials] ссылки на материалы
      * @apiError (Error 400) EventAlreadyExistException Данное мероприятие уже существует
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
     @PostMapping("/add")
     public ResponseEntity addEvent(@RequestHeader("Authorization") String accessToken,
-                                   @RequestBody EventEntity event) {
+                                   @RequestBody EventResponse event) {
         try {
             jwtService.checkAccessToken(accessToken);
             eventService.addEvent(event);
