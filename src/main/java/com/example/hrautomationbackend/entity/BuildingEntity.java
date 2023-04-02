@@ -42,8 +42,10 @@ public class BuildingEntity {
     }
 
     public String getAddress() {
-        String[] addressSplit = address.split(",");
-        return addressSplit[0].concat(", ").concat(addressSplit[1]);
+//        String[] addressSplit = address.split(",");
+//        return addressSplit[0].concat(", ").concat(addressSplit[1]);
+//
+        return address;
     }
 
     public void setAddress(String address) {
