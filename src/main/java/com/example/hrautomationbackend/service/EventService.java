@@ -1,11 +1,14 @@
 package com.example.hrautomationbackend.service;
 
+import com.example.hrautomationbackend.entity.CityEntity;
 import com.example.hrautomationbackend.entity.EventEntity;
 import com.example.hrautomationbackend.entity.EventMaterialEntity;
+import com.example.hrautomationbackend.exception.CityNotFoundException;
 import com.example.hrautomationbackend.exception.EventAlreadyExistException;
 import com.example.hrautomationbackend.exception.EventNotFoundException;
 import com.example.hrautomationbackend.model.Event;
 import com.example.hrautomationbackend.model.EventResponse;
+import com.example.hrautomationbackend.repository.CityRepository;
 import com.example.hrautomationbackend.repository.EventMaterialRepository;
 import com.example.hrautomationbackend.repository.EventRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -25,18 +28,22 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final EventMaterialRepository eventMaterialRepository;
+    private final CityRepository cityRepository;
 
-    public EventService(EventRepository eventRepository, EventMaterialRepository eventMaterialRepository) {
+    public EventService(EventRepository eventRepository, EventMaterialRepository eventMaterialRepository, CityRepository cityRepository) {
         this.eventRepository = eventRepository;
         this.eventMaterialRepository = eventMaterialRepository;
+        this.cityRepository = cityRepository;
     }
 
-    public Long addEvent(EventResponse event) throws EventAlreadyExistException {
+    public Long addEvent(EventResponse event) throws EventAlreadyExistException, CityNotFoundException {
         if (eventRepository.findByName(event.getName()) == null) {
-
-            EventEntity entity = EventEntity.toEntity(event);
+            CityEntity city = cityRepository
+                    .findById(event.getCityId())
+                    .orElseThrow(() -> new CityNotFoundException("Город с id " + event.getCityId() + " не найдено"));
+            EventEntity entity = EventEntity.toEntity(event, city);
             eventRepository.save(entity);
-            if (event.getMaterials()!=null) {
+            if (event.getMaterials() != null) {
                 for (String material : event.getMaterials()) {
                     EventMaterialEntity eventMaterial = new EventMaterialEntity();
                     eventMaterial.setUrl(material);

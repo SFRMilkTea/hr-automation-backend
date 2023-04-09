@@ -6,6 +6,7 @@ import java.util.List;
 public class EventResponse {
 
     private Long id;
+    private Long cityId;
     private String name;
     private Date date;
     private String address;
@@ -79,5 +80,13 @@ public class EventResponse {
 
     public void setMaterials(List<String> materials) {
         this.materials = materials;
+    }
+
+    public Long getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Long cityId) {
+        this.cityId = cityId;
     }
 }

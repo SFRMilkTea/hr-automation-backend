@@ -24,6 +24,11 @@ public class CityEntity {
     @JsonIgnore
     private List<BuildingEntity> buildings = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "city_id")
+    @JsonIgnore
+    private List<EventEntity> events = new ArrayList<>();
+
     public List<BuildingEntity> getBuildings() {
         return buildings;
     }
@@ -65,5 +70,13 @@ public class CityEntity {
 
     public void setLng(double lng) {
         this.lng = lng;
+    }
+
+    public List<EventEntity> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<EventEntity> events) {
+        this.events = events;
     }
 }

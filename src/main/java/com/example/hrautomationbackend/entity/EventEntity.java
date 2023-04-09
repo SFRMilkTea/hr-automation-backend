@@ -1,6 +1,8 @@
 package com.example.hrautomationbackend.entity;
 
 import com.example.hrautomationbackend.model.EventResponse;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -28,6 +30,11 @@ public class EventEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "event_id")
     private List<EventMaterialEntity> materials = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "city_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private CityEntity city;
 
     public EventEntity() {
     }
@@ -96,7 +103,15 @@ public class EventEntity {
         this.materials = materials;
     }
 
-    public static EventEntity toEntity(EventResponse response) {
+    public CityEntity getCity() {
+        return city;
+    }
+
+    public void setCity(CityEntity city) {
+        this.city = city;
+    }
+
+    public static EventEntity toEntity(EventResponse response, CityEntity city) {
         EventEntity entity = new EventEntity();
         entity.setId(response.getId());
         entity.setName(response.getName());
@@ -105,6 +120,7 @@ public class EventEntity {
         entity.setOnline(response.isOnline());
         entity.setDescription(response.getDescription());
         entity.setPictureUrl(response.getPictureUrl());
+        entity.setCity(city);
         return entity;
     }
 }

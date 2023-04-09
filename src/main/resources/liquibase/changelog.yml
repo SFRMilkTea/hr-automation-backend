@@ -133,3 +133,13 @@ databaseChangeLog:
        - dropTable:
             tableName: event_gallery_entity
             cascadeConstraints: true
+
+  - changeSet:
+      id: 09.04.2023-1
+      labels: renameCityColumn
+      author: SFRMilkTea
+      changes:
+        - renameColumn:
+            tableName: event_entity
+            oldColumnName: city_event_id
+            newColumnName: city_id
