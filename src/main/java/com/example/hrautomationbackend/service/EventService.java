@@ -7,6 +7,7 @@ import com.example.hrautomationbackend.exception.CityNotFoundException;
 import com.example.hrautomationbackend.exception.EventAlreadyExistException;
 import com.example.hrautomationbackend.exception.EventNotFoundException;
 import com.example.hrautomationbackend.model.Event;
+import com.example.hrautomationbackend.model.EventFull;
 import com.example.hrautomationbackend.model.EventResponse;
 import com.example.hrautomationbackend.repository.CityRepository;
 import com.example.hrautomationbackend.repository.EventMaterialRepository;
@@ -87,10 +88,11 @@ public class EventService {
         return eventsModel;
     }
 
-    public EventEntity getOneEvent(Long id) throws EventNotFoundException {
-        return eventRepository
+    public EventFull getOneEvent(Long id) throws EventNotFoundException {
+        EventEntity event = eventRepository
                 .findById(id)
                 .orElseThrow(() -> new EventNotFoundException("Событие с id " + id + " не найдено"));
+        return EventFull.toModel(event);
     }
 
     public void deleteEvent(Long id) throws EventNotFoundException {
