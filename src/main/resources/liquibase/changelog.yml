@@ -142,3 +142,12 @@ databaseChangeLog:
             onDelete: CASCADE
             referencedColumnNames: id
             referencedTableName: city_entity
+
+  - changeSet:
+      id: 09.04.2023-5
+      labels: dropNotNullConstraintInEventCity
+      author: SFRMilkTea
+      changes:
+        - dropNotNullConstraint:
+            tableName: event_entity
+            columnName: city_id
