@@ -25,7 +25,7 @@ public class CityEntity {
     private List<BuildingEntity> buildings = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "city_event_id")
+    @JoinColumn(name = "city_id")
     @JsonIgnore
     private List<EventEntity> events = new ArrayList<>();
 
