@@ -38,7 +38,9 @@ public class EventController {
      * @apiBody {Boolean} [online] Онлайн/оффлайн
      * @apiBody {PokaHZ} [picture] заглавное фото мероприятия
      * @apiBody {List[String]} [materials] ссылки на материалы
+     * @apiBody {Long} cityId айди города мероприятия
      * @apiError (Error 400) EventAlreadyExistException Данное мероприятие уже существует
+     * @apiError (Error 400) CityNotFoundException Город с данным айди не найден
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
@@ -54,9 +56,10 @@ public class EventController {
         }
     }
 
+
     /**
-     * @api {get} /events/get/current?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение текущих событий
-     * @apiName getCurrentEvents
+     * @api {get} /events/get?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение текущих событий
+     * @apiName getEvents
      * @apiGroup EVENTS
      * @apiHeader {String} accessToken Аксес токен
      * @apiParam {Number} pageNumber Номер страницы
@@ -66,45 +69,20 @@ public class EventController {
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
-    @GetMapping("/get/current")
-    public ResponseEntity getCurrentEvents(@RequestHeader("Authorization") String accessToken,
-                                           @RequestParam int pageNumber,
-                                           @RequestParam int size,
-                                           @RequestParam String sortBy) {
+    @GetMapping("/get")
+    public ResponseEntity getEvents(@RequestHeader("Authorization") String accessToken,
+                                    @RequestParam int pageNumber,
+                                    @RequestParam int size,
+                                    @RequestParam String sortBy) {
         try {
             jwtService.checkAccessToken(accessToken);
             Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
-            return ResponseEntity.ok(eventService.getCurrentEvents(pageable));
+            return ResponseEntity.ok(eventService.getEvents(pageable));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    /**
-     * @api {get} /events/get/archive?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение прошедших событий
-     * @apiName getArchiveEvents
-     * @apiGroup EVENTS
-     * @apiHeader {String} accessToken Аксес токен
-     * @apiParam {Number} pageNumber Номер страницы
-     * @apiParam {Number} size Количество элементов на странице
-     * @apiParam {String} sortBy Фильтр сортировки
-     * @apiSuccess {List[Event]} events Список прошедших мероприятий(id, name, date, address, pictureUrl, online)
-     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
-     **/
-
-    @GetMapping("/get/archive")
-    public ResponseEntity getArchiveEvents(@RequestHeader("Authorization") String accessToken,
-                                           @RequestParam int pageNumber,
-                                           @RequestParam int size,
-                                           @RequestParam String sortBy) {
-        try {
-            jwtService.checkAccessToken(accessToken);
-            Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
-            return ResponseEntity.ok(eventService.getArchiveEvents(pageable));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * @api {get} /events/get/[id] Получение мероприятия по айди
@@ -119,7 +97,8 @@ public class EventController {
      * @apiSuccess {String} address место проведения мероприятия
      * @apiSuccess {String} pictureUrl заглавное фото мероприятия
      * @apiSuccess {boolean} online онлайн/оффлайн
-     * @apiSuccess {List[EventGallery]} photos фоточки мероприятия (пока хз как это будет)
+     * @apiSuccess {List[String]} materials Список материалов мероприятия
+     * @apiSuccess {String} city Название город мероприятия
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) EventNotFoundException Мероприятие не существует
      **/

@@ -17,11 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -58,36 +54,15 @@ public class EventService {
             throw new EventAlreadyExistException("Мероприятие " + event.getName() + " уже существует");
     }
 
-    public List<Event> getCurrentEvents(Pageable pageable) {
+    public List<Event> getEvents(Pageable pageable) {
         Page<EventEntity> events = eventRepository.findAll(pageable);
         ArrayList<Event> eventsModel = new ArrayList<>();
-        ZoneId zoneId = ZoneId.systemDefault();
-        ZonedDateTime zonedDateTime = LocalDateTime.now().atZone(zoneId);
-        Date now = Date.from(zonedDateTime.toInstant());
         for (EventEntity event : events) {
-            if (event.getDate().compareTo(now) >= 0) {
-                eventsModel.add(Event.toModel(event));
-            }
+            eventsModel.add(Event.toModel(event));
         }
         eventsModel.sort((b, a) -> a.getDate().compareTo(b.getDate()));
         return eventsModel;
     }
-
-    public List<Event> getArchiveEvents(Pageable pageable) {
-        Page<EventEntity> events = eventRepository.findAll(pageable);
-        ArrayList<Event> eventsModel = new ArrayList<>();
-        ZoneId zoneId = ZoneId.systemDefault();
-        ZonedDateTime zonedDateTime = LocalDateTime.now().atZone(zoneId);
-        Date now = Date.from(zonedDateTime.toInstant());
-        for (EventEntity event : events) {
-            if (event.getDate().compareTo(now) < 0) {
-                eventsModel.add(Event.toModel(event));
-            }
-        }
-        eventsModel.sort((b, a) -> a.getDate().compareTo(b.getDate()));
-        return eventsModel;
-    }
-
     public EventFull getOneEvent(Long id) throws EventNotFoundException {
         EventEntity event = eventRepository
                 .findById(id)
