@@ -27,7 +27,9 @@ public class EventFull {
         model.setAddress(entity.getAddress());
         model.setPictureUrl(entity.getPictureUrl());
         model.setOnline(entity.isOnline());
-        model.setCity(entity.getCity().getName());
+        if (entity.getCity() != null) {
+            model.setCity(entity.getCity().getName());
+        }
         List<String> materials = new ArrayList<>();
         for (EventMaterialEntity material : entity.getMaterials()) {
             materials.add(material.getUrl());

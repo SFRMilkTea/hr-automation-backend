@@ -57,6 +57,7 @@ public class EventService {
     public List<Event> getEvents(Pageable pageable) {
         Page<EventEntity> events = eventRepository.findAll(pageable);
         ArrayList<Event> eventsModel = new ArrayList<>();
+
         for (EventEntity event : events) {
             eventsModel.add(Event.toModel(event));
         }
@@ -72,6 +73,14 @@ public class EventService {
 
     public void deleteEvent(Long id) throws EventNotFoundException {
         try {
+            CityEntity city = new CityEntity();
+            city.setId(3L);
+            city.setName("Томск");
+            EventEntity event = eventRepository
+                    .findById(id)
+                    .orElseThrow(() -> new EventNotFoundException("Событие с id " + id + " не найдено"));
+            event.setCity(city);
+            eventRepository.save(event);
             eventRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new EventNotFoundException("Мероприятие с id " + id + " не найдено");
