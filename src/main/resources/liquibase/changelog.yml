@@ -130,15 +130,15 @@ databaseChangeLog:
                   name: city_id
                   type: bigint
 
-#  - changeSet:
-#      id: 09.04.2023-4
-#      labels: addCityIdColumnConstraint
-#      author: SFRMilkTea
-#      changes:
-#        - addForeignKeyConstraint:
-#            baseColumnNames: city_id
-#            baseTableName: event_entity
-#            constraintName: fk_on_event_city
-#            onDelete: CASCADE
-#            referencedColumnNames: id
-#            referencedTableName: city_entity
+  - changeSet:
+      id: 09.04.2023-4
+      labels: addCityIdColumnConstraint
+      author: SFRMilkTea
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: city_id
+            baseTableName: event_entity
+            constraintName: fk_on_event_city
+            onDelete: CASCADE
+            referencedColumnNames: id
+            referencedTableName: city_entity

@@ -32,7 +32,7 @@ public class EventEntity {
     private List<EventMaterialEntity> materials = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "city_id", nullable = false)
+    @JoinColumn(name = "city_id", nullable = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private CityEntity city;
 
