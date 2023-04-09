@@ -58,14 +58,14 @@ public class EventController {
 
 
     /**
-     * @api {get} /events/get?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение текущих событий
+     * @api {get} /events/get?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение событий
      * @apiName getEvents
      * @apiGroup EVENTS
      * @apiHeader {String} accessToken Аксес токен
      * @apiParam {Number} pageNumber Номер страницы
      * @apiParam {Number} size Количество элементов на странице
      * @apiParam {String} sortBy Фильтр сортировки
-     * @apiSuccess {List[Event]} events Список текущих мероприятий(id, name, date, address, pictureUrl, online)
+     * @apiSuccess {List[Event]} events Список всех мероприятий(id, name, date, address, pictureUrl, online)
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
@@ -88,7 +88,7 @@ public class EventController {
      * @api {get} /events/get/[id] Получение мероприятия по айди
      * @apiName getOneEvent
      * @apiGroup EVENTS
-     * @apiParam {Number} id Уникальный идентефикатор мероприятия
+     * @apiParam {Long} id id мероприятия
      * @apiHeader {String} accessToken Аксес токен
      * @apiSuccess {Long} id id мероприятия
      * @apiSuccess {String} name название мероприятия
@@ -136,5 +136,37 @@ public class EventController {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * @api {put} /events/update Обновление мероприятия
+     * @apiName updateEvent
+     * @apiGroup EVENTS
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiBody {Long} id id мероприятия
+     * @apiBody {String} name название мероприятия
+     * @apiBody {String} description описание мероприятия
+     * @apiBody {Date} date дата проведения мероприятия
+     * @apiBody {String} address место проведения мероприятия
+     * @apiBody {String} pictureUrl заглавное фото мероприятия
+     * @apiBody {boolean} online онлайн/оффлайн
+     * @apiBody {List[String]} materials Список материалов мероприятия
+     * @apiBody {Long} cityId Id города мероприятия
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) ProductCategoryNotFoundException Категория продукта не существует
+     **/
+
+
+    @PutMapping("/update")
+    public ResponseEntity updateProductCategory(@RequestHeader("Authorization") String accessToken,
+                                                @RequestBody EventResponse event) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            eventService.updateEvent(event);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }

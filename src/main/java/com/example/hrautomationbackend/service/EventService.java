@@ -1,11 +1,7 @@
 package com.example.hrautomationbackend.service;
 
-import com.example.hrautomationbackend.entity.CityEntity;
-import com.example.hrautomationbackend.entity.EventEntity;
-import com.example.hrautomationbackend.entity.EventMaterialEntity;
-import com.example.hrautomationbackend.exception.CityNotFoundException;
-import com.example.hrautomationbackend.exception.EventAlreadyExistException;
-import com.example.hrautomationbackend.exception.EventNotFoundException;
+import com.example.hrautomationbackend.entity.*;
+import com.example.hrautomationbackend.exception.*;
 import com.example.hrautomationbackend.model.Event;
 import com.example.hrautomationbackend.model.EventFull;
 import com.example.hrautomationbackend.model.EventResponse;
@@ -17,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +74,17 @@ public class EventService {
         } catch (EmptyResultDataAccessException e) {
             throw new EventNotFoundException("Мероприятие с id " + id + " не найдено");
         }
+    }
+
+    @Transactional
+    public void updateEvent(EventResponse event) throws EventNotFoundException, CityNotFoundException {
+        if (eventRepository.findById(event.getId()).isPresent()) {
+            CityEntity city = cityRepository
+                    .findById(event.getCityId())
+                    .orElseThrow(() -> new CityNotFoundException("Город с id " + event.getCityId() + " не найден"));
+            eventRepository.save(EventEntity.toEntity(event, city));
+        } else
+            throw new EventNotFoundException("Мероприятие с id " + event.getId() + " не существует");
     }
 
 
