@@ -12,8 +12,8 @@ public class EventResponse {
     private String address;
     private String description;
     private String pictureUrl;
-    private boolean isOnline;
     private List<String> materials;
+    private EventFormat format;
 
     public EventResponse() {
     }
@@ -66,14 +66,6 @@ public class EventResponse {
         this.pictureUrl = pictureUrl;
     }
 
-    public boolean isOnline() {
-        return isOnline;
-    }
-
-    public void setOnline(boolean online) {
-        isOnline = online;
-    }
-
     public List<String> getMaterials() {
         return materials;
     }
@@ -88,5 +80,13 @@ public class EventResponse {
 
     public void setCityId(Long cityId) {
         this.cityId = cityId;
+    }
+
+    public EventFormat getFormat() {
+        return format;
+    }
+
+    public void setFormat(EventFormat format) {
+        this.format = format;
     }
 }

@@ -169,3 +169,14 @@ databaseChangeLog:
         - dropDefaultValue:
             tableName: event_entity
             columnName: address
+
+  - changeSet:
+      id: 13.04.2023-3
+      labels: dropIsOnlineInEvent
+      author: SFRMilkTea
+      changes:
+        - dropColumn:
+            tableName: event_entity
+            columns:
+              - column:
+                  name: is_online

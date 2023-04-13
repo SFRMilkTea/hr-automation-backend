@@ -34,8 +34,8 @@ public class EventController {
      * @apiBody {String} name Название мероприятия
      * @apiBody {String} [description] Описание мероприятия
      * @apiBody {Date} date Дата мероприятия
-     * @apiBody {String} address Адрес мероприятия
-     * @apiBody {Boolean} [online] Онлайн/оффлайн
+     * @apiBody {String} [address] Адрес мероприятия
+     * @apiBody {String="ONLINE","OFFLINE","COMBINED"} format Формат мероприятия
      * @apiBody {PokaHZ} [picture] заглавное фото мероприятия
      * @apiBody {List[String]} [materials] ссылки на материалы
      * @apiBody {Long} cityId айди города мероприятия
@@ -65,7 +65,7 @@ public class EventController {
      * @apiParam {Number} pageNumber Номер страницы
      * @apiParam {Number} size Количество элементов на странице
      * @apiParam {String} sortBy Фильтр сортировки
-     * @apiSuccess {List[Event]} events Список всех мероприятий(id, name, date, address, pictureUrl, online)
+     * @apiSuccess {List[Event]} events Список всех мероприятий(id, name, date, address, pictureUrl, format)
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
@@ -96,7 +96,7 @@ public class EventController {
      * @apiSuccess {Date} date дата проведения мероприятия
      * @apiSuccess {String} address место проведения мероприятия
      * @apiSuccess {String} pictureUrl заглавное фото мероприятия
-     * @apiSuccess {boolean} online онлайн/оффлайн
+     * @apiSuccess {String="ONLINE","OFFLINE","COMBINED"} format Формат мероприятия
      * @apiSuccess {List[String]} materials Список материалов мероприятия
      * @apiSuccess {String} city Название город мероприятия
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
@@ -148,7 +148,7 @@ public class EventController {
      * @apiBody {Date} date дата проведения мероприятия
      * @apiBody {String} address место проведения мероприятия
      * @apiBody {String} pictureUrl заглавное фото мероприятия
-     * @apiBody {boolean} online онлайн/оффлайн
+     * @apiBody {String="ONLINE","OFFLINE","COMBINED"} format Формат мероприятия
      * @apiBody {List[String]} materials Список материалов мероприятия
      * @apiBody {Long} cityId Id города мероприятия
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken

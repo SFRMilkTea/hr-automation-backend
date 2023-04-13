@@ -11,7 +11,7 @@ public class Event {
     private Date date;
     private String address;
     private String pictureUrl;
-    private boolean isOnline;
+    private EventFormat format;
 
     public static Event toModel(EventEntity entity) {
         Event model = new Event();
@@ -19,8 +19,8 @@ public class Event {
         model.setName(entity.getName());
         model.setDate(entity.getDate());
         model.setAddress(entity.getAddress());
-        model.setOnline(entity.isOnline());
         model.setPictureUrl(entity.getPictureUrl());
+        model.setFormat(entity.getFormat());
         return model;
     }
 
@@ -67,11 +67,11 @@ public class Event {
         this.pictureUrl = pictureUrl;
     }
 
-    public boolean isOnline() {
-        return isOnline;
+    public EventFormat getFormat() {
+        return format;
     }
 
-    public void setOnline(boolean online) {
-        isOnline = online;
+    public void setFormat(EventFormat format) {
+        this.format = format;
     }
 }

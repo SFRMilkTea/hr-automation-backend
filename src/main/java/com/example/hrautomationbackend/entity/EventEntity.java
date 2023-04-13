@@ -1,5 +1,6 @@
 package com.example.hrautomationbackend.entity;
 
+import com.example.hrautomationbackend.model.EventFormat;
 import com.example.hrautomationbackend.model.EventResponse;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -27,8 +28,8 @@ public class EventEntity {
     @Column(columnDefinition = "double precision default 0")
     private double lng;
     private String pictureUrl;
-    @Column(columnDefinition = "boolean default false")
-    private boolean isOnline;
+    @Enumerated(EnumType.ORDINAL)
+    private EventFormat format;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "event_id")
@@ -90,14 +91,6 @@ public class EventEntity {
         this.pictureUrl = pictureUrl;
     }
 
-    public boolean isOnline() {
-        return isOnline;
-    }
-
-    public void setOnline(boolean online) {
-        isOnline = online;
-    }
-
     public List<EventMaterialEntity> getMaterials() {
         return materials;
     }
@@ -130,16 +123,24 @@ public class EventEntity {
         this.lng = lng;
     }
 
+    public EventFormat getFormat() {
+        return format;
+    }
+
+    public void setFormat(EventFormat format) {
+        this.format = format;
+    }
+
     public static EventEntity toEntity(EventResponse response, CityEntity city) {
         EventEntity entity = new EventEntity();
         entity.setId(response.getId());
         entity.setName(response.getName());
         entity.setDate(response.getDate());
         entity.setAddress(response.getAddress());
-        entity.setOnline(response.isOnline());
         entity.setDescription(response.getDescription());
         entity.setPictureUrl(response.getPictureUrl());
         entity.setCity(city);
+        entity.setFormat(response.getFormat());
         return entity;
     }
 }

@@ -14,9 +14,9 @@ public class EventFull {
     private Date date;
     private String address;
     private String pictureUrl;
-    private boolean isOnline;
     private List<String> materials = new ArrayList<>();
     private String city;
+    private EventFormat format;
 
     public static EventFull toModel(EventEntity entity) {
         EventFull model = new EventFull();
@@ -26,8 +26,8 @@ public class EventFull {
         model.setDate(entity.getDate());
         model.setAddress(entity.getAddress());
         model.setPictureUrl(entity.getPictureUrl());
-        model.setOnline(entity.isOnline());
         model.setCity(entity.getCity().getName());
+        model.setFormat(entity.getFormat());
         List<String> materials = new ArrayList<>();
         for (EventMaterialEntity material : entity.getMaterials()) {
             materials.add(material.getUrl());
@@ -87,14 +87,6 @@ public class EventFull {
         this.pictureUrl = pictureUrl;
     }
 
-    public boolean isOnline() {
-        return isOnline;
-    }
-
-    public void setOnline(boolean online) {
-        isOnline = online;
-    }
-
     public List<String> getMaterials() {
         return materials;
     }
@@ -109,5 +101,13 @@ public class EventFull {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public EventFormat getFormat() {
+        return format;
+    }
+
+    public void setFormat(EventFormat format) {
+        this.format = format;
     }
 }
