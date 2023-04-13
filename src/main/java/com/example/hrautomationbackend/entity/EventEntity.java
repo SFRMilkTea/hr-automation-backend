@@ -21,8 +21,11 @@ public class EventEntity {
     private String description;
     @Column(nullable = false)
     private Date date;
-    @Column(nullable = false)
     private String address;
+    @Column(columnDefinition = "double precision default 0")
+    private double lat;
+    @Column(columnDefinition = "double precision default 0")
+    private double lng;
     private String pictureUrl;
     @Column(columnDefinition = "boolean default false")
     private boolean isOnline;
@@ -109,6 +112,22 @@ public class EventEntity {
 
     public void setCity(CityEntity city) {
         this.city = city;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 
     public static EventEntity toEntity(EventResponse response, CityEntity city) {

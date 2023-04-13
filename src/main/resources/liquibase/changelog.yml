@@ -151,3 +151,21 @@ databaseChangeLog:
         - dropNotNullConstraint:
             tableName: event_entity
             columnName: city_id
+
+  - changeSet:
+      id: 13.04.2023-1
+      labels: dropNotNullConstraintInEventAddress
+      author: SFRMilkTea
+      changes:
+        - dropNotNullConstraint:
+            tableName: event_entity
+            columnName: address
+
+  - changeSet:
+      id: 13.04.2023-2
+      labels: dropDefaultValueInEventAddress
+      author: SFRMilkTea
+      changes:
+        - dropDefaultValue:
+            tableName: event_entity
+            columnName: address
