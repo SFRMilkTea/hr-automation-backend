@@ -157,7 +157,7 @@ public class EventController {
 
 
     @PutMapping("/update")
-    public ResponseEntity updateProductCategory(@RequestHeader("Authorization") String accessToken,
+    public ResponseEntity updateEvent(@RequestHeader("Authorization") String accessToken,
                                                 @RequestBody EventResponse event) {
         try {
             jwtService.checkAccessToken(accessToken);
