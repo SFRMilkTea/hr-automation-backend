@@ -17,6 +17,8 @@ public class EventFull {
     private List<String> materials = new ArrayList<>();
     private String city;
     private EventFormat format;
+    private double lat;
+    private double lng;
 
     public static EventFull toModel(EventEntity entity) {
         EventFull model = new EventFull();
@@ -33,6 +35,8 @@ public class EventFull {
             materials.add(material.getUrl());
         }
         model.setMaterials(materials);
+        model.setLat(entity.getLat());
+        model.setLng(entity.getLng());
         return model;
     }
 
@@ -109,5 +113,21 @@ public class EventFull {
 
     public void setFormat(EventFormat format) {
         this.format = format;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 }

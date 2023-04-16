@@ -14,6 +14,8 @@ public class EventResponse {
     private String pictureUrl;
     private List<String> materials;
     private EventFormat format;
+    private double lat;
+    private double lng;
 
     public EventResponse() {
     }
@@ -88,5 +90,21 @@ public class EventResponse {
 
     public void setFormat(EventFormat format) {
         this.format = format;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 }
