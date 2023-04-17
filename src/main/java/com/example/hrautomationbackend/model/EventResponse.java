@@ -1,5 +1,7 @@
 package com.example.hrautomationbackend.model;
 
+import com.example.hrautomationbackend.entity.EventMaterialEntity;
+
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +14,7 @@ public class EventResponse {
     private String address;
     private String description;
     private String pictureUrl;
-    private List<String> materials;
+    private List<EventMaterialEntity> materials;
     private EventFormat format;
     private double lat;
     private double lng;
@@ -68,11 +70,11 @@ public class EventResponse {
         this.pictureUrl = pictureUrl;
     }
 
-    public List<String> getMaterials() {
+    public List<EventMaterialEntity> getMaterials() {
         return materials;
     }
 
-    public void setMaterials(List<String> materials) {
+    public void setMaterials(List<EventMaterialEntity> materials) {
         this.materials = materials;
     }
 

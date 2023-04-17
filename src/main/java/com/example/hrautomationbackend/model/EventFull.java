@@ -14,7 +14,7 @@ public class EventFull {
     private Date date;
     private String address;
     private String pictureUrl;
-    private List<String> materials = new ArrayList<>();
+    private List<EventMaterialEntity> materials = new ArrayList<>();
     private String city;
     private EventFormat format;
     private double lat;
@@ -30,11 +30,7 @@ public class EventFull {
         model.setPictureUrl(entity.getPictureUrl());
         model.setCity(entity.getCity().getName());
         model.setFormat(entity.getFormat());
-        List<String> materials = new ArrayList<>();
-        for (EventMaterialEntity material : entity.getMaterials()) {
-            materials.add(material.getUrl());
-        }
-        model.setMaterials(materials);
+        model.setMaterials(entity.getMaterials());
         model.setLat(entity.getLat());
         model.setLng(entity.getLng());
         return model;
@@ -91,11 +87,11 @@ public class EventFull {
         this.pictureUrl = pictureUrl;
     }
 
-    public List<String> getMaterials() {
+    public List<EventMaterialEntity> getMaterials() {
         return materials;
     }
 
-    public void setMaterials(List<String> materials) {
+    public void setMaterials(List<EventMaterialEntity> materials) {
         this.materials = materials;
     }
 

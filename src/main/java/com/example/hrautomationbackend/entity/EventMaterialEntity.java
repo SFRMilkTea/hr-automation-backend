@@ -14,6 +14,9 @@ public class EventMaterialEntity {
     @Column(nullable = false, length = 2048)
     private String url;
 
+    @Column(length = 128)
+    private String description;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "event_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -46,5 +49,13 @@ public class EventMaterialEntity {
 
     public void setEvent(EventEntity event) {
         this.event = event;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

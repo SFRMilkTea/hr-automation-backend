@@ -38,9 +38,10 @@ public class EventService {
             EventEntity entity = EventEntity.toEntity(event, city);
             eventRepository.save(entity);
             if (event.getMaterials() != null) {
-                for (String material : event.getMaterials()) {
+                for (EventMaterialEntity material : event.getMaterials()) {
                     EventMaterialEntity eventMaterial = new EventMaterialEntity();
-                    eventMaterial.setUrl(material);
+                    eventMaterial.setUrl(material.getUrl());
+                    eventMaterial.setDescription(material.getDescription());
                     eventMaterial.setEvent(entity);
                     eventMaterialRepository.save(eventMaterial);
                 }

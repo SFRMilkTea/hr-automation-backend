@@ -37,7 +37,7 @@ public class EventController {
      * @apiBody {String} [address] Адрес мероприятия
      * @apiBody {String="ONLINE","OFFLINE","COMBINED"} format Формат мероприятия
      * @apiBody {PokaHZ} [picture] заглавное фото мероприятия
-     * @apiBody {List[String]} [materials] ссылки на материалы
+     * @apiBody {List[EventMaterial]} [materials] ссылки на материалы (url, description)
      * @apiBody {Long} cityId айди города мероприятия
      * @apiError (Error 400) EventAlreadyExistException Данное мероприятие уже существует
      * @apiError (Error 400) CityNotFoundException Город с данным айди не найден
@@ -97,7 +97,7 @@ public class EventController {
      * @apiSuccess {String} address место проведения мероприятия
      * @apiSuccess {String} pictureUrl заглавное фото мероприятия
      * @apiSuccess {String="ONLINE","OFFLINE","COMBINED"} format Формат мероприятия
-     * @apiSuccess {List[String]} materials Список материалов мероприятия
+     * @apiSuccess {List[EventMaterialEntity]} materials Список материалов мероприятия (id, url, description)
      * @apiSuccess {String} city Название город мероприятия
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) EventNotFoundException Мероприятие не существует
