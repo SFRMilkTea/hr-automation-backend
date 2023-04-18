@@ -14,6 +14,7 @@ public class Event {
     private EventFormat format;
     private double lat;
     private double lng;
+    private Long cityId;
 
     public static Event toModel(EventEntity entity) {
         Event model = new Event();
@@ -25,6 +26,7 @@ public class Event {
         model.setFormat(entity.getFormat());
         model.setLat(entity.getLat());
         model.setLng(entity.getLng());
+        model.setCityId(entity.getCity().getId());
         return model;
     }
 
@@ -93,5 +95,13 @@ public class Event {
 
     public void setLng(double lng) {
         this.lng = lng;
+    }
+
+    public Long getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Long cityId) {
+        this.cityId = cityId;
     }
 }

@@ -65,7 +65,8 @@ public class EventController {
      * @apiParam {Number} pageNumber Номер страницы
      * @apiParam {Number} size Количество элементов на странице
      * @apiParam {String} sortBy Фильтр сортировки
-     * @apiSuccess {List[Event]} events Список всех мероприятий(id, name, date, address, pictureUrl, format)
+     * @apiSuccess {List[Event]} events Список всех мероприятий(id, name, date, address, pictureUrl, format, cityId)
+     * @apiSuccess {int} pages Общее количество страниц
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
@@ -174,7 +175,7 @@ public class EventController {
      * @apiGroup EVENTS
      * @apiHeader {String} accessToken Аксес токен
      * @apiParam {Long} cityId Id города
-     * @apiSuccess {List[Event]} events Список всех мероприятий города (id, name, date, address, pictureUrl, format)
+     * @apiSuccess {List[Event]} events Список всех мероприятий города (id, name, date, address, pictureUrl, format, cityId)
      * @apiSuccess {int} pages Общее количество страниц
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      * @apiError (Error 400) CityNotFoundException Город не найден
