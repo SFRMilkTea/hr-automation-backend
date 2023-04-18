@@ -2,9 +2,7 @@ package com.example.hrautomationbackend.service;
 
 import com.example.hrautomationbackend.entity.*;
 import com.example.hrautomationbackend.exception.*;
-import com.example.hrautomationbackend.model.Event;
-import com.example.hrautomationbackend.model.EventFull;
-import com.example.hrautomationbackend.model.EventResponse;
+import com.example.hrautomationbackend.model.*;
 import com.example.hrautomationbackend.repository.CityRepository;
 import com.example.hrautomationbackend.repository.EventMaterialRepository;
 import com.example.hrautomationbackend.repository.EventRepository;
@@ -88,5 +86,18 @@ public class EventService {
             throw new EventNotFoundException("Мероприятие с id " + event.getId() + " не существует");
     }
 
+    public EventsWithPages getEventsByCity(Long cityId, Pageable pageable) throws CityNotFoundException {
+        CityEntity city = cityRepository
+                .findById(cityId)
+                .orElseThrow(() -> new CityNotFoundException("Город с id " + cityId + " не найден"));
+
+        Page<EventEntity> events = eventRepository.findByCity(city, pageable);
+        ArrayList<Event> eventsModel = new ArrayList<>();
+        for (EventEntity event : events) {
+            eventsModel.add(Event.toModel(event));
+        }
+
+        return EventsWithPages.toModel(eventsModel, events.getTotalPages());
+    }
 
 }
