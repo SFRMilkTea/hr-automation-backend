@@ -1,8 +1,15 @@
 package com.example.hrautomationbackend.service;
 
-import com.example.hrautomationbackend.entity.*;
-import com.example.hrautomationbackend.exception.*;
-import com.example.hrautomationbackend.model.*;
+import com.example.hrautomationbackend.entity.CityEntity;
+import com.example.hrautomationbackend.entity.EventEntity;
+import com.example.hrautomationbackend.entity.EventMaterialEntity;
+import com.example.hrautomationbackend.exception.CityNotFoundException;
+import com.example.hrautomationbackend.exception.EventAlreadyExistException;
+import com.example.hrautomationbackend.exception.EventNotFoundException;
+import com.example.hrautomationbackend.model.Event;
+import com.example.hrautomationbackend.model.EventFull;
+import com.example.hrautomationbackend.model.EventResponse;
+import com.example.hrautomationbackend.model.EventsWithPages;
 import com.example.hrautomationbackend.repository.CityRepository;
 import com.example.hrautomationbackend.repository.EventMaterialRepository;
 import com.example.hrautomationbackend.repository.EventRepository;
@@ -13,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class EventService {
@@ -50,14 +56,14 @@ public class EventService {
             throw new EventAlreadyExistException("Мероприятие " + event.getName() + " уже существует");
     }
 
-    public List<Event> getEvents(Pageable pageable) {
+    public EventsWithPages getEvents(Pageable pageable) {
         Page<EventEntity> events = eventRepository.findAll(pageable);
         ArrayList<Event> eventsModel = new ArrayList<>();
         for (EventEntity event : events) {
             eventsModel.add(Event.toModel(event));
         }
         eventsModel.sort((b, a) -> a.getDate().compareTo(b.getDate()));
-        return eventsModel;
+        return EventsWithPages.toModel(eventsModel, events.getTotalPages());
     }
 
     public EventFull getOneEvent(Long id) throws EventNotFoundException {
