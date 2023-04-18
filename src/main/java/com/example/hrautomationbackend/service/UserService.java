@@ -45,8 +45,7 @@ public class UserService {
         for (UserEntity user : users) {
             usersModel.add(UserForAll.toModel(user));
         }
-        return UsersWithPages.toModel(usersModel,
-                ((userRepository.count() + pageable.getPageSize() - 1) / pageable.getPageSize()));
+        return UsersWithPages.toModel(usersModel, users.getTotalPages());
 
     }
 
@@ -86,8 +85,7 @@ public class UserService {
         for (UserEntity user : users) {
             usersModel.add(UserForAll.toModel(user));
         }
-        return UsersWithPages.toModel(usersModel,
-                ((userRepository.count() + pageable.getPageSize() - 1) / pageable.getPageSize()));
+        return UsersWithPages.toModel(usersModel, users.getTotalPages());
 
     }
 }

@@ -4,12 +4,12 @@ import java.util.List;
 
 public class UsersWithPages {
     private List<UserForAll> users;
-    private Long pages;
+    private int pages;
 
     public UsersWithPages() {
     }
 
-    public static UsersWithPages toModel(List<UserForAll> users, Long pages) {
+    public static UsersWithPages toModel(List<UserForAll> users, int pages) {
         UsersWithPages model = new UsersWithPages();
         model.setUsers(users);
         model.setPages(pages);
@@ -24,11 +24,11 @@ public class UsersWithPages {
         this.users = users;
     }
 
-    public Long getPages() {
+    public int getPages() {
         return pages;
     }
 
-    public void setPages(Long pages) {
+    public void setPages(int pages) {
         this.pages = pages;
     }
 }
