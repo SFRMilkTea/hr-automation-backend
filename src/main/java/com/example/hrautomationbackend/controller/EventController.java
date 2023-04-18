@@ -169,7 +169,7 @@ public class EventController {
     }
 
     /**
-     * @api {get} /events/get/city/[cityId]?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение списка ресторанов по городу
+     * @api {get} /events/get/city/[cityId]?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение списка мероприятий по городу
      * @apiName getEventsByCity
      * @apiGroup EVENTS
      * @apiHeader {String} accessToken Аксес токен

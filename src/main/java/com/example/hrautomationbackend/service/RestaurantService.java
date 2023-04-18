@@ -6,6 +6,7 @@ import com.example.hrautomationbackend.model.Restaurant;
 import com.example.hrautomationbackend.model.RestaurantCard;
 import com.example.hrautomationbackend.model.RestaurantResponse;
 import com.example.hrautomationbackend.model.RestaurantUpdate;
+import com.example.hrautomationbackend.repository.BuildingRepository;
 import com.example.hrautomationbackend.repository.CityRepository;
 import com.example.hrautomationbackend.repository.RestaurantRepository;
 import com.example.hrautomationbackend.repository.RestaurantStatusRepository;
@@ -26,14 +27,17 @@ import static java.lang.Float.compare;
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
+    private final BuildingRepository buildingRepository;
     private final RestaurantStatusRepository restaurantStatusRepository;
     private final CityRepository cityRepository;
     private final BuildingService buildingService;
 
     public RestaurantService(RestaurantRepository restaurantRepository,
+                             BuildingRepository buildingRepository,
                              RestaurantStatusRepository restaurantStatusRepository,
                              CityRepository cityRepository, BuildingService buildingService) {
         this.restaurantRepository = restaurantRepository;
+        this.buildingRepository = buildingRepository;
         this.restaurantStatusRepository = restaurantStatusRepository;
         this.cityRepository = cityRepository;
         this.buildingService = buildingService;
@@ -188,12 +192,12 @@ public class RestaurantService {
 
     @Transactional
     public void updateRestaurant(RestaurantUpdate restaurant) throws RestaurantNotFoundException, IOException, InterruptedException,
-            ApiException, CityNotFoundException {
+            ApiException, CityNotFoundException, BuildingNotFoundException {
         // берем ресторан
         RestaurantEntity restaurantEntity = restaurantRepository
                 .findById(restaurant.getId())
                 .orElseThrow(() -> new RestaurantNotFoundException("Ресторан с id " + restaurant.getId() + " не найден"));
-        BuildingEntity previousBuilding = restaurantEntity.getBuilding();
+        Long previousBuildingId = restaurantEntity.getBuilding().getId();
         // берем город
         Long cityId = restaurantEntity.getBuilding().getCity().getId();
         // берем имя
@@ -204,7 +208,9 @@ public class RestaurantService {
         restaurantEntity.setStatus(restaurantStatusRepository.findByName(restaurant.getStatus()));
         restaurantRepository.save(restaurantEntity);
         // удаляем предыдущее здание, если вдруг оно опустело
+        BuildingEntity previousBuilding = buildingRepository
+                .findById(previousBuildingId)
+                .orElseThrow(() -> new BuildingNotFoundException("Здание с id " + previousBuildingId + " не найдено"));
         buildingService.deleteBuildingIfEmpty(previousBuilding);
     }
-
 }
