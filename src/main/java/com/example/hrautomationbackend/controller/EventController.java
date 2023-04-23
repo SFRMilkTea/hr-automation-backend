@@ -33,8 +33,10 @@ public class EventController {
      * @apiHeader {String} accessToken Аксес токен
      * @apiBody {String} name Название мероприятия
      * @apiBody {String} [description] Описание мероприятия
-     * @apiBody {Date} date Дата мероприятия
      * @apiBody {String} [address] Адрес мероприятия
+     * @apiBody {Date} date Дата мероприятия
+     * @apiBody {Double} [lat] Широта места проведения мероприятия
+     * @apiBody {Double} [lng] Долгота места проведения мероприятия
      * @apiBody {String="ONLINE","OFFLINE","COMBINED"} format Формат мероприятия
      * @apiBody {PokaHZ} [picture] заглавное фото мероприятия
      * @apiBody {List[EventMaterial]} [materials] ссылки на материалы (url, description)
@@ -55,7 +57,6 @@ public class EventController {
             throw new RuntimeException(e);
         }
     }
-
 
     /**
      * @api {get} /events/get?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение событий

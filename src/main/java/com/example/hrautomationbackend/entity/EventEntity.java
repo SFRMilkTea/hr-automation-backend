@@ -141,6 +141,8 @@ public class EventEntity {
         entity.setPictureUrl(response.getPictureUrl());
         entity.setCity(city);
         entity.setFormat(response.getFormat());
+        entity.setLng(response.getLng());
+        entity.setLat(response.getLat());
         return entity;
     }
 }

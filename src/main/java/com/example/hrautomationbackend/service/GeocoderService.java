@@ -29,19 +29,12 @@ public class GeocoderService {
     public GeocoderService() {
     }
 
-//    public GeoApiContext getContext() {
-//        GeoApiContext context = new GeoApiContext.Builder()
-//                .apiKey("AIzaSyD0x8OjD9BWDrSPy2GDApSqt_pChbbCYQU")
-//                .build();
-//        return context;
-//    }
 
     public String getLat(String address) throws IOException, InterruptedException, ApiException {
         GeoApiContext context = new GeoApiContext.Builder()
                 .apiKey("AIzaSyD0x8OjD9BWDrSPy2GDApSqt_pChbbCYQU")
                 .build();
-//        GeoApiContext context = getContext();
-        GeocodingResult[] results = GeocodingApi.geocode(context, address).await();
+       GeocodingResult[] results = GeocodingApi.geocode(context, address).await();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String lat = gson.toJson(results[0].geometry.location.lat);
         context.shutdown();
@@ -52,7 +45,6 @@ public class GeocoderService {
         GeoApiContext context = new GeoApiContext.Builder()
                 .apiKey("AIzaSyD0x8OjD9BWDrSPy2GDApSqt_pChbbCYQU")
                 .build();
-//        GeoApiContext context = getContext();
         GeocodingResult[] results = GeocodingApi.geocode(context, address).await();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String lng = gson.toJson(results[0].geometry.location.lng);
@@ -65,7 +57,6 @@ public class GeocoderService {
                 .apiKey("AIzaSyD0x8OjD9BWDrSPy2GDApSqt_pChbbCYQU")
  //               .baseUrlOverride("http://maps.googleapis.com/maps/api/geocode/json?language=ru&key=AIzaSyD0x8OjD9BWDrSPy2GDApSqt_pChbbCYQU")
                 .build();
-        //        GeoApiContext context = getContext();
         GeocodingResult[] results = GeocodingApi.reverseGeocode(context, new LatLng(lat, lng)).await();
         String address = results[0].formattedAddress;
         context.shutdown();

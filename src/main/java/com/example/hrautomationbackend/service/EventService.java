@@ -6,19 +6,18 @@ import com.example.hrautomationbackend.entity.EventMaterialEntity;
 import com.example.hrautomationbackend.exception.CityNotFoundException;
 import com.example.hrautomationbackend.exception.EventAlreadyExistException;
 import com.example.hrautomationbackend.exception.EventNotFoundException;
-import com.example.hrautomationbackend.model.Event;
-import com.example.hrautomationbackend.model.EventFull;
-import com.example.hrautomationbackend.model.EventResponse;
-import com.example.hrautomationbackend.model.EventsWithPages;
+import com.example.hrautomationbackend.model.*;
 import com.example.hrautomationbackend.repository.CityRepository;
 import com.example.hrautomationbackend.repository.EventMaterialRepository;
 import com.example.hrautomationbackend.repository.EventRepository;
+import com.google.maps.errors.ApiException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 
 @Service
@@ -27,18 +26,30 @@ public class EventService {
     private final EventRepository eventRepository;
     private final EventMaterialRepository eventMaterialRepository;
     private final CityRepository cityRepository;
+    private final GeocoderService geocoderService;
 
-    public EventService(EventRepository eventRepository, EventMaterialRepository eventMaterialRepository, CityRepository cityRepository) {
+    public EventService(EventRepository eventRepository, EventMaterialRepository eventMaterialRepository, CityRepository cityRepository, GeocoderService geocoderService) {
         this.eventRepository = eventRepository;
         this.eventMaterialRepository = eventMaterialRepository;
         this.cityRepository = cityRepository;
+        this.geocoderService = geocoderService;
     }
 
-    public Long addEvent(EventResponse event) throws EventAlreadyExistException, CityNotFoundException {
-        if (eventRepository.findByName(event.getName()) == null) {
+    public Long addEvent(EventResponse eventResponse) throws EventAlreadyExistException, CityNotFoundException, IOException, InterruptedException, ApiException {
+        if (eventRepository.findByName(eventResponse.getName()) == null) {
             CityEntity city = cityRepository
-                    .findById(event.getCityId())
-                    .orElseThrow(() -> new CityNotFoundException("Город с id " + event.getCityId() + " не найдено"));
+                    .findById(eventResponse.getCityId())
+                    .orElseThrow(() -> new CityNotFoundException("Город с id " + eventResponse.getCityId() + " не найден"));
+            EventResponse event = new EventResponse();
+            if (eventResponse.getFormat() != EventFormat.ONLINE) {
+                // создание по адресу
+                if (eventResponse.getAddress() != null) {
+                    event = addEventByAddress(eventResponse);
+                }
+                //создание по координатам
+                else
+                    event = addEventByCoordinates(eventResponse);
+            }
             EventEntity entity = EventEntity.toEntity(event, city);
             eventRepository.save(entity);
             if (event.getMaterials() != null) {
@@ -53,7 +64,7 @@ public class EventService {
             eventRepository.save(entity);
             return entity.getId();
         } else
-            throw new EventAlreadyExistException("Мероприятие " + event.getName() + " уже существует");
+            throw new EventAlreadyExistException("Мероприятие " + eventResponse.getName() + " уже существует");
     }
 
     public EventsWithPages getEvents(Pageable pageable) {
@@ -102,8 +113,17 @@ public class EventService {
         for (EventEntity event : events) {
             eventsModel.add(Event.toModel(event));
         }
-
         return EventsWithPages.toModel(eventsModel, events.getTotalPages());
     }
 
+    public EventResponse addEventByCoordinates(EventResponse event) throws IOException, InterruptedException, ApiException, EventAlreadyExistException, CityNotFoundException {
+        event.setAddress(geocoderService.getAddress(event.getLat(), event.getLng()));
+        return event;
+    }
+
+    public EventResponse addEventByAddress(EventResponse event) throws IOException, InterruptedException, ApiException, EventAlreadyExistException, CityNotFoundException {
+        event.setLat(Double.parseDouble(geocoderService.getLat(event.getAddress())));
+        event.setLng(Double.parseDouble(geocoderService.getLng(event.getAddress())));
+        return event;
+    }
 }
