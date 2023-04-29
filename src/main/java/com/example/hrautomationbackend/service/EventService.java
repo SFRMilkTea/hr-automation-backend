@@ -10,6 +10,7 @@ import com.example.hrautomationbackend.model.*;
 import com.example.hrautomationbackend.repository.CityRepository;
 import com.example.hrautomationbackend.repository.EventMaterialRepository;
 import com.example.hrautomationbackend.repository.EventRepository;
+import com.example.hrautomationbackend.repository.EventRepositoryCustom;
 import com.google.maps.errors.ApiException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -18,18 +19,20 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 
 @Service
 public class EventService {
 
     private final EventRepository eventRepository;
+    private final EventRepositoryCustom eventRepositoryCustom;
     private final EventMaterialRepository eventMaterialRepository;
     private final CityRepository cityRepository;
     private final GeocoderService geocoderService;
 
-    public EventService(EventRepository eventRepository, EventMaterialRepository eventMaterialRepository, CityRepository cityRepository, GeocoderService geocoderService) {
+    public EventService(EventRepository eventRepository, EventRepositoryCustom eventRepositoryCustom, EventMaterialRepository eventMaterialRepository, CityRepository cityRepository, GeocoderService geocoderService) {
         this.eventRepository = eventRepository;
+        this.eventRepositoryCustom = eventRepositoryCustom;
         this.eventMaterialRepository = eventMaterialRepository;
         this.cityRepository = cityRepository;
         this.geocoderService = geocoderService;
@@ -67,14 +70,37 @@ public class EventService {
             throw new EventAlreadyExistException("Мероприятие " + eventResponse.getName() + " уже существует");
     }
 
-    public EventsWithPages getEvents(Pageable pageable) {
-        Page<EventEntity> events = eventRepository.findAll(pageable);
+    public ArrayList<Event> getEvents(Pageable pageable, EventFilter filter) throws CityNotFoundException {
+        CityEntity city = null;
+        if (filter.getCityId() != null) {
+            city = cityRepository
+                    .findById(filter.getCityId())
+                    .orElseThrow(() -> new CityNotFoundException("Город с id " + filter.getCityId() + " не найден"));
+
+        }
+
+        Date fromDate = filter.getFromDate();
+        Date toDate = filter.getToDate();
         ArrayList<Event> eventsModel = new ArrayList<>();
-        for (EventEntity event : events) {
-            eventsModel.add(Event.toModel(event));
+        if (fromDate == null) {
+            Calendar calendar = new GregorianCalendar(1000, Calendar.JANUARY, 1);
+            fromDate = calendar.getTime();
+        }
+        if (toDate == null) {
+            Calendar calendar = new GregorianCalendar(3000, Calendar.JANUARY, 1);
+            toDate = calendar.getTime();
+        }
+
+        List<EventEntity> events = eventRepositoryCustom.findEventsByNameAndFormat(filter.getName(), filter.getFormat());
+        for (EventEntity ev : events) {
+            if (ev.getDate().after(fromDate) && ev.getDate().before(toDate)) {
+                eventsModel.add(Event.toModel(ev));
+            }
         }
         eventsModel.sort((b, a) -> a.getDate().compareTo(b.getDate()));
-        return EventsWithPages.toModel(eventsModel, events.getTotalPages());
+//        return EventsWithPages.toModel(eventsModel, events.getTotalPages());
+        return eventsModel;
+
     }
 
     public EventFull getOneEvent(Long id) throws EventNotFoundException {

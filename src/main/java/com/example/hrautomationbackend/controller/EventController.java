@@ -1,5 +1,6 @@
 package com.example.hrautomationbackend.controller;
 
+import com.example.hrautomationbackend.model.EventFilter;
 import com.example.hrautomationbackend.model.EventResponse;
 import com.example.hrautomationbackend.service.EventService;
 import com.example.hrautomationbackend.service.JwtService;
@@ -75,11 +76,12 @@ public class EventController {
     public ResponseEntity getEvents(@RequestHeader("Authorization") String accessToken,
                                     @RequestParam int pageNumber,
                                     @RequestParam int size,
-                                    @RequestParam String sortBy) {
+                                    @RequestParam String sortBy,
+                                    @RequestBody EventFilter filter) {
         try {
             jwtService.checkAccessToken(accessToken);
             Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
-            return ResponseEntity.ok(eventService.getEvents(pageable));
+            return ResponseEntity.ok(eventService.getEvents(pageable, filter));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
