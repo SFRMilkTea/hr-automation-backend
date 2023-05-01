@@ -12,6 +12,7 @@ import com.example.hrautomationbackend.repository.EventMaterialRepository;
 import com.example.hrautomationbackend.repository.EventRepository;
 import com.example.hrautomationbackend.repository.EventRepositoryCustom;
 import com.google.maps.errors.ApiException;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -70,7 +71,7 @@ public class EventService {
             throw new EventAlreadyExistException("Мероприятие " + eventResponse.getName() + " уже существует");
     }
 
-    public ArrayList<Event> getEvents(Pageable pageable, EventFilter filter) throws CityNotFoundException {
+    public EventsWithPages getEvents(Pageable pageable, EventFilter filter) throws CityNotFoundException {
         CityEntity city = null;
         if (filter.getCityId() != null) {
             city = cityRepository
@@ -78,28 +79,17 @@ public class EventService {
                     .orElseThrow(() -> new CityNotFoundException("Город с id " + filter.getCityId() + " не найден"));
 
         }
-
         Date fromDate = filter.getFromDate();
         Date toDate = filter.getToDate();
         ArrayList<Event> eventsModel = new ArrayList<>();
-        if (fromDate == null) {
-            Calendar calendar = new GregorianCalendar(1000, Calendar.JANUARY, 1);
-            fromDate = calendar.getTime();
-        }
-        if (toDate == null) {
-            Calendar calendar = new GregorianCalendar(3000, Calendar.JANUARY, 1);
-            toDate = calendar.getTime();
-        }
 
-        List<EventEntity> events = eventRepositoryCustom.findEventsByFilter(filter.getName(), filter.getFormat(), city);
-        for (EventEntity ev : events) {
-            if (ev.getDate().after(fromDate) && ev.getDate().before(toDate)) {
-                eventsModel.add(Event.toModel(ev));
-            }
+        PagedListHolder events = eventRepositoryCustom.findEventsByFilter(filter.getName(), filter.getFormat(), city, fromDate, toDate, pageable);
+        List<EventEntity> eventsList = events.getPageList();
+        for (EventEntity ev : eventsList) {
+            eventsModel.add(Event.toModel(ev));
         }
         eventsModel.sort((b, a) -> a.getDate().compareTo(b.getDate()));
-//        return EventsWithPages.toModel(eventsModel, events.getTotalPages());
-        return eventsModel;
+        return EventsWithPages.toModel(eventsModel, events.getPageCount());
 
     }
 
