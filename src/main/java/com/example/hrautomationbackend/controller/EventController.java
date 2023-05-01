@@ -177,31 +177,5 @@ public class EventController {
         }
     }
 
-    /**
-     * @api {get} /events/get/city/[cityId]?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение списка мероприятий по городу
-     * @apiName getEventsByCity
-     * @apiGroup EVENTS
-     * @apiHeader {String} accessToken Аксес токен
-     * @apiParam {Long} cityId Id города
-     * @apiSuccess {List[Event]} events Список всех мероприятий города (id, name, date, address, pictureUrl, format, cityId)
-     * @apiSuccess {int} pages Общее количество страниц
-     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
-     * @apiError (Error 400) CityNotFoundException Город не найден
-     **/
-
-    @GetMapping("/get/city/{cityId}")
-    public ResponseEntity getEventsByCity(@RequestHeader("Authorization") String accessToken,
-                                          @PathVariable(value = "cityId") Long cityId,
-                                          @RequestParam int pageNumber,
-                                          @RequestParam int size,
-                                          @RequestParam String sortBy) {
-        try {
-            jwtService.checkAccessToken(accessToken);
-            Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
-            return ResponseEntity.ok(eventService.getEventsByCity(cityId, pageable));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
 }

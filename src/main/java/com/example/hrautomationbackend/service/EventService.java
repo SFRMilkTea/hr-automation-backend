@@ -14,13 +14,14 @@ import com.example.hrautomationbackend.repository.EventRepositoryCustom;
 import com.google.maps.errors.ApiException;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class EventService {
@@ -117,19 +118,6 @@ public class EventService {
             eventRepository.save(EventEntity.toEntity(event, city));
         } else
             throw new EventNotFoundException("Мероприятие с id " + event.getId() + " не существует");
-    }
-
-    public EventsWithPages getEventsByCity(Long cityId, Pageable pageable) throws CityNotFoundException {
-        CityEntity city = cityRepository
-                .findById(cityId)
-                .orElseThrow(() -> new CityNotFoundException("Город с id " + cityId + " не найден"));
-
-        Page<EventEntity> events = eventRepository.findByCity(city, pageable);
-        ArrayList<Event> eventsModel = new ArrayList<>();
-        for (EventEntity event : events) {
-            eventsModel.add(Event.toModel(event));
-        }
-        return EventsWithPages.toModel(eventsModel, events.getTotalPages());
     }
 
     public EventResponse addEventByCoordinates(EventResponse event) throws IOException, InterruptedException, ApiException, EventAlreadyExistException, CityNotFoundException {
