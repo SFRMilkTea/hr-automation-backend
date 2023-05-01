@@ -1,5 +1,6 @@
 package com.example.hrautomationbackend.repository;
 
+import com.example.hrautomationbackend.entity.CityEntity;
 import com.example.hrautomationbackend.entity.EventEntity;
 import com.example.hrautomationbackend.model.EventFormat;
 import org.springframework.stereotype.Repository;
@@ -22,12 +23,16 @@ class EventRepositoryImpl implements EventRepositoryCustom {
     }
 
     @Override
-    public List<EventEntity> findEventsByNameAndFormat(String name, EventFormat format) {
+    public List<EventEntity> findEventsByFilter(String name, EventFormat format, CityEntity city) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<EventEntity> cq = cb.createQuery(EventEntity.class);
 
         Root<EventEntity> event = cq.from(EventEntity.class);
         List<Predicate> predicates = new ArrayList<>();
+
+        if (city != null) {
+            predicates.add(cb.equal(event.get("city"), city));
+        }
 
         if (format != null) {
             predicates.add(cb.equal(event.get("format"), format));

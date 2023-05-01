@@ -91,7 +91,7 @@ public class EventService {
             toDate = calendar.getTime();
         }
 
-        List<EventEntity> events = eventRepositoryCustom.findEventsByNameAndFormat(filter.getName(), filter.getFormat());
+        List<EventEntity> events = eventRepositoryCustom.findEventsByFilter(filter.getName(), filter.getFormat(), city);
         for (EventEntity ev : events) {
             if (ev.getDate().after(fromDate) && ev.getDate().before(toDate)) {
                 eventsModel.add(Event.toModel(ev));
