@@ -1,5 +1,6 @@
 package com.example.hrautomationbackend.controller;
 
+import com.example.hrautomationbackend.model.EventFilter;
 import com.example.hrautomationbackend.model.EventResponse;
 import com.example.hrautomationbackend.service.EventService;
 import com.example.hrautomationbackend.service.JwtService;
@@ -66,6 +67,11 @@ public class EventController {
      * @apiParam {Number} pageNumber Номер страницы
      * @apiParam {Number} size Количество элементов на странице
      * @apiParam {String} sortBy Фильтр сортировки
+     * @apiBody {String} [name] Имя для фильтрации
+     * @apiBody {Date} [fromDate] Нижняя граница даты для фильтрации
+     * @apiBody {Date} [toDate] Верхняя граница даты для фильтрации
+     * @apiBody {Long} [cityId] Id города для фильтрации
+     * @apiBody {String="ONLINE","OFFLINE","COMBINED"} [format] Формат для фильтрации
      * @apiSuccess {List[Event]} events Список всех мероприятий(id, name, date, address, pictureUrl, format, cityId)
      * @apiSuccess {int} pages Общее количество страниц
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
@@ -75,11 +81,12 @@ public class EventController {
     public ResponseEntity getEvents(@RequestHeader("Authorization") String accessToken,
                                     @RequestParam int pageNumber,
                                     @RequestParam int size,
-                                    @RequestParam String sortBy) {
+                                    @RequestParam String sortBy,
+                                    @RequestBody EventFilter filter) {
         try {
             jwtService.checkAccessToken(accessToken);
             Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
-            return ResponseEntity.ok(eventService.getEvents(pageable));
+            return ResponseEntity.ok(eventService.getEvents(pageable, filter));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -170,31 +177,5 @@ public class EventController {
         }
     }
 
-    /**
-     * @api {get} /events/get/city/[cityId]?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение списка мероприятий по городу
-     * @apiName getEventsByCity
-     * @apiGroup EVENTS
-     * @apiHeader {String} accessToken Аксес токен
-     * @apiParam {Long} cityId Id города
-     * @apiSuccess {List[Event]} events Список всех мероприятий города (id, name, date, address, pictureUrl, format, cityId)
-     * @apiSuccess {int} pages Общее количество страниц
-     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
-     * @apiError (Error 400) CityNotFoundException Город не найден
-     **/
-
-    @GetMapping("/get/city/{cityId}")
-    public ResponseEntity getEventsByCity(@RequestHeader("Authorization") String accessToken,
-                                          @PathVariable(value = "cityId") Long cityId,
-                                          @RequestParam int pageNumber,
-                                          @RequestParam int size,
-                                          @RequestParam String sortBy) {
-        try {
-            jwtService.checkAccessToken(accessToken);
-            Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(sortBy));
-            return ResponseEntity.ok(eventService.getEventsByCity(cityId, pageable));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
 }
