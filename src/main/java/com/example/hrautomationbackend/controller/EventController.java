@@ -67,6 +67,11 @@ public class EventController {
      * @apiParam {Number} pageNumber Номер страницы
      * @apiParam {Number} size Количество элементов на странице
      * @apiParam {String} sortBy Фильтр сортировки
+     * @apiBody {String} [name] Имя для фильтрации
+     * @apiBody {Date} [fromDate] Нижняя граница даты для фильтрации
+     * @apiBody {Date} [toDate] Верхняя граница даты для фильтрации
+     * @apiBody {Long} [cityId] Id города для фильтрации
+     * @apiBody {String="ONLINE","OFFLINE","COMBINED"} [format] Формат для фильтрации
      * @apiSuccess {List[Event]} events Список всех мероприятий(id, name, date, address, pictureUrl, format, cityId)
      * @apiSuccess {int} pages Общее количество страниц
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
