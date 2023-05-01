@@ -60,7 +60,7 @@ public class EventController {
     }
 
     /**
-     * @api {get} /events/get?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение событий
+     * @api {post} /events/get?pageNumber=[pageNumber]&size=[size]&sortBy=[sortBy] Получение событий
      * @apiName getEvents
      * @apiGroup EVENTS
      * @apiHeader {String} accessToken Аксес токен
@@ -77,7 +77,7 @@ public class EventController {
      * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
      **/
 
-    @GetMapping("/get")
+    @PostMapping("/get")
     public ResponseEntity getEvents(@RequestHeader("Authorization") String accessToken,
                                     @RequestParam int pageNumber,
                                     @RequestParam int size,
