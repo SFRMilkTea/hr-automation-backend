@@ -126,8 +126,12 @@ public class EventService {
     }
 
     public EventResponse addEventByAddress(EventResponse event) throws IOException, InterruptedException, ApiException, EventAlreadyExistException, CityNotFoundException {
-        event.setLat(Double.parseDouble(geocoderService.getLat(event.getAddress())));
-        event.setLng(Double.parseDouble(geocoderService.getLng(event.getAddress())));
+        event.setLat(0);
+        event.setLng(0);
+
+
+        //event.setLat(Double.parseDouble(geocoderService.getLat(event.getAddress())));
+        //event.setLng(Double.parseDouble(geocoderService.getLng(event.getAddress())));
         return event;
     }
 }
