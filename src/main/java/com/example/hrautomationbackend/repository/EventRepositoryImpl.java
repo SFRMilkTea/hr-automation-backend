@@ -3,7 +3,6 @@ package com.example.hrautomationbackend.repository;
 import com.example.hrautomationbackend.entity.CityEntity;
 import com.example.hrautomationbackend.entity.EventEntity;
 import com.example.hrautomationbackend.model.EventFormat;
-import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -24,7 +23,7 @@ class EventRepositoryImpl implements EventRepositoryCustom {
     }
 
     @Override
-    public PagedListHolder findEventsByFilter(String name, EventFormat format, CityEntity city, Date fromDate, Date toDate, Pageable pageable) {
+    public List<EventEntity> findEventsByFilter(String name, EventFormat format, CityEntity city, Date fromDate, Date toDate, Pageable pageable) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<EventEntity> cq = cb.createQuery(EventEntity.class);
 
@@ -51,15 +50,21 @@ class EventRepositoryImpl implements EventRepositoryCustom {
         }
         predicates.add(cb.between(event.get("date"), fromDate, toDate));
 
+//        cq.where(predicates.toArray(new Predicate[0]));
+
+//        List<EventEntity> events = em.createQuery(cq).getResultList();
+
         cq.where(predicates.toArray(new Predicate[0]));
 
-        PagedListHolder page = new PagedListHolder(em.createQuery(cq).getResultList());
-        page.setPageSize(pageable.getPageSize()); // number of items per page
-        page.setPage(pageable.getPageNumber());      // set to first page
+        return em.createQuery(cq).getResultList();
+//        PagedListHolder page = new PagedListHolder(em.createQuery(cq).getResultList());
+//        page.setPageSize(pageable.getPageSize()); // number of items per page
+//        page.setPage(pageable.getPageNumber());      // set to first page
 
         // page.getPageCount(); // number of pages
         // page.getPageList();  // a List which represents the current page
-        return page;
+//        return page;
+//        return events;
     }
 
 }

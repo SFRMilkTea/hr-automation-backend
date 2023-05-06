@@ -12,7 +12,6 @@ import com.example.hrautomationbackend.repository.EventMaterialRepository;
 import com.example.hrautomationbackend.repository.EventRepository;
 import com.example.hrautomationbackend.repository.EventRepositoryCustom;
 import com.google.maps.errors.ApiException;
-import org.springframework.beans.support.PagedListHolder;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -72,7 +71,7 @@ public class EventService {
             throw new EventAlreadyExistException("Мероприятие " + eventResponse.getName() + " уже существует");
     }
 
-    public EventsWithPages getEvents(Pageable pageable, EventFilter filter) throws CityNotFoundException {
+    public ArrayList<Event> getEvents(Pageable pageable, EventFilter filter) throws CityNotFoundException {
         CityEntity city = null;
         if (filter.getCityId() != null) {
             city = cityRepository
@@ -84,14 +83,20 @@ public class EventService {
         Date toDate = filter.getToDate();
         ArrayList<Event> eventsModel = new ArrayList<>();
 
-        PagedListHolder events = eventRepositoryCustom.findEventsByFilter(filter.getName(), filter.getFormat(), city, fromDate, toDate, pageable);
-        List<EventEntity> eventsList = events.getPageList();
+//        PagedListHolder events = eventRepositoryCustom.findEventsByFilter(filter.getName(), filter.getFormat(), city, fromDate, toDate, pageable);
+//        List<EventEntity> eventsList = events.getPageList();
+//        for (EventEntity ev : eventsList) {
+//            eventsModel.add(Event.toModel(ev));
+//        }
+//        eventsModel.sort((b, a) -> a.getDate().compareTo(b.getDate()));
+//        return EventsWithPages.toModel(eventsModel, events.getPageCount());
+
+        List<EventEntity> eventsList = eventRepositoryCustom.findEventsByFilter(filter.getName(), filter.getFormat(), city, fromDate, toDate, pageable);
         for (EventEntity ev : eventsList) {
             eventsModel.add(Event.toModel(ev));
         }
-        eventsModel.sort((b, a) -> a.getDate().compareTo(b.getDate()));
-        return EventsWithPages.toModel(eventsModel, events.getPageCount());
 
+        return eventsModel;
     }
 
     public EventFull getOneEvent(Long id) throws EventNotFoundException {
