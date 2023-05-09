@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -26,7 +27,8 @@ public class ExcelService {
 
     public byte[] createExcel() throws IOException {
         HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet sheet = workbook.createSheet("Лист 1");
+        String name = String.valueOf(LocalDateTime.now()).split("T")[0];
+        HSSFSheet sheet = workbook.createSheet(name);
         CellStyle titleStyle = workbook.createCellStyle();
         Font font = workbook.createFont();
         font.setBold(true);
@@ -56,7 +58,7 @@ public class ExcelService {
         sheet.autoSizeColumn(0);
         sheet.autoSizeColumn(1);
         sheet.autoSizeColumn(2);
-        File f = new File("ordered_products.xls");
+        File f = new File(name.concat(".xls"));
         f.createNewFile();
         FileOutputStream out = new FileOutputStream(f);
         workbook.write(out);
