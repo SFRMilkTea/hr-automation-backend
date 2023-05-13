@@ -51,21 +51,13 @@ class EventRepositoryImpl implements EventRepositoryCustom {
         }
         predicates.add(cb.between(event.get("date"), fromDate, toDate));
 
-//        cq.where(predicates.toArray(new Predicate[0]));
+        cq.where(predicates.toArray(new Predicate[0]));
 
-//        List<EventEntity> events = em.createQuery(cq).getResultList();
-
-//        cq.where(predicates.toArray(new Predicate[0]));
-
-//        return em.createQuery(cq).getResultList();
         PagedListHolder page = new PagedListHolder(em.createQuery(cq).getResultList());
         page.setPageSize(pageable.getPageSize()); // number of items per page
         page.setPage(pageable.getPageNumber());      // set to first page
 
-         page.getPageCount(); // number of pages
-         page.getPageList();  // a List which represents the current page
         return page;
-//        return events;
     }
 
 }
