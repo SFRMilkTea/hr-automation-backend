@@ -2,10 +2,7 @@ package com.example.hrautomationbackend.service;
 
 import com.example.hrautomationbackend.entity.QuestionCategoryEntity;
 import com.example.hrautomationbackend.entity.QuestionEntity;
-import com.example.hrautomationbackend.exception.QuestionAlreadyExistException;
-import com.example.hrautomationbackend.exception.QuestionCategoryAlreadyExistException;
-import com.example.hrautomationbackend.exception.QuestionCategoryNotFoundException;
-import com.example.hrautomationbackend.exception.QuestionNotFoundException;
+import com.example.hrautomationbackend.exception.*;
 import com.example.hrautomationbackend.model.Question;
 import com.example.hrautomationbackend.repository.QuestionCategoryRepository;
 import com.example.hrautomationbackend.repository.QuestionRepository;
@@ -29,13 +26,18 @@ public class FaqService {
     }
 
     public void addQuestion(QuestionEntity question, Long categoryId)
-            throws QuestionAlreadyExistException, QuestionCategoryNotFoundException {
+            throws QuestionAlreadyExistException, QuestionCategoryNotFoundException, TooLargeValueException {
         if (questionRepository.findByTitle(question.getTitle()) == null) {
             QuestionCategoryEntity category = categoryRepository
                     .findById(categoryId)
                     .orElseThrow(() -> new QuestionCategoryNotFoundException("Категория с id " + categoryId + " не существует"));
             question.setQuestionCategory(category);
-            questionRepository.save(question);
+            try {
+                questionRepository.save(question);
+            } catch (Exception e) {
+                throw new TooLargeValueException("Превышено максимальное допустимое количество символов");
+            }
+
         } else
             throw new QuestionAlreadyExistException("Вопрос '" + question.getTitle() + "' уже существует");
     }
