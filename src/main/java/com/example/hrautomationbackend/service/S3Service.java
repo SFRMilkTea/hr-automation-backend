@@ -8,10 +8,13 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+import com.example.hrautomationbackend.entity.EventEntity;
 import com.example.hrautomationbackend.entity.ProductEntity;
 import com.example.hrautomationbackend.entity.UserEntity;
+import com.example.hrautomationbackend.exception.EventNotFoundException;
 import com.example.hrautomationbackend.exception.ProductNotFoundException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
+import com.example.hrautomationbackend.repository.EventRepository;
 import com.example.hrautomationbackend.repository.ProductRepository;
 import com.example.hrautomationbackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -26,12 +29,16 @@ public class S3Service {
     private final String bucketName;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final EventRepository eventRepository;
     private final UserService userService;
     private final ProductService productService;
+    private final EventService eventService;
 
-    public S3Service(UserRepository userRepository, ProductRepository productRepository, UserService userService, ProductService productService) {
+    public S3Service(UserRepository userRepository, ProductRepository productRepository, EventRepository eventRepository, UserService userService, ProductService productService, EventService eventService) {
         this.productRepository = productRepository;
+        this.eventRepository = eventRepository;
         this.productService = productService;
+        this.eventService = eventService;
         this.bucketName = "hr-automation";
         this.userRepository = userRepository;
         this.userService = userService;
@@ -77,6 +84,14 @@ public class S3Service {
         productRepository.save(productEntity);
     }
 
+    public void uploadEventPicture(File file, Long id) throws EventNotFoundException {
+        S3Object object = uploadPicture(file);
+        EventEntity eventEntity = eventRepository
+                .findById(id)
+                .orElseThrow(() -> new EventNotFoundException("Событие с id " + id + " не найдено"));
+        eventEntity.setPictureUrl(String.valueOf(object.getObjectContent().getHttpRequest().getURI()));
+        eventRepository.save(eventEntity);
+    }
 
 //    public URI downloadPicture(Long id) throws UserNotFoundException {
 //        AmazonS3 s3 = buildS3();

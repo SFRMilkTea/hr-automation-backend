@@ -78,5 +78,31 @@ public class FileController {
             throw new RuntimeException(e);
         }
     }
+    /**
+     * @api {post} /file/event/[id] Загрузка картинки для события
+     * @apiName uploadEventPicture
+     * @apiGroup FILES
+     * @apiParam {Long} id Уникальный идентефикатор мероприятия
+     * @apiBody {MultipartFile} file Фоточка мероприятия
+     * @apiHeader {String} accessToken Аксес токен
+     * @apiError (Error 401) AccessTokenIsNotValidException Не валидный AccessToken
+     * @apiError (Error 400) EventNotFoundException Мероприятие с данным id не найден
+     * @apiError (Error 400) MaxUploadSizeExceededException Размер картинки больше максимального
+     **/
+
+    @PostMapping("/event/{id}")
+    public ResponseEntity uploadEventPicture(@RequestBody MultipartFile file,
+                                             @PathVariable Long id,
+                                             @RequestHeader("Authorization") String accessToken) {
+        try {
+            jwtService.checkAccessToken(accessToken);
+            File tempFile = s3.createSampleFile(file);
+            file.transferTo(tempFile);
+            s3.uploadEventPicture(tempFile, id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
