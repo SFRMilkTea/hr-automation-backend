@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: CONTINUE
+      onError: CONTINUE
+  - changeSet:
+      id: 20.05.2023-1
+      labels: fixQuestionDescriptionLength
+      author: SFRMilkTea
+      changes:
+        - modifyDataType:
+            tableName: question_entity
+            columnName: description
+            newDataType: varchar(1000)
