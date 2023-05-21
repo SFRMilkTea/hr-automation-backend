@@ -54,6 +54,9 @@ public class EventService {
                 //создание по координатам
                 else
                     event = addEventByCoordinates(eventResponse);
+
+            } else {
+                event = eventResponse;
             }
             EventEntity entity = EventEntity.toEntity(event, city);
             eventRepository.save(entity);
@@ -91,13 +94,6 @@ public class EventService {
         }
         eventsModel.sort((b, a) -> a.getDate().compareTo(b.getDate()));
         return EventsWithPages.toModel(eventsModel, events.getPageCount());
-//
-//        List<EventEntity> eventsList = eventRepositoryCustom.findEventsByFilter(filter.getName(), filter.getFormat(), city, fromDate, toDate, pageable);
-//        for (EventEntity ev : eventsList) {
-//            eventsModel.add(Event.toModel(ev));
-//        }
-
-//        return eventsModel;
     }
 
     public EventFull getOneEvent(Long id) throws EventNotFoundException {
@@ -132,12 +128,12 @@ public class EventService {
     }
 
     public EventResponse addEventByAddress(EventResponse event) throws IOException, InterruptedException, ApiException, EventAlreadyExistException, CityNotFoundException {
-        event.setLat(0);
-        event.setLng(0);
+//        event.setLat(0);
+//        event.setLng(0);
 
 
-        //event.setLat(Double.parseDouble(geocoderService.getLat(event.getAddress())));
-        //event.setLng(Double.parseDouble(geocoderService.getLng(event.getAddress())));
+        event.setLat(Double.parseDouble(geocoderService.getLat(event.getAddress())));
+        event.setLng(Double.parseDouble(geocoderService.getLng(event.getAddress())));
         return event;
     }
 }

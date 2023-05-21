@@ -52,8 +52,7 @@ public class EventController {
                                    @RequestBody EventResponse event) {
         try {
             jwtService.checkAccessToken(accessToken);
-            eventService.addEvent(event);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(eventService.addEvent(event));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
