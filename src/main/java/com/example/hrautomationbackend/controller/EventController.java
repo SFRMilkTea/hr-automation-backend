@@ -176,5 +176,16 @@ public class EventController {
         }
     }
 
+//    @PostMapping("/push")
+//    public ResponseEntity getPush(@RequestHeader("Authorization") String accessToken,
+//                                  @RequestBody PushNotifyConf conf) {
+//        try {
+//            jwtService.checkAccessToken(accessToken);
+//            return ResponseEntity.ok(eventService.getPush(conf));
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
 
 }

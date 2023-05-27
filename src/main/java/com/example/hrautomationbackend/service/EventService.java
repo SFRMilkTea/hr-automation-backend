@@ -32,12 +32,18 @@ public class EventService {
     private final CityRepository cityRepository;
     private final GeocoderService geocoderService;
 
-    public EventService(EventRepository eventRepository, EventRepositoryCustom eventRepositoryCustom, EventMaterialRepository eventMaterialRepository, CityRepository cityRepository, GeocoderService geocoderService) {
+
+    public EventService(EventRepository eventRepository,
+                        EventRepositoryCustom eventRepositoryCustom,
+                        EventMaterialRepository eventMaterialRepository
+            , CityRepository cityRepository, GeocoderService geocoderService
+    ) {
         this.eventRepository = eventRepository;
         this.eventRepositoryCustom = eventRepositoryCustom;
         this.eventMaterialRepository = eventMaterialRepository;
         this.cityRepository = cityRepository;
         this.geocoderService = geocoderService;
+
     }
 
     public Long addEvent(EventResponse eventResponse) throws EventAlreadyExistException, CityNotFoundException, IOException, InterruptedException, ApiException {

@@ -38,9 +38,10 @@ out/
 
 ### ApiDoc ###
 /doc
+apidoc.json
 
 ### Firebase ###
-hr-automation-45f92-firebase-adminsdk-8w79n-3772578a9e.json
+hrautomation-654ee-firebase-adminsdk-srzj9-056d8faad4.json
 
 ### Logs ###
 *.log
