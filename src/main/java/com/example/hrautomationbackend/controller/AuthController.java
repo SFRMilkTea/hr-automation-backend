@@ -82,6 +82,7 @@ public class AuthController {
      * @apiName sendToken
      * @apiGroup AUTHORIZATION
      * @apiBody {String} token Токен пользователя
+     * @apiError (Error 400) TokenAlreadySavedException Такой токен уже сохранен
      **/
 
     @PostMapping(path = "/token")
