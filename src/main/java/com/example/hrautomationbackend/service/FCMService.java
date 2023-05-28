@@ -20,13 +20,13 @@ public class FCMService {
     public void sendMessageToToken(PushNotificationRequest request, String eventId)
             throws InterruptedException, ExecutionException {
         Map<String, String> data = new HashMap<String, String>() {{
-            put("eventId", eventId);
+            put("event_id_extra", eventId);
         }};
         Message message = getPreconfiguredMessageWithData(data, request);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonOutput = gson.toJson(message);
         String response = sendAndGetResponse(message);
-        logger.info("Sent message to token");
+        logger.info("Sent message to token" + jsonOutput);
     }
 
     private String sendAndGetResponse(Message message) throws InterruptedException, ExecutionException {
@@ -39,7 +39,7 @@ public class FCMService {
                 .setTtl(Duration.ofMinutes(2).toMillis()).setCollapseKey(topic)
                 .setPriority(AndroidConfig.Priority.HIGH)
                 .setNotification(AndroidNotification.builder()
-                        .setTag(topic).build()).build();
+                        .setTag(topic).setClickAction("openEventDetailsActivity").build()).build();
     }
 
     private ApnsConfig getApnsConfig(String topic) {

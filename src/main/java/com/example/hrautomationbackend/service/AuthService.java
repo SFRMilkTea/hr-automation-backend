@@ -1,23 +1,20 @@
 package com.example.hrautomationbackend.service;
 
 import com.example.hrautomationbackend.entity.UserEntity;
-import com.example.hrautomationbackend.exception.TokenAlreadySavedException;
 import com.example.hrautomationbackend.exception.UserNotAdminException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.exception.WrongAuthorizationCodeException;
 import com.example.hrautomationbackend.jwt.JwtResponse;
+import com.example.hrautomationbackend.model.UserWithToken;
 import com.example.hrautomationbackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class AuthService {
 
-    private final List<String> tokens = new ArrayList<>();
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final JwtService jwtService;
@@ -75,13 +72,14 @@ public class AuthService {
         }
     }
 
-    public void saveToken(String token) throws TokenAlreadySavedException {
-        if (!tokens.contains(token)) {
-            tokens.add(token);
-        } else throw new TokenAlreadySavedException("Токен: " + token + " уже сохранен");
+    public void saveToken(UserWithToken userWithToken) throws UserNotFoundException {
+        Long id = userWithToken.getId();
+        String token = userWithToken.getToken();
+        UserEntity user = userRepository
+                .findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь с id " + id + " не найден"));
+        user.setDeviceToken(token);
+        userRepository.save(user);
     }
 
-    public List<String> getTokens() {
-        return tokens;
-    }
 }

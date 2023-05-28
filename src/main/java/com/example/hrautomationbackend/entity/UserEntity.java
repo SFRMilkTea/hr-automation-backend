@@ -27,6 +27,7 @@ public class UserEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "review_id")
     private List<ReviewEntity> reviews = new ArrayList<>();
+    private String deviceToken;
 
     public UserEntity() {
     }
@@ -125,5 +126,13 @@ public class UserEntity {
 
     public void setPictureUrl(String pictureUrl) {
         this.pictureUrl = pictureUrl;
+    }
+
+    public String getDeviceToken() {
+        return deviceToken;
+    }
+
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
     }
 }

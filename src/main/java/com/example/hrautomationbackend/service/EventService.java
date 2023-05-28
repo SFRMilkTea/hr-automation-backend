@@ -3,14 +3,12 @@ package com.example.hrautomationbackend.service;
 import com.example.hrautomationbackend.entity.CityEntity;
 import com.example.hrautomationbackend.entity.EventEntity;
 import com.example.hrautomationbackend.entity.EventMaterialEntity;
+import com.example.hrautomationbackend.entity.UserEntity;
 import com.example.hrautomationbackend.exception.CityNotFoundException;
 import com.example.hrautomationbackend.exception.EventAlreadyExistException;
 import com.example.hrautomationbackend.exception.EventNotFoundException;
 import com.example.hrautomationbackend.model.*;
-import com.example.hrautomationbackend.repository.CityRepository;
-import com.example.hrautomationbackend.repository.EventMaterialRepository;
-import com.example.hrautomationbackend.repository.EventRepository;
-import com.example.hrautomationbackend.repository.EventRepositoryCustom;
+import com.example.hrautomationbackend.repository.*;
 import com.google.maps.errors.ApiException;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -30,24 +28,24 @@ public class EventService {
     private final EventRepository eventRepository;
     private final EventRepositoryCustom eventRepositoryCustom;
     private final EventMaterialRepository eventMaterialRepository;
+    private final UserRepository userRepository;
     private final CityRepository cityRepository;
     private final GeocoderService geocoderService;
-    private final AuthService authService;
     private final FCMService fcmService;
 
 
     public EventService(EventRepository eventRepository,
                         EventRepositoryCustom eventRepositoryCustom,
                         EventMaterialRepository eventMaterialRepository,
-                        CityRepository cityRepository,
+                        UserRepository userRepository, CityRepository cityRepository,
                         GeocoderService geocoderService,
-                        AuthService authService, FCMService fcmService) {
+                        FCMService fcmService) {
         this.eventRepository = eventRepository;
         this.eventRepositoryCustom = eventRepositoryCustom;
         this.eventMaterialRepository = eventMaterialRepository;
+        this.userRepository = userRepository;
         this.cityRepository = cityRepository;
         this.geocoderService = geocoderService;
-        this.authService = authService;
         this.fcmService = fcmService;
     }
 
@@ -81,10 +79,11 @@ public class EventService {
                 }
             }
             eventRepository.save(entity);
-            List<String> tokens = authService.getTokens();
-            for (String token : tokens) {
+            List<UserEntity> users = new ArrayList<>();
+            userRepository.findAll().forEach(users::add);
+            for (UserEntity user : users) {
                 PushNotificationRequest request = new PushNotificationRequest("Добавлено новое мероприятие!",
-                        "Приходите на новое мероприятие", "Новое мероприятие", token);
+                        "Приходите на новое мероприятие", "Новое мероприятие", user.getDeviceToken());
                 fcmService.sendPushNotificationToToken(request, String.valueOf(entity.getId()));
             }
             return entity.getId();
