@@ -1,14 +1,12 @@
 package com.example.hrautomationbackend.controller;
 
+import com.example.hrautomationbackend.exception.TokenAlreadySavedException;
 import com.example.hrautomationbackend.exception.UserNotFoundException;
 import com.example.hrautomationbackend.exception.WrongAuthorizationCodeException;
 import com.example.hrautomationbackend.jwt.JwtResponse;
 import com.example.hrautomationbackend.service.AuthService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/authorization")
@@ -77,5 +75,19 @@ public class AuthController {
             throws WrongAuthorizationCodeException, UserNotFoundException {
         final JwtResponse token = authService.checkCode(email, code);
         return ResponseEntity.ok(token);
+    }
+
+    /**
+     * @api {post} /authorization/token Подтверждение авторизации
+     * @apiName sendToken
+     * @apiGroup AUTHORIZATION
+     * @apiBody {String} token Токен пользователя
+     **/
+
+    @PostMapping(path = "/token")
+    public ResponseEntity<JwtResponse> sendToken(@RequestBody String token)
+            throws TokenAlreadySavedException {
+        authService.saveToken(token);
+        return ResponseEntity.ok().build();
     }
 }

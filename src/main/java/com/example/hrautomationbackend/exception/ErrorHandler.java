@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 @RestControllerAdvice()
 public class ErrorHandler {
 
+    /** кастомные ошибки **/
+
     @ExceptionHandler
     public ResponseEntity handleValidationError(final AccessTokenIsNotValidException e) {
         return ResponseEntity.status(401).body(e.getMessage());
@@ -132,6 +134,11 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity handleValidationError(final TokenAlreadySavedException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
     public ResponseEntity handleValidationError(final TokenIsNotValidException e) {
         return ResponseEntity.status(401).body(e.getMessage());
     }
@@ -165,6 +172,8 @@ public class ErrorHandler {
     public ResponseEntity handleValidationError(final WrongAuthorizationCodeException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
+
+    /** системные ошибки **/
 
     @ExceptionHandler
     public ResponseEntity handleValidationError(final AmazonClientException e) {
