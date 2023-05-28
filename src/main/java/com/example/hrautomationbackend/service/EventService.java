@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class EventService {
@@ -31,22 +32,26 @@ public class EventService {
     private final EventMaterialRepository eventMaterialRepository;
     private final CityRepository cityRepository;
     private final GeocoderService geocoderService;
+    private final AuthService authService;
+    private final FCMService fcmService;
 
 
     public EventService(EventRepository eventRepository,
                         EventRepositoryCustom eventRepositoryCustom,
-                        EventMaterialRepository eventMaterialRepository
-            , CityRepository cityRepository, GeocoderService geocoderService
-    ) {
+                        EventMaterialRepository eventMaterialRepository,
+                        CityRepository cityRepository,
+                        GeocoderService geocoderService,
+                        AuthService authService, FCMService fcmService) {
         this.eventRepository = eventRepository;
         this.eventRepositoryCustom = eventRepositoryCustom;
         this.eventMaterialRepository = eventMaterialRepository;
         this.cityRepository = cityRepository;
         this.geocoderService = geocoderService;
-
+        this.authService = authService;
+        this.fcmService = fcmService;
     }
 
-    public Long addEvent(EventResponse eventResponse) throws EventAlreadyExistException, CityNotFoundException, IOException, InterruptedException, ApiException {
+    public Long addEvent(EventResponse eventResponse) throws EventAlreadyExistException, CityNotFoundException, IOException, InterruptedException, ApiException, ExecutionException {
         if (eventRepository.findByName(eventResponse.getName()) == null) {
             CityEntity city = cityRepository
                     .findById(eventResponse.getCityId())
@@ -76,6 +81,12 @@ public class EventService {
                 }
             }
             eventRepository.save(entity);
+            List<String> tokens = authService.getTokens();
+            for (String token : tokens) {
+                PushNotificationRequest request = new PushNotificationRequest("Добавлено новое мероприятие!",
+                        "Приходите на новое мероприятие", "Новое мероприятие", token);
+                fcmService.sendPushNotificationToToken(request, String.valueOf(entity.getId()));
+            }
             return entity.getId();
         } else
             throw new EventAlreadyExistException("Мероприятие " + eventResponse.getName() + " уже существует");
@@ -134,10 +145,6 @@ public class EventService {
     }
 
     public EventResponse addEventByAddress(EventResponse event) throws IOException, InterruptedException, ApiException, EventAlreadyExistException, CityNotFoundException {
-//        event.setLat(0);
-//        event.setLng(0);
-
-
         event.setLat(Double.parseDouble(geocoderService.getLat(event.getAddress())));
         event.setLng(Double.parseDouble(geocoderService.getLng(event.getAddress())));
         return event;

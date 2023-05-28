@@ -81,4 +81,7 @@ public class AuthService {
         } else throw new TokenAlreadySavedException("Токен: " + token + " уже сохранен");
     }
 
+    public List<String> getTokens() {
+        return tokens;
+    }
 }

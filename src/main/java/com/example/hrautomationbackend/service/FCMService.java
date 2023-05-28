@@ -15,19 +15,18 @@ import java.util.concurrent.ExecutionException;
 
 @Service
 public class FCMService {
-    private Logger logger = LoggerFactory.getLogger(FCMService.class);
+    private final Logger logger = LoggerFactory.getLogger(FCMService.class);
 
-
-    public void sendMessageToToken(PushNotificationRequest request)
+    public void sendMessageToToken(PushNotificationRequest request, String eventId)
             throws InterruptedException, ExecutionException {
         Map<String, String> data = new HashMap<String, String>() {{
-            put("eventId", "1");
+            put("eventId", eventId);
         }};
         Message message = getPreconfiguredMessageWithData(data, request);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonOutput = gson.toJson(message);
         String response = sendAndGetResponse(message);
-        logger.info("Sent message to token. Device token: " + request.getToken() + ", " + response + " msg " + jsonOutput);
+        logger.info("Sent message to token");
     }
 
     private String sendAndGetResponse(Message message) throws InterruptedException, ExecutionException {
@@ -77,4 +76,11 @@ public class FCMService {
                 );
     }
 
+    public void sendPushNotificationToToken(PushNotificationRequest request, String eventId) {
+        try {
+            sendMessageToToken(request, eventId);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+    }
 }
