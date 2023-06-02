@@ -17,7 +17,6 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 @Service
 public class JwtService {
@@ -55,9 +54,7 @@ public class JwtService {
 
     public JwtResponse refresh(@NonNull String refreshToken) throws UserNotFoundException,
             RefreshTokenIsNotValidException, TokenIsNotValidException {
-        Logger log = Logger.getLogger(JwtService.class.getName());
-        log.info("! Refresh token " + refreshToken);
-          if (jwtProvider.validateRefreshToken(refreshToken)) {
+        if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String id = claims.getSubject();
             final String saveRefreshToken = refreshStorage.get(id);
