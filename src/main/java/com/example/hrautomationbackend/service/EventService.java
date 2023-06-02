@@ -10,6 +10,8 @@ import com.example.hrautomationbackend.exception.EventNotFoundException;
 import com.example.hrautomationbackend.model.*;
 import com.example.hrautomationbackend.repository.*;
 import com.google.maps.errors.ApiException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
@@ -84,6 +86,9 @@ public class EventService {
             for (UserEntity user : users) {
                 PushNotificationRequest request = new PushNotificationRequest("Добавлено новое мероприятие!",
                         "Приходите на новое мероприятие", "Новое мероприятие", user.getDeviceToken());
+
+                Logger logger = LoggerFactory.getLogger(EventService.class);
+                logger.info(user.getDeviceToken());
                 fcmService.sendPushNotificationToToken(request, String.valueOf(entity.getId()));
             }
             return entity.getId();

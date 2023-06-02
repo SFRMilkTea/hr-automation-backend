@@ -175,23 +175,19 @@ public class RestaurantService {
 
     public void calculateAverage(RestaurantEntity restaurant) {
         int average = 0;
-        int size = 0;
-        if (!restaurant.getReviews().isEmpty()) {
-            for (ReviewEntity review : restaurant.getReviews()) {
-                int reviewAverage = review.getAverage();
-                if (reviewAverage != 0) {
-                    average = average + reviewAverage;
-                    size++;
-                }
+        if (!restaurant.getNotZeroCheckReviews().isEmpty()) {
+            for (ReviewEntity review : restaurant.getNotZeroCheckReviews()) {
+                average = average + review.getAverage();
             }
-            average = Math.round(average / size);
+            average = Math.round(average / restaurant.getNotZeroCheckReviews().size());
         }
         restaurant.setAverage(average);
         restaurantRepository.save(restaurant);
     }
 
     @Transactional
-    public void updateRestaurant(RestaurantUpdate restaurant) throws RestaurantNotFoundException, IOException, InterruptedException,
+    public void updateRestaurant(RestaurantUpdate restaurant) throws
+            RestaurantNotFoundException, IOException, InterruptedException,
             ApiException, CityNotFoundException, BuildingNotFoundException {
         // берем ресторан
         RestaurantEntity restaurantEntity = restaurantRepository

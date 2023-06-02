@@ -93,4 +93,13 @@ public class RestaurantEntity {
         this.building = building;
     }
 
+    public List<ReviewEntity> getNotZeroCheckReviews() {
+        List<ReviewEntity> reviews = new ArrayList<>();
+        for (ReviewEntity review : getReviews()) {
+            if (review.getAverage() != 0) {
+                reviews.add(review);
+            }
+        }
+        return reviews;
+    }
 }
