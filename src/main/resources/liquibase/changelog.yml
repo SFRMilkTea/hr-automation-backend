@@ -11,3 +11,11 @@ databaseChangeLog:
             tableName: question_entity
             columnName: description
             newDataType: varchar(1000)
+  - changeSet:
+      id: 03.06.2023-1
+      labels: fixEventMaterialUpdate
+      author: SFRMilkTea
+      changes:
+        - dropNotNullConstraint:
+            tableName: event_material_entity
+            columnName: event_id

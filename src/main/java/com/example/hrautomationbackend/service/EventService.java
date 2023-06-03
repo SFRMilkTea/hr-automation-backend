@@ -51,6 +51,7 @@ public class EventService {
         this.fcmService = fcmService;
     }
 
+    @Transactional
     public Long addEvent(EventResponse eventResponse) throws EventAlreadyExistException, CityNotFoundException, IOException, InterruptedException, ApiException, ExecutionException {
         if (eventRepository.findByName(eventResponse.getName()) == null) {
             CityEntity city = cityRepository
@@ -70,7 +71,9 @@ public class EventService {
                 event = eventResponse;
             }
             EventEntity entity = EventEntity.toEntity(event, city);
+            // вот тут мы типа сохранили ивент без материалов
             eventRepository.save(entity);
+            // вот тут мы к этому ивенту цепляем мероприятия
             if (event.getMaterials() != null) {
                 for (EventMaterialEntity material : event.getMaterials()) {
                     EventMaterialEntity eventMaterial = new EventMaterialEntity();
@@ -80,7 +83,6 @@ public class EventService {
                     eventMaterialRepository.save(eventMaterial);
                 }
             }
-            eventRepository.save(entity);
             List<UserEntity> users = new ArrayList<>();
             userRepository.findAll().forEach(users::add);
             for (UserEntity user : users) {
@@ -132,13 +134,24 @@ public class EventService {
         }
     }
 
-    @Transactional
+
     public void updateEvent(EventResponse event) throws EventNotFoundException, CityNotFoundException {
         if (eventRepository.findById(event.getId()).isPresent()) {
             CityEntity city = cityRepository
                     .findById(event.getCityId())
                     .orElseThrow(() -> new CityNotFoundException("Город с id " + event.getCityId() + " не найден"));
             eventRepository.save(EventEntity.toEntity(event, city));
+            if (event.getMaterials() != null) {
+                for (EventMaterialEntity material : event.getMaterials()) {
+                    if (eventMaterialRepository.findByUrl(material.getUrl()) == null) {
+                        EventMaterialEntity eventMaterial = new EventMaterialEntity();
+                        eventMaterial.setUrl(material.getUrl());
+                        eventMaterial.setDescription(material.getDescription());
+                        eventMaterial.setEvent(EventEntity.toEntity(event, city));
+                        eventMaterialRepository.save(eventMaterial);
+                    }
+                }
+            }
         } else
             throw new EventNotFoundException("Мероприятие с id " + event.getId() + " не существует");
     }

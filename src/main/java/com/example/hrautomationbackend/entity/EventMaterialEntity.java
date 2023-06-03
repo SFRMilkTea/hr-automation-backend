@@ -18,7 +18,7 @@ public class EventMaterialEntity {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "event_id", nullable = false)
+    @JoinColumn(name = "event_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private EventEntity event;

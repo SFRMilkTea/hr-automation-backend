@@ -143,6 +143,7 @@ public class EventEntity {
         entity.setFormat(response.getFormat());
         entity.setLng(response.getLng());
         entity.setLat(response.getLat());
+//        entity.setMaterials(response.getMaterials());
         return entity;
     }
 }
